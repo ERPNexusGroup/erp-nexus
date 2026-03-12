@@ -5,19 +5,12 @@ description = "ERP modular open-source con enfoque en simplicidad extrema"
 authors = [{name = "Tu Nombre", email = "tu@email.com"}]
 requires-python = ">=3.11"
 dependencies = [
-    "click>=8.1.7",
-    "rich>=13.7.0",
     "pydantic>=2.6.0",
     "semantic-version>=2.10.0",
-    "cookiecutter>=2.5.0",
     "django>=5.0,<5.1",
 ]
-
-[project.scripts]
-nexus-cli = "cli.main:cli"
 
 [tool.uv]
 dev-dependencies = [
     "pytest>=8.0.0",
-    "pytest-cov>=4.1.0",
 ]
