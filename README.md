@@ -69,3 +69,16 @@ erp-nexus/
 ## 🧪 Core Django (Bootstrap)
 Proyecto base para comenzar el core del ERP con módulos esenciales:
 autenticación, usuarios, permisos, grupos y marketplace.
+
+## 👤 Superadmin (arranque inicial)
+Puedes usar el comando estándar de Django:
+```bash
+uv run python manage.py createsuperuser
+```
+
+O el comando bootstrap (no interactivo):
+```bash
+uv run python manage.py bootstrap_superadmin --username admin --email admin@local --password 123456
+```
+
+Luego, en el panel administrativo puedes crear usuarios, grupos y permisos.
