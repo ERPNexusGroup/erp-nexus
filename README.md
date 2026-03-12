@@ -54,3 +54,15 @@ uv run python manage.py bootstrap_superadmin --username admin --email admin@loca
 ```
 
 Luego, en el panel administrativo puedes crear usuarios, grupos y permisos.
+
+## 🧩 Sincronizar módulos instalados
+El ERP es el source of truth del catálogo interno. Después de instalar módulos con el CLI,
+ejecuta el sync para registrar/actualizar en la base de datos:
+
+```bash
+uv run python manage.py sync_modules
+```
+
+El comando escanea `modules/`, valida cada `__meta__.py` con AST seguro y actualiza
+el modelo `ModuleCatalogItem`. Los módulos removidos del filesystem quedan marcados
+como `inactive`.

@@ -7,6 +7,8 @@ DEBUG = True
 ALLOWED_HOSTS: list[str] = []
 
 INSTALLED_APPS = [
+    "apps.core_dashboard",
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -18,7 +20,17 @@ INSTALLED_APPS = [
     "apps.core_permissions",
     "apps.core_groups",
     "apps.core_marketplace",
+    "apps.core_companies",
 ]
+
+try:
+    from .modules_enabled import MODULE_APPS
+except Exception:
+    MODULE_APPS = []
+
+for app in MODULE_APPS:
+    if app not in INSTALLED_APPS:
+        INSTALLED_APPS.append(app)
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -28,6 +40,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "apps.core_companies.middleware.ActiveCompanyMiddleware",
 ]
 
 ROOT_URLCONF = "erp_nexus.urls"
@@ -43,6 +56,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "apps.core_dashboard.context_processors.admin_metrics",
             ],
         },
     }
@@ -67,3 +81,23 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+MODULES_DIR = BASE_DIR / "modules"
+
+JAZZMIN_SETTINGS = {
+    "site_title": "ERP Nexus",
+    "site_header": "ERP Nexus",
+    "site_brand": "ERP Nexus",
+    "welcome_sign": "Panel Administrativo",
+    "search_model": "auth.User",
+    "topmenu_links": [
+        {"name": "Dashboard", "url": "admin:index", "permissions": ["auth.view_user"]},
+    ],
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "core_users.userprofile": "fas fa-id-badge",
+        "core_companies.company": "fas fa-building",
+        "core_companies.membership": "fas fa-user-tag",
+        "core_marketplace.modulecatalogitem": "fas fa-puzzle-piece",
+    },
+}

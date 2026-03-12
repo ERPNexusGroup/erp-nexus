@@ -1,0 +1,7 @@
+technical_name = "demo_flow"
+display_name = "Demo Flow"
+component_type = "module"
+package_type = "extension"
+python = ">=3.11"
+erp_version = ">=0.1.0"
+version = "0.1.0"
