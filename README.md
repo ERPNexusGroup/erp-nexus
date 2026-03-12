@@ -44,6 +44,18 @@ erp-nexus/
 │           └── README.md.jinja
 ├── core/
 │   └── __init__.py
+├── erp_nexus/              # Proyecto Django (core)
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   └── wsgi.py
+├── apps/                   # Apps base del core
+│   ├── core_auth/
+│   ├── core_users/
+│   ├── core_permissions/
+│   ├── core_groups/
+│   └── core_marketplace/
 ├── module_system/
 │   ├── __init__.py
 │   ├── contracts.py        # Protocolos Pydantic/typing
@@ -53,3 +65,7 @@ erp-nexus/
 └── tests/
     ├── __init__.py
     └── test_cli.py         # Tests mínimos para CLI
+
+## 🧪 Core Django (Bootstrap)
+Proyecto base para comenzar el core del ERP con módulos esenciales:
+autenticación, usuarios, permisos, grupos y marketplace.
