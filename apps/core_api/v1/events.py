@@ -1,13 +1,15 @@
 """
 Router de eventos — endpoints para el Event Bus.
+Protegido con JWT Auth.
 """
 from ninja import Router, Schema
 from typing import Optional
 from datetime import datetime
 
 from apps.core_events.models import EventLog
+from apps.core_api.auth import JWTAuth
 
-router = Router()
+router = Router(auth=JWTAuth())
 
 
 class EventOut(Schema):
@@ -31,6 +33,22 @@ class EventStats(Schema):
     failed: int
 
 
+class EmitRequest(Schema):
+    event_type: str
+    source: str
+    payload: dict = {}
+
+
+class EmitResponse(Schema):
+    id: str
+    event_type: str
+    processed: bool
+
+    @staticmethod
+    def resolve_id(obj):
+        return str(obj.id)
+
+
 @router.get("/", response=list[EventOut])
 def list_events(request, event_type: str = None, limit: int = 50):
     """Lista eventos del Event Bus."""
@@ -51,9 +69,9 @@ def event_stats(request):
     }
 
 
-@router.post("/emit", response=EventOut)
-def emit_event(request, event_type: str, source: str, payload: dict = None):
-    """Emite un evento al bus (para testing/debugging)."""
+@router.post("/emit", response=EmitResponse)
+def emit_event(request, data: EmitRequest):
+    """Emite un evento al bus."""
     from apps.core_events.bus import EventBus
-    event = EventBus.emit(event_type, source, payload or {})
+    event = EventBus.emit(data.event_type, data.source, data.payload)
     return event

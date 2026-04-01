@@ -49,3 +49,6 @@ LOGGING = {
         },
     },
 }
+
+# ─── Rate Limiting ─────────────────────────────────────────────────
+DISABLE_RATE_LIMIT = True  # Deshabilitado en desarrollo

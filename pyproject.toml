@@ -10,7 +10,9 @@ dependencies = [
     "django>=5.0,<5.1",
     "django-jazzmin>=3.0.0",
     "django-ninja>=1.0.0",
+    "django-ninja-extra>=0.31.4",
     "pydantic>=2.6.0",
+    "pyjwt>=2.12.1",
     "semantic-version>=2.10.0",
     "uvicorn>=0.29.0",
 ]
@@ -37,7 +39,7 @@ allow-direct-references = true
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "erp_nexus.settings.development"
-pythonpath = ["."]
+pythonpath = [".", "modules"]
 
 [tool.ruff]
 line-length = 100
