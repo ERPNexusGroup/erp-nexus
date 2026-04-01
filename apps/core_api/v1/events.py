@@ -20,6 +20,10 @@ class EventOut(Schema):
     error_message: str
     created_at: datetime
 
+    @staticmethod
+    def resolve_id(obj):
+        return str(obj.id)
+
 
 class EventStats(Schema):
     total: int
