@@ -1,17 +1,52 @@
 [project]
 name = "erp-nexus"
-version = "0.1.0"
+version = "0.2.0"
 description = "ERP modular open-source con enfoque en simplicidad extrema"
-authors = [{name = "Tu Nombre", email = "tu@email.com"}]
+authors = [{name = "ERP Nexus Team", email = "team@erp-nexus.org"}]
 requires-python = ">=3.11"
+license = {text = "GPL-3.0-or-later"}
+readme = "README.md"
 dependencies = [
-    "pydantic>=2.6.0",
-    "semantic-version>=2.10.0",
     "django>=5.0,<5.1",
     "django-jazzmin>=3.0.0",
+    "django-ninja>=1.0.0",
+    "pydantic>=2.6.0",
+    "semantic-version>=2.10.0",
+    "uvicorn>=0.29.0",
 ]
 
-[tool.uv]
-dev-dependencies = [
+[project.optional-dependencies]
+production = [
+    "gunicorn>=22.0.0",
+    "psycopg[binary]>=3.1.0",
+    "redis>=5.0.0",
+    "celery[redis]>=5.4.0",
+]
+dev = [
     "pytest>=8.0.0",
+    "pytest-django>=4.8.0",
+    "ruff>=0.4.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "erp_nexus.settings.development"
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[dependency-groups]
+dev = [
+    "pytest-django>=4.12.0",
 ]
