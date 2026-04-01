@@ -74,6 +74,16 @@ def activate_module(request, technical_name: str):
     module.is_active = True
     module.save(update_fields=["status", "is_active"])
 
+    # Audit log
+    from apps.core_audit.models import AuditLog
+    AuditLog.log(
+        action="module.activate",
+        resource_type="Module",
+        resource_id=technical_name,
+        description=f"Módulo {technical_name} activado",
+        request=request,
+    )
+
     return {"message": f"Módulo {technical_name} activado"}
 
 
@@ -95,5 +105,15 @@ def deactivate_module(request, technical_name: str):
         write_modules_enabled()
     except Exception:
         pass
+
+    # Audit log
+    from apps.core_audit.models import AuditLog
+    AuditLog.log(
+        action="module.deactivate",
+        resource_type="Module",
+        resource_id=technical_name,
+        description=f"Módulo {technical_name} desactivado",
+        request=request,
+    )
 
     return {"message": f"Módulo {technical_name} desactivado"}
