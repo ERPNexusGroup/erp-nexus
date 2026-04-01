@@ -62,3 +62,7 @@ api.add_router("/modules/", modules_router, tags=["modules"])
 # ─── Events (protegido) ─────────────────────────────────────────────
 from apps.core_api.v1.events import router as events_router  # noqa: E402
 api.add_router("/events/", events_router, tags=["events"])
+
+# ─── Audit (protegido) ──────────────────────────────────────────────
+from apps.core_api.v1.audit import router as audit_router  # noqa: E402
+api.add_router("/audit/", audit_router, tags=["audit"])

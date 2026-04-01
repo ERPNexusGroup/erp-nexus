@@ -149,6 +149,17 @@ def login(request, data: LoginRequest):
         from ninja.errors import HttpError
         raise HttpError(403, "Usuario desactivado")
 
+    # Audit log
+    from apps.core_audit.models import AuditLog
+    AuditLog.log(
+        action="auth.login",
+        user=user,
+        resource_type="User",
+        resource_id=user.id,
+        description=f"Login exitoso: {user.username}",
+        request=request,
+    )
+
     return generate_tokens(user.id)
 
 
