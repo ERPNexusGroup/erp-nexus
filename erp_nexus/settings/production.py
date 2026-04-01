@@ -67,3 +67,21 @@ LOGGING = {
         "level": "WARNING",
     },
 }
+
+# ─── Sentry (error tracking) ────────────────────────────────────────
+# pip install sentry-sdk
+# Descomentar y configurar SENTRY_DSN en .env
+#
+# import sentry_sdk
+# from sentry_sdk.integrations.django import DjangoIntegration
+# from sentry_sdk.integrations.celery import CeleryIntegration
+#
+# SENTRY_DSN = os.environ.get("SENTRY_DSN", "")
+# if SENTRY_DSN:
+#     sentry_sdk.init(
+#         dsn=SENTRY_DSN,
+#         integrations=[DjangoIntegration(), CeleryIntegration()],
+#         traces_sample_rate=0.1,
+#         send_default_pii=False,
+#         environment=os.environ.get("SENTRY_ENVIRONMENT", "production"),
+#     )
