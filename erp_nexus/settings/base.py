@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     "apps.core_companies",
     "apps.core_events",
     "apps.core_audit",
+    "apps.core_stats",
+    "apps.core_pagebuilder",
 ]
 
 # Módulos externos cargados dinámicamente
