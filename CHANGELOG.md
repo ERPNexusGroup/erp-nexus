@@ -5,6 +5,17 @@ All notable changes to ERP Nexus will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] — 2026-04-01
+
+### Added
+- **GitHub Actions CI**: lint (ruff), test (pytest + PostgreSQL), Docker build
+- **GitHub Actions CD**: build image → GHCR, deploy staging/production
+- **Dockerfile**: multi-stage build, non-root user, health check
+- **docker-compose.yml**: PostgreSQL 16, Redis 7, web, celery, nginx
+- **config/nginx.conf**: reverse proxy, static/media, WebSocket ready
+- **.env.example**: all environment variables documented
+- **Sentry integration template** in production settings
+
 ## [0.2.0] — 2026-04-01
 
 ### Added
