@@ -14,7 +14,7 @@ class TestAuthLogin(TestCase):
     def test_login_success(self):
         client = Client()
         r = client.post(
-            "/api/auth/login",
+            "/api/v1/auth/login",
             data=json.dumps({"username": "testuser", "password": "testpass123"}),
             content_type="application/json",
         )
@@ -27,7 +27,7 @@ class TestAuthLogin(TestCase):
     def test_login_invalid_credentials(self):
         client = Client()
         r = client.post(
-            "/api/auth/login",
+            "/api/v1/auth/login",
             data=json.dumps({"username": "testuser", "password": "wrongpass"}),
             content_type="application/json",
         )
@@ -37,7 +37,7 @@ class TestAuthLogin(TestCase):
     def test_login_missing_fields(self):
         client = Client()
         r = client.post(
-            "/api/auth/login",
+            "/api/v1/auth/login",
             data=json.dumps({"username": "testuser"}),
             content_type="application/json",
         )
@@ -48,7 +48,7 @@ class TestAuthRegister(TestCase):
     def test_register_success(self):
         client = Client()
         r = client.post(
-            "/api/auth/register",
+            "/api/v1/auth/register",
             data=json.dumps({
                 "username": "newuser",
                 "email": "new@test.com",
@@ -68,7 +68,7 @@ class TestAuthRegister(TestCase):
 
         client = Client()
         r = client.post(
-            "/api/auth/register",
+            "/api/v1/auth/register",
             data=json.dumps({
                 "username": "existing",
                 "email": "new@test.com",
@@ -91,7 +91,7 @@ class TestAuthMe(TestCase):
 
         # Login
         r = client.post(
-            "/api/auth/login",
+            "/api/v1/auth/login",
             data=json.dumps({"username": "meuser", "password": "testpass123"}),
             content_type="application/json",
         )
@@ -99,7 +99,7 @@ class TestAuthMe(TestCase):
 
         # Get /me
         r = client.get(
-            "/api/auth/me",
+            "/api/v1/auth/me",
             HTTP_AUTHORIZATION=f"Bearer {token}",
         )
         assert r.status_code == 200
@@ -107,7 +107,7 @@ class TestAuthMe(TestCase):
 
     def test_me_without_token(self):
         client = Client()
-        r = client.get("/api/auth/me")
+        r = client.get("/api/v1/auth/me")
         assert r.status_code == 401
 
 
@@ -123,7 +123,7 @@ class TestAuthRefresh(TestCase):
 
         # Login
         r = client.post(
-            "/api/auth/login",
+            "/api/v1/auth/login",
             data=json.dumps({"username": "refuser", "password": "testpass123"}),
             content_type="application/json",
         )
@@ -131,7 +131,7 @@ class TestAuthRefresh(TestCase):
 
         # Refresh
         r = client.post(
-            "/api/auth/refresh",
+            "/api/v1/auth/refresh",
             data=json.dumps({"refresh_token": refresh_token}),
             content_type="application/json",
         )
@@ -144,14 +144,14 @@ class TestAuthRefresh(TestCase):
         client = Client()
 
         r = client.post(
-            "/api/auth/login",
+            "/api/v1/auth/login",
             data=json.dumps({"username": "refuser", "password": "testpass123"}),
             content_type="application/json",
         )
         access_token = r.json()["access_token"]
 
         r = client.post(
-            "/api/auth/refresh",
+            "/api/v1/auth/refresh",
             data=json.dumps({"refresh_token": access_token}),
             content_type="application/json",
         )
@@ -166,7 +166,7 @@ class TestProtectedEndpoints(TestCase):
         )
         client = Client()
         r = client.post(
-            "/api/auth/login",
+            "/api/v1/auth/login",
             data=json.dumps({"username": "protuser", "password": "testpass123"}),
             content_type="application/json",
         )
@@ -174,24 +174,24 @@ class TestProtectedEndpoints(TestCase):
 
     def test_modules_requires_auth(self):
         client = Client()
-        r = client.get("/api/modules/")
+        r = client.get("/api/v1/modules/")
         assert r.status_code == 401
 
     def test_modules_with_token(self):
         client = Client()
         r = client.get(
-            "/api/modules/",
+            "/api/v1/modules/",
             HTTP_AUTHORIZATION=f"Bearer {self.token}",
         )
         assert r.status_code == 200
 
     def test_events_requires_auth(self):
         client = Client()
-        r = client.get("/api/events/")
+        r = client.get("/api/v1/events/")
         assert r.status_code == 401
 
     def test_health_is_public(self):
         """Health check debe ser público."""
         client = Client()
-        r = client.get("/api/health")
+        r = client.get("/api/v1/health")
         assert r.status_code == 200

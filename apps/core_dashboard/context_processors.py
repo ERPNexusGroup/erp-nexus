@@ -1,14 +1,36 @@
+"""
+Context processor optimizado para dashboard admin.
+
+Usa cache para evitar queries pesadas en cada request.
+Cache se invalida cada 5 minutos.
+"""
 import json
 from datetime import timedelta
 
-from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.utils import timezone
 
-from apps.core_companies.models import Company, Membership
-from apps.core_marketplace.models import ModuleCatalogItem
+CACHE_KEY = "admin_dashboard_metrics"
+CACHE_TTL = 300  # 5 minutos
 
 
 def admin_metrics(request):
+    """Métricas para el dashboard admin (cached)."""
+
+    # Solo cargar en el admin index
+    if not request.path.startswith("/admin/") or request.path != "/admin/":
+        return {}
+
+    # Intentar cache
+    cached = cache.get(CACHE_KEY)
+    if cached:
+        return cached
+
+    # Calcular métricas
+    from django.contrib.auth import get_user_model
+    from apps.core_companies.models import Company, Membership
+    from apps.core_marketplace.models import ModuleCatalogItem
+
     User = get_user_model()
     now = timezone.now()
     week_ago = now - timedelta(days=7)
@@ -22,12 +44,10 @@ def admin_metrics(request):
     companies = Company.objects.all().order_by("name")[:10]
     users_per_company = []
     for company in companies:
-        users_per_company.append(
-            {
-                "label": company.name,
-                "value": Membership.objects.filter(company=company, status="active").count(),
-            }
-        )
+        users_per_company.append({
+            "label": company.name,
+            "value": Membership.objects.filter(company=company, status="active").count(),
+        })
 
     charts = {
         "modules": {
@@ -40,7 +60,7 @@ def admin_metrics(request):
         },
     }
 
-    return {
+    result = {
         "dashboard_cards": {
             "total_users": total_users,
             "new_users": new_users,
@@ -49,3 +69,13 @@ def admin_metrics(request):
         },
         "dashboard_charts_json": json.dumps(charts),
     }
+
+    # Guardar en cache
+    cache.set(CACHE_KEY, result, CACHE_TTL)
+
+    return result
+
+
+def invalidate_dashboard_cache():
+    """Invalidar cache del dashboard (llamar después de cambios)."""
+    cache.delete(CACHE_KEY)
