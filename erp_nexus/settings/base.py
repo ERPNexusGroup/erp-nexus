@@ -15,6 +15,7 @@ ALLOWED_HOSTS: list[str] = []
 INSTALLED_APPS = [
     "apps.core_dashboard",
     "jazzmin",
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -43,6 +44,7 @@ for app in MODULE_APPS:
 # ─── Middleware ───────────────────────────────────────────────────────
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -132,6 +134,22 @@ JAZZMIN_SETTINGS = {
 # ─── Django Ninja API ────────────────────────────────────────────────
 NINJA_PAGINATION_CLASS = "ninja.pagination.LimitOffsetPagination"
 NINJA_PAGINATION_PER_PAGE = 25
+
+# ─── CORS ────────────────────────────────────────────────────────────
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://localhost:8080",
+]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "authorization",
+    "content-type",
+    "origin",
+    "x-requested-with",
+]
 
 # ─── Redis / Cache (override en production) ──────────────────────────
 CACHES = {

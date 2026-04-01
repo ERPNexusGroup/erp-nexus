@@ -8,6 +8,7 @@ license = {text = "GPL-3.0-or-later"}
 readme = "README.md"
 dependencies = [
     "django>=5.0,<5.1",
+    "django-cors-headers>=4.9.0",
     "django-jazzmin>=3.0.0",
     "django-ninja>=1.0.0",
     "django-ninja-extra>=0.31.4",

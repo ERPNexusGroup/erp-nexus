@@ -9,7 +9,7 @@ class TestHealthEndpoint(TestCase):
     def test_health_returns_ok(self):
         """Health check es público."""
         client = Client()
-        response = client.get("/api/health")
+        response = client.get("/api/v1/health")
         assert response.status_code == 200
         data = response.json()
         assert data["status"] in ["ok", "degraded"]
@@ -24,7 +24,7 @@ class TestModulesAPI(TestCase):
         )
         client = Client()
         r = client.post(
-            "/api/auth/login",
+            "/api/v1/auth/login",
             data=json.dumps({"username": "apiuser", "password": "testpass123"}),
             content_type="application/json",
         )
@@ -32,13 +32,13 @@ class TestModulesAPI(TestCase):
 
     def test_list_modules_requires_auth(self):
         client = Client()
-        response = client.get("/api/modules/")
+        response = client.get("/api/v1/modules/")
         assert response.status_code == 401
 
     def test_list_modules_with_auth(self):
         client = Client()
         response = client.get(
-            "/api/modules/",
+            "/api/v1/modules/",
             HTTP_AUTHORIZATION=f"Bearer {self.token}",
         )
         assert response.status_code == 200
@@ -46,7 +46,7 @@ class TestModulesAPI(TestCase):
     def test_module_stats(self):
         client = Client()
         response = client.get(
-            "/api/modules/stats",
+            "/api/v1/modules/stats",
             HTTP_AUTHORIZATION=f"Bearer {self.token}",
         )
         assert response.status_code == 200
@@ -62,7 +62,7 @@ class TestEventsAPI(TestCase):
         )
         client = Client()
         r = client.post(
-            "/api/auth/login",
+            "/api/v1/auth/login",
             data=json.dumps({"username": "evtuser", "password": "testpass123"}),
             content_type="application/json",
         )
@@ -70,13 +70,13 @@ class TestEventsAPI(TestCase):
 
     def test_list_events_requires_auth(self):
         client = Client()
-        response = client.get("/api/events/")
+        response = client.get("/api/v1/events/")
         assert response.status_code == 401
 
     def test_list_events_with_auth(self):
         client = Client()
         response = client.get(
-            "/api/events/",
+            "/api/v1/events/",
             HTTP_AUTHORIZATION=f"Bearer {self.token}",
         )
         assert response.status_code == 200
@@ -84,7 +84,7 @@ class TestEventsAPI(TestCase):
     def test_event_stats(self):
         client = Client()
         response = client.get(
-            "/api/events/stats",
+            "/api/v1/events/stats",
             HTTP_AUTHORIZATION=f"Bearer {self.token}",
         )
         assert response.status_code == 200

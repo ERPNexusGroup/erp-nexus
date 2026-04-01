@@ -8,7 +8,7 @@ from ninja import NinjaAPI
 
 api = NinjaAPI(
     title="ERP Nexus API",
-    version="0.3.0",
+    version="0.5.0",
     description="API REST para el ecosistema ERP Nexus",
     docs_url="/docs",
 )
@@ -20,7 +20,7 @@ def health(request):
     from django.db import connection
     from django.core.cache import cache
 
-    checks = {"status": "ok", "version": "0.3.0"}
+    checks = {"status": "ok", "version": "0.5.0"}
 
     # Verificar DB
     try:
@@ -46,6 +46,14 @@ def health(request):
 # ─── Auth (público) ─────────────────────────────────────────────────
 from apps.core_api.v1.auth import router as auth_router  # noqa: E402
 api.add_router("/auth/", auth_router, tags=["auth"])
+
+# ─── Password Reset (público) ───────────────────────────────────────
+from apps.core_api.v1.password_reset import router as password_reset_router  # noqa: E402
+api.add_router("/auth/password-reset/", password_reset_router, tags=["auth"])
+
+# ─── Users (protegido) ──────────────────────────────────────────────
+from apps.core_api.v1.users import router as users_router  # noqa: E402
+api.add_router("/users/", users_router, tags=["users"])
 
 # ─── Módulos (protegido) ────────────────────────────────────────────
 from apps.core_api.v1.modules import router as modules_router  # noqa: E402
