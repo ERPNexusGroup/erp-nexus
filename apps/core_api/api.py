@@ -66,3 +66,15 @@ api.add_router("/events/", events_router, tags=["events"])
 # ─── Audit (protegido) ──────────────────────────────────────────────
 from apps.core_api.v1.audit import router as audit_router  # noqa: E402
 api.add_router("/audit/", audit_router, tags=["audit"])
+
+# ─── Marketplace (protegido) ────────────────────────────────────────
+from apps.core_api.v1.marketplace import router as marketplace_router  # noqa: E402
+api.add_router("/marketplace/", marketplace_router, tags=["marketplace"])
+
+# ─── Stats (protegido) ──────────────────────────────────────────────
+from apps.core_api.v1.stats import router as stats_router  # noqa: E402
+api.add_router("/stats/", stats_router, tags=["stats"])
+
+# ─── Page Builder (protegido) ───────────────────────────────────────
+from apps.core_api.v1.pages import router as pages_router  # noqa: E402
+api.add_router("/pages/", pages_router, tags=["pages"])
