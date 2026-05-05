@@ -6,6 +6,16 @@ class Company(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
     is_active = models.BooleanField(default=True)
+    # Datos fiscales Ecuador
+    ruc = models.CharField(max_length=13, blank=True, null=True, unique=True, help_text="RUC - 13 dígitos")
+    tax_id = models.CharField(max_length=20, blank=True, null=True, help_text="Identificación fiscal (cédula/RUC)")
+    address = models.TextField(blank=True, null=True)
+    phone = models.CharField(max_length=30, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    # Configuración facturación
+    establishment_code = models.CharField(max_length=3, default="001", help_text="Código establecimiento (3 dígitos)")
+    point_emission_code = models.CharField(max_length=3, default="001", help_text="Código punto emisión (3 dígitos)")
+    # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

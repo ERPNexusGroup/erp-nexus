@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,6 +22,10 @@ INSTALLED_APPS = [
     "apps.core_groups",
     "apps.core_marketplace",
     "apps.core_companies",
+    "apps.core_currency",
+    "apps.core_chart_of_accounts",
+    "apps.core_fiscal_year",
+    "apps.core_config",
 ]
 
 try:
@@ -99,5 +104,25 @@ JAZZMIN_SETTINGS = {
         "core_companies.company": "fas fa-building",
         "core_companies.membership": "fas fa-user-tag",
         "core_marketplace.modulecatalogitem": "fas fa-puzzle-piece",
+        "core_currency.currency": "fas fa-money-bill-dollar",
+        "core_currency.exchangerate": "fas fa-calculator",
+        "core_chart_of_accounts.account": "fas fa-chart-pie",
+        "core_chart_of_accounts.accounttype": "fas fa-sitemap",
+        "core_chart_of_accounts.journalentry": "fas fa-book",
+        "core_fiscal_year.fiscalyear": "fas fa-calendar-alt",
+        "core_fiscal_year.fiscalperiod": "fas fa-calendar-week",
+        "core_config.configkey": "fas fa-sliders-h",
+        "core_config.systemconfig": "fas fa-cog",
     },
 }
+
+# Configuración SRI Ecuador (facturacion_ec)
+FACTURACION_EC = {
+    "CERT_PATH": os.getenv("FACTURACION_CERT_PATH", ""),
+    "CERT_PASSWORD": os.getenv("FACTURACION_CERT_PASSWORD", ""),
+    "SRI_AMBIENTE": int(os.getenv("SRI_AMBIENTE", "1")),
+    "ESTABLECIMIENTO_DEFAULT": os.getenv("ESTABLECIMIENTO_DEFAULT", "001"),
+    "PUNTO_EMISION_DEFAULT": os.getenv("PUNTO_EMISION_DEFAULT", "001"),
+}
+
+FACTURACION_EC_AUTO_SEND = os.getenv("FACTURACION_EC_AUTO_SEND", "true").lower() == "true"

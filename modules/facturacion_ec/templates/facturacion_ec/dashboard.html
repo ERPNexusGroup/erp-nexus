@@ -1,0 +1,15 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1>Facturación Electrónica Ecuador</h1>
+
+<div class="module">
+  <table>
+    <tr><th>Facturas Pendientes</th><td>{{ pending_count }}</td></tr>
+    <tr><th>Facturas Aprobadas Hoy</th><td>{{ approved_today }}</td></tr>
+    <tr><th>Facturas Rechazadas</th><td>{{ rejected_count }}</td></tr>
+  </table>
+</div>
+
+<a href="{% url 'admin:facturacion_ec_invoice_changelist' %}" class="button">Ver todas las facturas</a>
+{% endblock %}
