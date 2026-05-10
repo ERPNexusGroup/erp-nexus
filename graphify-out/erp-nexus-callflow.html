@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>erp-nexus — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 2433 nodes, 3112 edges, 266 communities. Commit: 21f1011</p>
+<p class="subtitle">Generated from graphify knowledge graph: 2433 nodes, 3112 edges, 265 communities. Commit: fb71d7d</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -96,11 +96,11 @@ flowchart LR
     class CLI_SKILLS_9964CBB8 module;
     INGEST_CACHE_UPDATE_FF457338("Ingestion &amp; Updates<br/><small>40 nodes</small>")
     class INGEST_CACHE_UPDATE_FF457338 module;
-    SERVE_API_35EC8E86("Serving API<br/><small>636 nodes</small>")
+    SERVE_API_35EC8E86("Serving API<br/><small>623 nodes</small>")
     class SERVE_API_35EC8E86 module;
-    SECURITY_GLOBAL_5B9C6A04("Security &amp; Global Graph<br/><small>56 nodes</small>")
+    SECURITY_GLOBAL_5B9C6A04("Security &amp; Global Graph<br/><small>72 nodes</small>")
     class SECURITY_GLOBAL_5B9C6A04 module;
-    TESTS_FIXTURES_B84B1DCC("Tests &amp; Fixtures<br/><small>324 nodes</small>")
+    TESTS_FIXTURES_B84B1DCC("Tests &amp; Fixtures<br/><small>360 nodes</small>")
     class TESTS_FIXTURES_B84B1DCC module;
     FACTURACION_MODULES_MODELSPY_DF11BBAC("Facturacion Modules Modelspy<br/><small>57 nodes</small>")
     class FACTURACION_MODULES_MODELSPY_DF11BBAC module;
@@ -116,20 +116,20 @@ flowchart LR
     class CHANGELOGMD_ADDED_2026_F7714CDB module;
     SECTION_0001_INITIALPY_MIGRATIONS_391CF9AF("0001 Initialpy Migrations<br/><small>21 nodes</small>")
     class SECTION_0001_INITIALPY_MIGRATIONS_391CF9AF module;
-    OTHER_D0941E68("Other<br/><small>518 nodes</small>")
+    OTHER_D0941E68("Other<br/><small>479 nodes</small>")
     class OTHER_D0941E68 module;
-    SERVE_API_35EC8E86 -->|inherits x7| TESTS_FIXTURES_B84B1DCC
-    OTHER_D0941E68 -->|contains x6| EXTRACT_PIPELINE_5F350230
-    OTHER_D0941E68 -->|imports x5| SERVE_API_35EC8E86
-    OTHER_D0941E68 -->|calls x3| INGEST_CACHE_UPDATE_FF457338
+    SERVE_API_35EC8E86 -->|inherits x9| TESTS_FIXTURES_B84B1DCC
+    OTHER_D0941E68 -->|imports x6| SERVE_API_35EC8E86
+    TESTS_FIXTURES_B84B1DCC -->|imports x6| OTHER_D0941E68
+    OTHER_D0941E68 -->|contains x5| TESTS_FIXTURES_B84B1DCC
+    SECURITY_GLOBAL_5B9C6A04 -->|contains x5| OTHER_D0941E68
+    SECURITY_GLOBAL_5B9C6A04 -->|contains x4| EXTRACT_PIPELINE_5F350230
     TESTS_FIXTURES_B84B1DCC -->|inherits x2| SERVE_API_35EC8E86
     EXTRACT_PIPELINE_5F350230 -->|contains x2| OTHER_D0941E68
-    CLI_SKILLS_9964CBB8 -->|inherits x2| OTHER_D0941E68
+    OTHER_D0941E68 -->|contains x2| EXTRACT_PIPELINE_5F350230
+    CLI_SKILLS_9964CBB8 -->|inherits x2| TESTS_FIXTURES_B84B1DCC
     CLI_SKILLS_9964CBB8 -->|inherits x2| INGEST_CACHE_UPDATE_FF457338
-    SERVE_API_35EC8E86 -->|method x2| OTHER_D0941E68
-    SERVE_API_35EC8E86 -->|contains x2| CLI_SKILLS_9964CBB8
-    FACTURACION_MODULES_MODELSPY_DF11BBAC -->|imports x2| OTHER_D0941E68
-    OTHER_D0941E68 -->|contains| TESTS_FIXTURES_B84B1DCC
+    TESTS_FIXTURES_B84B1DCC -->|calls x2| INGEST_CACHE_UPDATE_FF457338
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,19 +146,19 @@ flowchart LR
     <h4>Architecture Layers</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>Layer</th><th>Nodes</th><th>Communities</th></tr>
-      <tr><td>Extraction Pipeline</td><td>425</td><td><code>6, 9, 11, 16, 17, 20, 21, 26, 28, 33, 34, 35, 39, 80, 90, 99, 107, 108, 110, 119, 143</code></td></tr><tr><td>Graph Build</td><td>27</td><td><code>24</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>206</td><td><code>18, 40, 50, 57, 58, 65, 70, 71, 73, 82, 88, 89, 93, 102, 109, 124, 125, 134, 141</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>40</td><td><code>41, 60, 112</code></td></tr><tr><td>Serving API</td><td>636</td><td><code>0, 2, 4, 5, 7, 12, 13, 15, 23, 29, 32, 43, 47, 53, 61, 68, 74, 75, 79, 83, 84, 91, 92, 101, 94, 95, 103, 113, 115, 126, 133, 152, 197, 242, 243</code></td></tr><tr><td>Security &amp; Global Graph</td><td>56</td><td><code>14, 27</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>324</td><td><code>3, 8, 10, 19, 45, 49, 51, 54, 55, 56, 59, 63, 87, 96, 105, 111, 116, 138, 214, 216</code></td></tr><tr><td>Facturacion Modules Modelspy</td><td>57</td><td><code>1</code></td></tr><tr><td>Requirementsmd Rnf Requisitos</td><td>27</td><td><code>22</code></td></tr><tr><td>Readmemd Codebash Erp</td><td>27</td><td><code>25</code></td></tr><tr><td>Fiscal Year Apps</td><td>24</td><td><code>30</code></td></tr><tr><td>Hybrid 007 Architecturemd</td><td>23</td><td><code>31</code></td></tr><tr><td>Changelogmd Added 2026</td><td>22</td><td><code>36</code></td></tr><tr><td>0001 Initialpy Migrations</td><td>21</td><td><code>37</code></td></tr><tr><td>Other</td><td>518</td><td><code>38, 42, 44, 46, 48, 52, 62, 64, 66, 67, 69, 72, 76, 77, 78, 81, 85, 86, 100, 97, 98, 104, 106, 114, 117, 118, 120, 121, 122, 123, 127, 128, 129, 130, 131, 132, 135, 136, 137, 139, 140, 142, 144, 145, 146, 147, 148, 149, 150, 151, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 215, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265</code></td></tr>
+      <tr><td>Extraction Pipeline</td><td>425</td><td><code>6, 9, 11, 15, 16, 20, 21, 26, 28, 34, 35, 36, 40, 81, 91, 100, 107, 109, 111, 120, 142</code></td></tr><tr><td>Graph Build</td><td>27</td><td><code>24</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>206</td><td><code>17, 48, 49, 58, 59, 67, 71, 72, 74, 82, 89, 90, 94, 103, 110, 123, 124, 133, 140, 141</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>40</td><td><code>41, 61, 113</code></td></tr><tr><td>Serving API</td><td>623</td><td><code>0, 2, 4, 5, 7, 12, 14, 18, 23, 29, 33, 43, 52, 55, 62, 70, 75, 76, 80, 84, 85, 92, 93, 102, 95, 96, 104, 115, 125, 132, 151, 196, 241, 242</code></td></tr><tr><td>Security &amp; Global Graph</td><td>72</td><td><code>13, 27, 54</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>360</td><td><code>3, 8, 10, 19, 32, 44, 46, 50, 53, 56, 57, 60, 64, 65, 87, 97, 106, 112, 117, 137, 213, 215</code></td></tr><tr><td>Facturacion Modules Modelspy</td><td>57</td><td><code>1</code></td></tr><tr><td>Requirementsmd Rnf Requisitos</td><td>27</td><td><code>22</code></td></tr><tr><td>Readmemd Codebash Erp</td><td>27</td><td><code>25</code></td></tr><tr><td>Fiscal Year Apps</td><td>24</td><td><code>30</code></td></tr><tr><td>Hybrid 007 Architecturemd</td><td>23</td><td><code>31</code></td></tr><tr><td>Changelogmd Added 2026</td><td>22</td><td><code>37</code></td></tr><tr><td>0001 Initialpy Migrations</td><td>21</td><td><code>38</code></td></tr><tr><td>Other</td><td>479</td><td><code>39, 42, 45, 47, 51, 63, 66, 68, 69, 73, 77, 78, 79, 83, 86, 88, 101, 98, 99, 105, 108, 114, 116, 118, 119, 121, 122, 126, 127, 128, 129, 130, 131, 134, 135, 136, 138, 139, 143, 144, 145, 146, 147, 148, 149, 150, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 214, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264</code></td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Core Flow</h4>
-    <div class="arrow-chain">Graph Build -&gt; Extraction Pipeline -&gt; Other -&gt; Serving API -&gt; Tests &amp; Fixtures -&gt; CLI &amp; Skill Installers -&gt; Ingestion &amp; Updates</div>
+    <div class="arrow-chain">Graph Build -&gt; Extraction Pipeline -&gt; Other -&gt; Serving API -&gt; Tests &amp; Fixtures -&gt; Ingestion &amp; Updates -&gt; CLI &amp; Skill Installers</div>
   </div>
 </div>
 <div class="grid">
   <div class="card">
     <h4>Graph Report Highlights</h4>
     <ul>
-      <li>2433 nodes · 3112 edges · 266 communities (188 shown, 78 thin omitted)</li>
+      <li>2433 nodes · 3112 edges · 265 communities (188 shown, 77 thin omitted)</li>
       <li>Extraction: 79% EXTRACTED · 21% INFERRED · 0% AMBIGUOUS · INFERRED: 656 edges (avg confidence: 0.51)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `JWTAuth` - 27 edges</li>
@@ -1307,7 +1307,7 @@ flowchart LR
   <td><code>ManifestSchema</code><br><small style="color:var(--muted)">apps/core_marketplace/manifest.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>Command</code><br><small style="color:var(--muted)">management/commands/module_install.py</small><br><code>Command</code><br><small style="color:var(--muted)">management/commands/sync_modules.py</small></td>
+  <td><code>Command</code><br><small style="color:var(--muted)">management/commands/sync_modules.py</small><br><code>Command</code><br><small style="color:var(--muted)">management/commands/module_install.py</small></td>
   <td>ManifestSchema node in apps/core_marketplace/manifest.py.</td>
 </tr>
 <tr>
@@ -1355,7 +1355,7 @@ flowchart LR
   <td><code>parse_meta_file()</code><br><small style="color:var(--muted)">apps/core_marketplace/manifest.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>ManifestError</code><br><small style="color:var(--muted)">apps/core_marketplace/manifest.py</small></td>
-  <td><code>_ast_node_to_safe_value()</code><br><small style="color:var(--muted)">apps/core_marketplace/manifest.py</small><br><code>handle()</code><br><small style="color:var(--muted)">management/commands/sync_modules.py</small><br><code>handle()</code><br><small style="color:var(--muted)">management/commands/module_install.py</small><br>+1 more</td>
+  <td><code>_ast_node_to_safe_value()</code><br><small style="color:var(--muted)">apps/core_marketplace/manifest.py</small><br><code>handle()</code><br><small style="color:var(--muted)">management/commands/module_install.py</small><br><code>handle()</code><br><small style="color:var(--muted)">management/commands/sync_modules.py</small><br>+1 more</td>
   <td>parse_meta_file() node in apps/core_marketplace/manifest.py.</td>
 </tr>
 <tr>
@@ -1533,12 +1533,12 @@ flowchart LR
 
 <!-- ====== 6. Serving API ====== -->
 <h2 id="serve-api">6. Serving API</h2>
-<p>Serving API groups implementation around api, apps, modelspy, referencemd, mostly in API_REFERENCE.md, apps/facturacion/models.py, ARCHITECTURE.md. This section covers 636 nodes and 1057 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Serving API groups implementation around api, apps, modelspy, referencemd, mostly in API_REFERENCE.md, apps/facturacion/models.py, ARCHITECTURE.md. This section covers 623 nodes and 1034 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Serving API (636 nodes, 1057 edges)
+    %% Section: Serving API (623 nodes, 1034 edges)
     subgraph serve_api_apps_sales_models_py_5d3a0c0f["apps/sales/models.py"]
         sales_models_quote_1265d33e("Quote<br/><small>apps/sales/models.py</small>")
         sales_models_quote_str_f9d1eb59("__str__()<br/><small>apps/sales/models.py</small>")
@@ -1555,8 +1555,8 @@ flowchart LR
         api_endpoints_productout_094cb844("ProductOut<br/><small>api/endpoints.py</small>")
         api_endpoints_list_products_7dcabc0e("list_products()<br/><small>api/endpoints.py</small>")
     end
+    apps_core_companies_models_py_0fa49c10("models.py")
     core_marketplace_registry_moduleregistry_1176728c("ModuleRegistry<br/><small>apps/core_marketplace/registry.py</small>")
-    core_pagebuilder_models_page_e6cd5b8f("Page<br/><small>apps/core_pagebuilder/models.py</small>")
     facturacion_models_companylicense_37dcdfaf("CompanyLicense<br/><small>apps/facturacion/models.py</small>")
     v1_pages_pagedetail_e7ad1dc6("PageDetail<br/><small>core_api/v1/pages.py</small>")
     api_routes_get_company_for_request_5b15b214("get_company_for_request()<br/><small>facturacion/api/routes.py</small>")
@@ -1567,7 +1567,7 @@ flowchart LR
     sales_models_orderline_02f04a1a -->|method| sales_models_orderline_str_6135abc7
     api_endpoints_categoryout_529d3452 -->|calls| api_endpoints_list_categories_36bd6a09
     api_endpoints_productout_094cb844 -->|calls| api_endpoints_list_products_7dcabc0e
-    %% Omitted for readability: 618 nodes, 0 edges
+    %% Omitted for readability: 605 nodes, 0 edges
     class sales_models_quote_1265d33e klass;
     class sales_models_quote_str_f9d1eb59 function;
     class sales_models_quoteline_c1125d23 klass;
@@ -1580,8 +1580,8 @@ flowchart LR
     class api_endpoints_list_categories_36bd6a09 function;
     class api_endpoints_productout_094cb844 klass;
     class api_endpoints_list_products_7dcabc0e function;
+    class apps_core_companies_models_py_0fa49c10 module;
     class core_marketplace_registry_moduleregistry_1176728c klass;
-    class core_pagebuilder_models_page_e6cd5b8f klass;
     class facturacion_models_companylicense_37dcdfaf klass;
     class v1_pages_pagedetail_e7ad1dc6 klass;
     class api_routes_get_company_for_request_5b15b214 function;
@@ -1866,19 +1866,19 @@ flowchart LR
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x400, explains x148, method x64, inherits x43. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x393, explains x146, method x61, inherits x43. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 7. Security & Global Graph ====== -->
 <h2 id="security-global">7. Security &amp; Global Graph</h2>
-<p>Security &amp; Global Graph groups implementation around repo, multi, structuremd, work, mostly in MULTI_REPO_STRUCTURE.md, WORK_PLAN.md. This section covers 56 nodes and 56 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Security &amp; Global Graph groups implementation around repo, multi, structuremd, work, mostly in MULTI_REPO_STRUCTURE.md, WORK_PLAN.md, ARCHITECTURE_PLUGIN.md. This section covers 72 nodes and 71 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Security &amp; Global Graph (56 nodes, 56 edges)
+    %% Section: Security &amp; Global Graph (72 nodes, 71 edges)
     subgraph security_global_MULTI_REPO_STRUCTURE_md_cadb7f1d["MULTI_REPO_STRUCTURE.md"]
         erp_nexus_multi_repo_structure_estructura_multi_4fe2546e("📁 Estructura Multi-Repo — ERP Nexus (Hy...<br/><small>MULTI_REPO_STRUCTURE.md</small>")
         erp_nexus_multi_repo_structure_para_desarrollado_da68a39d("🔧 Para Desarrolladores de Plugins<br/><small>MULTI_REPO_STRUCTURE.md</small>")
@@ -1889,11 +1889,13 @@ flowchart LR
         erp_nexus_multi_repo_structure_cu_ndo_usar_cada_8994b74a("📦 Cuándo Usar Cada Tipo<br/><small>MULTI_REPO_STRUCTURE.md</small>")
         erp_nexus_multi_repo_structure_crear_un_plugin_o_800b2560("**Crear un plugin opcional:**<br/><small>MULTI_REPO_STRUCTURE.md</small>")
         erp_nexus_multi_repo_structure_desarrollar_core_a6eda313("**Desarrollar Core (essential modules i...<br/><small>MULTI_REPO_STRUCTURE.md</small>")
-        erp_nexus_multi_repo_structure_desarrollar_plugi_09a5ef8b("**Desarrollar Plugin Opcional (hr, crm,...<br/><small>MULTI_REPO_STRUCTURE.md</small>")
-        erp_nexus_multi_repo_structure_instalar_plugin_e_fc9405e5("**Instalar Plugin en Dev:**<br/><small>MULTI_REPO_STRUCTURE.md</small>")
-        erp_nexus_multi_repo_structure_instalar_plugin_369f5f2f("**Instalar plugin:**<br/><small>MULTI_REPO_STRUCTURE.md</small>")
-        erp_nexus_multi_repo_structure_publicar_plugin_af9ba2dd("**Publicar plugin:**<br/><small>MULTI_REPO_STRUCTURE.md</small>")
-        erp_nexus_multi_repo_structure_estructura_de_dir_1533b52b("🗺️ Estructura de Directorios (local dev)<br/><small>MULTI_REPO_STRUCTURE.md</small>")
+    end
+    subgraph security_global_ARCHITECTURE_PLUGIN_md_efc5173d["ARCHITECTURE_PLUGIN.md"]
+        erp_nexus_architecture_plugin_arquitectura_de_so_0934dbbd("🏗️ Arquitectura de Software — ERP Nexus<br/><small>ARCHITECTURE_PLUGIN.md</small>")
+        erp_nexus_architecture_plugin_estructura_de_un_p_509cd7f5("📦 Estructura de un Plugin/Módulo<br/><small>ARCHITECTURE_PLUGIN.md</small>")
+        erp_nexus_architecture_plugin_principio_fundamen_810ece52("🎯 Principio Fundamental<br/><small>ARCHITECTURE_PLUGIN.md</small>")
+        erp_nexus_architecture_plugin_ciclo_de_vida_de_u_b72f5311("🔄 Ciclo de Vida de un Plugin<br/><small>ARCHITECTURE_PLUGIN.md</small>")
+        erp_nexus_architecture_plugin_marketplace_workfl_00bccee3("🔄 Marketplace Workflow<br/><small>ARCHITECTURE_PLUGIN.md</small>")
     end
     subgraph security_global_WORK_PLAN_md_b894a579["WORK_PLAN.md"]
         erp_nexus_work_plan_roadmap_erp_nexus_core_frame_a7f69492("📈 Roadmap — ERP Nexus Core (Framework +...<br/><small>WORK_PLAN.md</small>")
@@ -1903,21 +1905,20 @@ flowchart LR
     end
     erp_nexus_multi_repo_structure_estructura_multi_4fe2546e -->|contains| erp_nexus_multi_repo_structure_filosof_a_72910910
     erp_nexus_multi_repo_structure_estructura_multi_4fe2546e -->|contains| erp_nexus_multi_repo_structure_cu_ndo_usar_cada_8994b74a
-    erp_nexus_multi_repo_structure_estructura_multi_4fe2546e -->|contains| erp_nexus_multi_repo_structure_estructura_de_dir_1533b52b
     erp_nexus_multi_repo_structure_estructura_multi_4fe2546e -->|contains| erp_nexus_multi_repo_structure_workflow_de_desar_dabbdfff
     erp_nexus_multi_repo_structure_estructura_multi_4fe2546e -->|contains| erp_nexus_multi_repo_structure_para_desarrollado_da68a39d
     erp_nexus_multi_repo_structure_filosof_a_72910910 -->|contains| erp_nexus_multi_repo_structure_tier_1_core_repos_ba1651ec
     erp_nexus_multi_repo_structure_filosof_a_72910910 -->|contains| erp_nexus_multi_repo_structure_tier_2_optional_p_41b78804
     erp_nexus_multi_repo_structure_workflow_de_desar_dabbdfff -->|contains| erp_nexus_multi_repo_structure_desarrollar_core_a6eda313
-    erp_nexus_multi_repo_structure_workflow_de_desar_dabbdfff -->|contains| erp_nexus_multi_repo_structure_desarrollar_plugi_09a5ef8b
-    erp_nexus_multi_repo_structure_workflow_de_desar_dabbdfff -->|contains| erp_nexus_multi_repo_structure_instalar_plugin_e_fc9405e5
     erp_nexus_multi_repo_structure_para_desarrollado_da68a39d -->|contains| erp_nexus_multi_repo_structure_crear_un_plugin_o_800b2560
-    erp_nexus_multi_repo_structure_para_desarrollado_da68a39d -->|contains| erp_nexus_multi_repo_structure_publicar_plugin_af9ba2dd
-    erp_nexus_multi_repo_structure_para_desarrollado_da68a39d -->|contains| erp_nexus_multi_repo_structure_instalar_plugin_369f5f2f
     erp_nexus_work_plan_roadmap_erp_nexus_core_frame_a7f69492 -->|contains| erp_nexus_work_plan_timeline_core_erp_nexus_repo_d25bf3a2
     erp_nexus_work_plan_roadmap_erp_nexus_core_frame_a7f69492 -->|contains| erp_nexus_work_plan_milestones_erp_nexus_core_cfc40511
     erp_nexus_work_plan_roadmap_erp_nexus_core_frame_a7f69492 -->|contains| erp_nexus_work_plan_essential_modules_roadmap_se_dbe8245f
-    %% Omitted for readability: 38 nodes, 0 edges
+    erp_nexus_architecture_plugin_arquitectura_de_so_0934dbbd -->|contains| erp_nexus_architecture_plugin_principio_fundamen_810ece52
+    erp_nexus_architecture_plugin_arquitectura_de_so_0934dbbd -->|contains| erp_nexus_architecture_plugin_estructura_de_un_p_509cd7f5
+    erp_nexus_architecture_plugin_arquitectura_de_so_0934dbbd -->|contains| erp_nexus_architecture_plugin_marketplace_workfl_00bccee3
+    erp_nexus_architecture_plugin_arquitectura_de_so_0934dbbd -->|contains| erp_nexus_architecture_plugin_ciclo_de_vida_de_u_b72f5311
+    %% Omitted for readability: 54 nodes, 0 edges
     class erp_nexus_multi_repo_structure_estructura_multi_4fe2546e concept;
     class erp_nexus_multi_repo_structure_para_desarrollado_da68a39d concept;
     class erp_nexus_multi_repo_structure_workflow_de_desar_dabbdfff concept;
@@ -1927,11 +1928,11 @@ flowchart LR
     class erp_nexus_multi_repo_structure_cu_ndo_usar_cada_8994b74a concept;
     class erp_nexus_multi_repo_structure_crear_un_plugin_o_800b2560 concept;
     class erp_nexus_multi_repo_structure_desarrollar_core_a6eda313 concept;
-    class erp_nexus_multi_repo_structure_desarrollar_plugi_09a5ef8b concept;
-    class erp_nexus_multi_repo_structure_instalar_plugin_e_fc9405e5 concept;
-    class erp_nexus_multi_repo_structure_instalar_plugin_369f5f2f concept;
-    class erp_nexus_multi_repo_structure_publicar_plugin_af9ba2dd concept;
-    class erp_nexus_multi_repo_structure_estructura_de_dir_1533b52b concept;
+    class erp_nexus_architecture_plugin_arquitectura_de_so_0934dbbd concept;
+    class erp_nexus_architecture_plugin_estructura_de_un_p_509cd7f5 concept;
+    class erp_nexus_architecture_plugin_principio_fundamen_810ece52 concept;
+    class erp_nexus_architecture_plugin_ciclo_de_vida_de_u_b72f5311 concept;
+    class erp_nexus_architecture_plugin_marketplace_workfl_00bccee3 concept;
     class erp_nexus_work_plan_roadmap_erp_nexus_core_frame_a7f69492 concept;
     class erp_nexus_work_plan_milestones_erp_nexus_core_cfc40511 concept;
     class erp_nexus_work_plan_essential_modules_roadmap_se_dbe8245f concept;
@@ -2206,27 +2207,28 @@ flowchart LR
       <tr><th>File</th><th>Coverage</th></tr>
       <tr><td><code>MULTI_REPO_STRUCTURE.md</code></td><td>32 nodes</td></tr>
 <tr><td><code>WORK_PLAN.md</code></td><td>24 nodes</td></tr>
+<tr><td><code>ARCHITECTURE_PLUGIN.md</code></td><td>16 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x56. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x71. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 8. Tests & Fixtures ====== -->
 <h2 id="tests-fixtures">8. Tests &amp; Fixtures</h2>
-<p>Tests &amp; Fixtures groups implementation around test, tests, apps, modelspy, mostly in CONTRIBUTING.md, modules/README.md, tests/test_auth.py. This section covers 324 nodes and 377 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Tests &amp; Fixtures groups implementation around test, tests, apps, modelspy, mostly in CONTRIBUTING.md, modules/README.md, tests/test_auth.py. This section covers 360 nodes and 433 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Tests &amp; Fixtures (324 nodes, 377 edges)
-    subgraph tests_fixtures_facturacion_tests_test_services_p_5cb92996["facturacion/tests/test_services.py"]
-        tests_test_services_testcodeunique_8f6b231b("TestCodeUnique<br/><small>facturacion/tests/test_services.py</small>")
-        tests_test_services_testcodeunique_test_generate_39d686dd("test_generate_access_key_format()<br/><small>facturacion/tests/test_services.py</small>")
-        tests_test_services_testcodeunique_test_generate_887110c4("test_generate_invoice_number()<br/><small>facturacion/tests/test_services.py</small>")
+    %% Section: Tests &amp; Fixtures (360 nodes, 433 edges)
+    subgraph tests_fixtures_management_commands_send_pending_7bd7ce54["management/commands/send_pending_facturacion.py"]
+        commands_send_pending_facturacion_command_98db557b("Command<br/><small>management/commands/send_pending_facturacion.py</small>")
+        commands_send_pending_facturacion_command_add_ar_a5bbe469("add_arguments()<br/><small>management/commands/send_pending_facturacion.py</small>")
+        commands_send_pending_facturacion_command_handle_ced754ba("handle()<br/><small>management/commands/send_pending_facturacion.py</small>")
     end
     subgraph tests_fixtures_sales_tests_test_models_py_dd1a27c7["sales/tests/test_models.py"]
         tests_test_models_salesmoduletestcase_6498fa21("SalesModuleTestCase<br/><small>sales/tests/test_models.py</small>")
@@ -2245,14 +2247,12 @@ flowchart LR
         tests_test_models_purchasesmoduletestcase_c5f12f22("PurchasesModuleTestCase<br/><small>purchases/tests/test_models.py</small>")
         tests_test_models_purchasesmoduletestcase_test_m_32423ba9("test_module_imports()<br/><small>purchases/tests/test_models.py</small>")
     end
-    subgraph tests_fixtures_tests_test_api_py_4bcf58d8["tests/test_api.py"]
-        tests_test_api_testeventsapi_e7121e3f("TestEventsAPI<br/><small>tests/test_api.py</small>")
-        tests_test_api_testmodulesapi_f4365330("TestModulesAPI<br/><small>tests/test_api.py</small>")
-    end
     subgraph tests_fixtures_tests_test_users_py_c1004a6e["tests/test_users.py"]
         tests_test_users_testpasswordreset_6fe398d0("TestPasswordReset<br/><small>tests/test_users.py</small>")
         tests_test_users_testuserprofile_81c6edbd("TestUserProfile<br/><small>tests/test_users.py</small>")
     end
+    apps_facturacion_services_init_py_d8682971("__init__.py")
+    tests_test_api_testeventsapi_e7121e3f("TestEventsAPI<br/><small>tests/test_api.py</small>")
     tests_test_auth_testprotectedendpoints_c4080096("TestProtectedEndpoints<br/><small>tests/test_auth.py</small>")
     tests_test_events_testeventbus_d9f2072e("TestEventBus<br/><small>tests/test_events.py</small>")
     tests_test_models_notificationsmoduletestcase_fb59fbfc -->|method| tests_test_models_notificationsmoduletestcase_te_f3f5d80a
@@ -2260,12 +2260,12 @@ flowchart LR
     tests_test_models_purchasesmoduletestcase_c5f12f22 -->|method| tests_test_models_purchasesmoduletestcase_test_m_32423ba9
     tests_test_models_salesmoduletestcase_6498fa21 -->|method| tests_test_models_salesmoduletestcase_test_modul_bc3ba2e5
     tests_test_models_salesmoduletestcase_6498fa21 -->|method| tests_test_models_salesmoduletestcase_test_quote_81986750
-    tests_test_services_testcodeunique_8f6b231b -->|method| tests_test_services_testcodeunique_test_generate_39d686dd
-    tests_test_services_testcodeunique_8f6b231b -->|method| tests_test_services_testcodeunique_test_generate_887110c4
-    %% Omitted for readability: 306 nodes, 0 edges
-    class tests_test_services_testcodeunique_8f6b231b test;
-    class tests_test_services_testcodeunique_test_generate_39d686dd test;
-    class tests_test_services_testcodeunique_test_generate_887110c4 test;
+    commands_send_pending_facturacion_command_98db557b -->|method| commands_send_pending_facturacion_command_add_ar_a5bbe469
+    commands_send_pending_facturacion_command_98db557b -->|method| commands_send_pending_facturacion_command_handle_ced754ba
+    %% Omitted for readability: 342 nodes, 0 edges
+    class commands_send_pending_facturacion_command_98db557b entry;
+    class commands_send_pending_facturacion_command_add_ar_a5bbe469 function;
+    class commands_send_pending_facturacion_command_handle_ced754ba function;
     class tests_test_models_salesmoduletestcase_6498fa21 test;
     class tests_test_models_salesmoduletestcase_test_modul_bc3ba2e5 test;
     class tests_test_models_salesmoduletestcase_test_quote_81986750 test;
@@ -2275,10 +2275,10 @@ flowchart LR
     class tests_test_models_printmanagermoduletestcase_tes_c669e1fc test;
     class tests_test_models_purchasesmoduletestcase_c5f12f22 test;
     class tests_test_models_purchasesmoduletestcase_test_m_32423ba9 test;
-    class tests_test_api_testeventsapi_e7121e3f test;
-    class tests_test_api_testmodulesapi_f4365330 test;
     class tests_test_users_testpasswordreset_6fe398d0 test;
     class tests_test_users_testuserprofile_81c6edbd test;
+    class apps_facturacion_services_init_py_d8682971 module;
+    class tests_test_api_testeventsapi_e7121e3f test;
     class tests_test_auth_testprotectedendpoints_c4080096 test;
     class tests_test_events_testeventbus_d9f2072e test;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
@@ -2561,7 +2561,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x147, method x89, explains x62, inherits x26. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x165, method x91, explains x74, inherits x26. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -4662,12 +4662,12 @@ flowchart LR
 
 <!-- ====== 16. Other ====== -->
 <h2 id="other">16. Other</h2>
-<p>Other groups implementation around apps, facturacion, appspy, modelspy, mostly in ARCHITECTURE_PLUGIN.md, DEVELOPMENT.md, DOCS_INDEX.md. This section covers 518 nodes and 474 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Other groups implementation around apps, modelspy, appspy, facturacion, mostly in DEVELOPMENT.md, ARCHITECTURE_PLUGIN.md, DOCS_INDEX.md. This section covers 479 nodes and 406 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Other (518 nodes, 474 edges)
+    %% Section: Other (479 nodes, 406 edges)
     subgraph other_apps_notifications_models_py_631664f7["apps/notifications/models.py"]
         notifications_models_notification_744ed48d("Notification<br/><small>apps/notifications/models.py</small>")
         notifications_models_notification_str_bce898b9("__str__()<br/><small>apps/notifications/models.py</small>")
@@ -4691,7 +4691,7 @@ flowchart LR
         commands_module_command_handle_d9336bc2("handle()<br/><small>management/commands/module.py</small>")
     end
     core_config_models_systemconfig_15f6bf8c("SystemConfig<br/><small>apps/core_config/models.py</small>")
-    apps_facturacion_services_init_py_d8682971("__init__.py")
+    core_pagebuilder_models_page_e6cd5b8f("Page<br/><small>apps/core_pagebuilder/models.py</small>")
     services_digital_signature_digitalsigner_b71d6d1f("DigitalSigner<br/><small>facturacion/services/digital_signature.py</small>")
     services_xml_generator_xmlgenerator_c8516ed6("XMLGenerator<br/><small>facturacion/services/xml_generator.py</small>")
     notifications_models_notification_744ed48d -->|method| notifications_models_notification_str_bce898b9
@@ -4701,7 +4701,7 @@ flowchart LR
     print_manager_models_printjob_b4959847 -->|method| print_manager_models_printjob_str_ef3ecf7b
     purchases_models_supplier_d57b30bc -->|method| purchases_models_supplier_str_1d401059
     commands_module_command_1408095a -->|method| commands_module_command_handle_d9336bc2
-    %% Omitted for readability: 500 nodes, 0 edges
+    %% Omitted for readability: 461 nodes, 0 edges
     class notifications_models_notification_744ed48d klass;
     class notifications_models_notification_str_bce898b9 function;
     class notifications_models_notificationtemplate_37ca8efa klass;
@@ -4717,7 +4717,7 @@ flowchart LR
     class commands_module_command_1408095a entry;
     class commands_module_command_handle_d9336bc2 function;
     class core_config_models_systemconfig_15f6bf8c klass;
-    class apps_facturacion_services_init_py_d8682971 module;
+    class core_pagebuilder_models_page_e6cd5b8f klass;
     class services_digital_signature_digitalsigner_b71d6d1f klass;
     class services_xml_generator_xmlgenerator_c8516ed6 klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
@@ -4988,19 +4988,19 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>ARCHITECTURE_PLUGIN.md</code></td><td>43 nodes</td></tr>
-<tr><td><code>DEVELOPMENT.md</code></td><td>32 nodes</td></tr>
+      <tr><td><code>DEVELOPMENT.md</code></td><td>32 nodes</td></tr>
+<tr><td><code>ARCHITECTURE_PLUGIN.md</code></td><td>27 nodes</td></tr>
 <tr><td><code>DOCS_INDEX.md</code></td><td>21 nodes</td></tr>
 <tr><td><code>apps/core_config/models.py</code></td><td>16 nodes</td></tr>
 <tr><td><code>facturacion/services/validator.py</code></td><td>16 nodes</td></tr>
 <tr><td><code>facturacion/services/xml_generator.py</code></td><td>16 nodes</td></tr>
-<tr><td><code>facturacion/services/digital_signature.py</code></td><td>15 nodes</td></tr>
 <tr><td><code>apps/notifications/models.py</code></td><td>12 nodes</td></tr>
+<tr><td><code>apps/purchases/models.py</code></td><td>12 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x219, explains x103, method x41, imports x31. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x185, explains x93, method x42, inherits x25. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -5014,7 +5014,7 @@ flowchart LR
       <tr><td>Nodes</td><td>2433</td></tr>
       <tr><td>Edges</td><td>3112</td></tr>
       <tr><td>Hyperedges</td><td>0</td></tr>
-      <tr><td>Communities</td><td>266</td></tr>
+      <tr><td>Communities</td><td>265</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
@@ -5030,7 +5030,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>erp-nexus — Architecture Documentation</p>
-  <p>Generated: 2026-05-10 22:23 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-05-10 23:06 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

@@ -1,92 +1,156 @@
 """
-Router de marketplace — búsqueda e instalación de módulos.
+Router de marketplace — catálogo, instalación y desinstalación de módulos.
 """
 from ninja import Router, Schema
 from typing import List, Optional
 
 from apps.core_api.auth import JWTAuth
-from apps.core_marketplace.registry import ModuleRegistry, search_modules, ModuleDownload
+from apps.core_marketplace.models import ModuleCatalogItem, EnabledModule, ModuleDownload
+from apps.core_marketplace.utils.module_loader import read_modules_enabled, write_modules_enabled
+from django.core.management import call_command
 
 router = Router(auth=JWTAuth())
 
 
-class RegistryOut(Schema):
-    id: int
-    name: str
-    source_type: str
-    url: str
-    is_active: bool
-    is_default: bool
-    module_count: int
-    last_sync: Optional[str]
-
-
-class ModuleSearchResult(Schema):
-    name: str
-    description: str
-    source: str
+# ─── Schemas ──────────────────────────────────────────────────────────
+class ModuleCatalogOut(Schema):
+    technical_name: str
+    display_name: str
     version: str
-    registry: str
+    module_type: str
+    repo_url: Optional[str]
+    min_erp_version: str
+    max_erp_version: Optional[str]
+    python_dependencies: dict
+    system_dependencies: dict
+    documentation_url: Optional[str]
+    is_installed: bool
+    installed_at: Optional[str]
+
+
+class EnabledModuleOut(Schema):
+    technical_name: str
+    django_app: str
+    status: str
+    enabled_at: str
 
 
 class MessageResponse(Schema):
     message: str
+    success: bool
 
 
-@router.get("/registries", response=List[RegistryOut])
-def list_registries(request):
-    """Lista registros de módulos configurados."""
-    registries = ModuleRegistry.objects.filter(is_active=True)
+# ─── GET /api/v1/marketplace/catalog/ ─────────────────────────────────
+@router.get("/catalog", response=List[ModuleCatalogOut])
+def list_catalog(request, module_type: Optional[str] = None, installed: Optional[bool] = None):
+    """
+    Lista todos los módulos disponibles en el catálogo.
+
+    Query params:
+      - module_type: filter por tipo ('essential', 'optional', 'plugin')
+      - installed: true (solo instalados) | false (solo no instalados)
+    """
+    qs = ModuleCatalogItem.objects.filter(is_active=True)
+
+    if module_type:
+        qs = qs.filter(module_type=module_type)
+    if installed is True:
+        qs = qs.filter(installed_at__isnull=False)
+    elif installed is False:
+        qs = qs.filter(installed_at__isnull=True)
+
+    enabled_apps = read_modules_enabled()
+    installed_technical_names = set(
+        EnabledModule.objects.values_list("technical_name", flat=True)
+    )
+
+    result = []
+    for item in qs:
+        is_installed = item.technical_name in installed_technical_names or item.installed_at is not None
+        result.append(ModuleCatalogOut(
+            technical_name=item.technical_name,
+            display_name=item.display_name or item.technical_name,
+            version=item.version,
+            module_type=item.module_type,
+            repo_url=item.repo_url,
+            min_erp_version=item.min_erp_version,
+            max_erp_version=item.max_erp_version,
+            python_dependencies=item.python_dependencies,
+            system_dependencies=item.system_dependencies,
+            documentation_url=item.documentation_url,
+            is_installed=is_installed,
+            installed_at=str(item.installed_at) if item.installed_at else None,
+        ))
+    return result
+
+
+# ─── POST /api/v1/marketplace/{name}/install/ ─────────────────────────
+@router.post("/{technical_name}/install", response=MessageResponse)
+def install_module(request, technical_name: str):
+    """
+    Instala un módulo desde el catálogo.
+
+    - Clona el repositorio a modules/{technical_name}/
+    - Valida __meta__.py
+    - Registra en EnabledModule
+    - Actualiza modules_enabled.py
+    """
+    try:
+        call_command("module_install", technical_name, stdout=StdoutCapture(), stderr=StdoutCapture())
+        return {"message": f"Module '{technical_name}' installed successfully", "success": True}
+    except Exception as exc:
+        return {"message": f"Install failed: {str(exc)}", "success": False}
+
+
+# ─── POST /api/v1/marketplace/{name}/uninstall/ ───────────────────────
+@router.post("/{technical_name}/uninstall", response=MessageResponse)
+def uninstall_module(request, technical_name: str):
+    """
+    Desinstala un módulo.
+
+    - Elimina de modules/{technical_name}/ (opcional: keep-data)
+    - Elimina de EnabledModule
+    - Actualiza modules_enabled.py
+    """
+    try:
+        call_command("module_uninstall", technical_name, stdout=StdoutCapture(), stderr=StdoutCapture())
+        return {"message": f"Module '{technical_name}' uninstalled successfully", "success": True}
+    except Exception as exc:
+        return {"message": f"Uninstall failed: {str(exc)}", "success": False}
+
+
+# ─── GET /api/v1/marketplace/installed/ ───────────────────────────────
+@router.get("/installed", response=List[EnabledModuleOut])
+def list_installed(request):
+    """Lista módulos actualmente instalados/habilitados."""
+    modules = EnabledModule.objects.all().order_by("-enabled_at")
     return [
-        RegistryOut(
-            id=r.id,
-            name=r.name,
-            source_type=r.source_type,
-            url=r.url,
-            is_active=r.is_active,
-            is_default=r.is_default,
-            module_count=len(r.cached_modules or {}),
-            last_sync=str(r.last_sync) if r.last_sync else None,
+        EnabledModuleOut(
+            technical_name=m.technical_name,
+            django_app=m.django_app,
+            status=m.status,
+            enabled_at=str(m.enabled_at),
         )
-        for r in registries
+        for m in modules
     ]
 
 
-@router.post("/registries/{registry_id}/sync", response=MessageResponse)
-def sync_registry(request, registry_id: int):
-    """Sincroniza un registro (actualiza lista de módulos disponibles)."""
-    registry = ModuleRegistry.objects.get(id=registry_id)
-    count = registry.sync()
-    return {"message": f"Sincronizado: {count} módulos encontrados"}
+# ─── GET /api/v1/marketplace/status ───────────────────────────────────
+@router.get("/status")
+def marketplace_status(request):
+    """Estado del marketplace: módulos instalados vs catálogo."""
+    installed = EnabledModule.objects.count()
+    catalog = ModuleCatalogItem.objects.filter(is_active=True).count()
+    return {
+        "installed_modules": installed,
+        "available_in_catalog": catalog,
+        "marketplace_ready": True,
+    }
 
 
-@router.get("/search", response=List[ModuleSearchResult])
-def search(request, q: str = "", registry: str = None, category: str = None):
-    """Busca módulos disponibles en los registros."""
-    results = search_modules(query=q, registry_name=registry, category=category)
-    return [
-        ModuleSearchResult(
-            name=r["name"],
-            description=r["description"],
-            source=r["source"],
-            version=r["version"],
-            registry=r["registry"],
-        )
-        for r in results
-    ]
-
-
-@router.get("/downloads")
-def list_downloads(request, limit: int = 20):
-    """Lista descargas recientes de módulos."""
-    downloads = ModuleDownload.objects.all()[:limit]
-    return [
-        {
-            "module_name": d.module_name,
-            "version": d.version,
-            "status": d.status,
-            "downloaded_at": str(d.downloaded_at),
-            "error": d.error_message,
-        }
-        for d in downloads
-    ]
+# ─── Helper para capturar output de call_command ──────────────────────
+class StdoutCapture:
+    def write(self, msg):
+        pass
+    def flush(self):
+        pass
