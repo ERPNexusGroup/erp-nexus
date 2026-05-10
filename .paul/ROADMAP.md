@@ -26,42 +26,39 @@
 
 **Objective:** Integrar módulos esenciales en core (no plugins).
 
-**Phases:**
-- **Phase 0.6.1** — Hybrid Architecture definida ✅
-- **Phase 0.6.2** — facturacion_ec → apps/facturacion ✅
-- **Phase 0.6.3** — Eliminar demo modules ✅
-- **Phase 0.6.4** — Clean core settings ✅
-- **Phase 0.6.5** — Crear apps/inventory ✅
-- **Phase 0.6.6** — Crear sales, purchases, notifications, print_manager ✅
-- **Phase 0.6.7** — Docs actualizadas ✅
-- **Phase 0.6.8** — Graph rebuild ✅
-- **Phase 0.6.9** — Validation ✅
+**Phases (9 tasks):**
 
-**Outcome:** ERP Nexus funcional out-of-the-box con:
-- Facturación SRI ✅
-- Inventario ✅
-- Ventas ✅
-- Compras ✅
-- Notificaciones ✅
-- Print Manager ✅
+| Phase | Descripción | Estado |
+|-------|-------------|--------|
+| 0.6.1 | Definir arquitectura híbrida | ✅ |
+| 0.6.2 | Mover `facturacion_ec/` → `apps/facturacion/` | ✅ |
+| 0.6.3 | Eliminar módulos demo | ✅ |
+| 0.6.4 | Clean core settings | ✅ |
+| 0.6.5 | Crear `apps/inventory/` | ✅ |
+| 0.6.6 | Crear sales, purchases, notifications, print_manager | ✅ |
+| 0.6.7 | Update documentation | ✅ |
+| 0.6.8 | Rebuild graph + finalize state | ✅ |
+| 0.6.9 | Validation | ✅ |
+
+**Outcome:** ERP Nexus funcional out-of-the-box con 6 business modules.
 
 **Total:** 17 Django apps (11 core + 6 essential)
 
 ---
 
-### **M2 — Marketplace & Plugin System** 📋 PLANNED
+### **M2 — Marketplace & Plugin System** ✅ COMPLETED
 **Target:** Semana 4-5
-**Status:** ⏳ Next Up
+**Status:** ✅ Done (2026-05-10)
 
-**Objective:** Sistema de marketplace para módulos opcionales.
+**Objective:** Sistema de marketplace funcional para instalar módulos.
 
 **Phases:**
-- **Phase 1.1** — Marketplace Foundation (catalog, install/uninstall) — ⬜ PLAN
-- **Phase 1.2** — Admin UI + REST API — ⬜ PLAN
-- **Phase 1.3** — GitHub auto-discovery — ⬜ PLAN
-- **Phase 1.4** — Version management + dependencies — ⬜ PLAN
+- **Phase 1.1** — Marketplace Foundation (catalog, install/uninstall, API, Admin UI) — ✅ DONE
+- **Phase 1.2** — Marketplace UI + License management — ⬜ PLAN
+- **Phase 1.3** — GitHub auto-discovery + sync — ⬜ PLAN
+- **Phase 1.4** — Version management + dependencies solver — ⬜ PLAN
 
-**Success:** Admin puede instalar `hr`, `crm`, `accounting_adv` desde GitHub con un click.
+**Success:** Admin puede instalar `hr`, `crm`, `project_mgmt` desde GitHub con un click.
 
 ---
 
@@ -100,9 +97,9 @@
 
 ## 📊 Current Sprint
 
-**Sprint:** M1 (Hybrid Restructure) — COMPLETADO ✅
+**Sprint:** M2 (Marketplace Foundation 1.1) — ✅ COMPLETADO
 
-**Upcoming Sprint:** M2 (Marketplace) — Inicio inmediato
+**Upcoming Sprint:** M2 Phase 1.2 — Marketplace UI + License Management
 
 ---
 
@@ -115,6 +112,6 @@
 
 ---
 
-**Last milestone completion:** M0, M1 ✅
-**Current milestone:** M2 (Marketplace) — NEXT
+**Last milestone completion:** M0, M1, M2-1.1 ✅
+**Current milestone:** M2 Phase 1.2 — NEXT
 **Estimated velocity:** 2-3 phases/semana

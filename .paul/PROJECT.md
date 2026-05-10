@@ -1,7 +1,7 @@
 # ERP Nexus — PAUL Project Context
 
 **Why this project exists:**
-ERP Nexus es un ERP modular hybird para empresas ecuatorianas: core integrado (facturación, inventario, ventas, compras) + plugins opcionales (HR, CRM, etc.). Instalación única, funcionalidad completa out-of-the-box.
+ERP Nexus es un ERP modular hybrid para empresas ecuatorianas: core integrado (facturación, inventario, ventas, compras) + plugins opcionales (HR, CRM, etc.). Instalación única, funcionalidad completa out-of-the-box.
 
 **What problem it solves:**
 - ERP tradicional = monolito (todo o nada)
@@ -40,13 +40,21 @@ ERP Nexus es un ERP modular hybird para empresas ecuatorianas: core integrado (f
 
 **v0.6 (Hybrid Restructure) — COMPLETED ✅**
 - ✅ Core estable (11 framework apps)
-- ✅ 6 essential modules integrados (facturacion, inventory, sales, purchases, notifications, print_manager)
+- ✅ 6 essential modules integrados
 - ✅ Architecture híbrida validada
 - ✅ Documentación completa
 - ✅ Tests básicos por módulo
 
+**v1.1 (Marketplace Foundation) — COMPLETED ✅**
+- ✅ Marketplace con catálogo y metadata extendida
+- ✅ Comandos CLI: module_install / module_uninstall
+- ✅ Admin UI con botones de instalar/desinstalar
+- ✅ API REST (catalog, install, uninstall, installed)
+- ✅ modules_enabled.py dinámico + watcher
+- ✅ Validación básica de __meta__.py
+
 **v1.0.0 (12 semanas):**
-- ✅ Marketplace funcional (instalar/desinstalar plugins)
+- ✅ Marketplace funcional completo
 - ✅ Módulo HR oficial (primer plugin)
 - ✅ Docker + PostgreSQL + Redis production-ready
 - ✅ 80% test coverage core + essential
@@ -82,13 +90,14 @@ Tier 3 — Optional Plugins (futuro) — via Marketplace
 |-----------|-------|--------|
 | M0 — Core Foundation | 2026-05-10 | ✅ |
 | M1 — Hybrid Restructure (0.6) | 2026-05-10 | ✅ |
+| M2-1.1 — Marketplace Foundation | 2026-05-10 | ✅ |
 
 ### **Next Milestone**
 
-**M2 — Marketplace & Plugin System** (Phase 1.1 en PLAN)
+**M2 Phase 1.2 — Marketplace UI + License Management**
 - Inicio: 2026-05-10
-- Estimación: 2-3 semanas
-- Objetivo: Admin puede instalar `hr` desde GitHub con un click
+- Estimación: 1-2 semanas
+- Objetivo: Interfaz de catálogo más rica + gestión de licencias
 
 ---
 
@@ -113,56 +122,61 @@ Tier 3 — Optional Plugins (futuro) — via Marketplace
 - ARCHITECTURE_HYBRID.md
 - ADR/007, ADR/008 (comunicación channels)
 
-**Estado repo:** `erp-nexus/` (único repo necesario para MVP)
-
 ---
 
-## 🔄 Phase 1.1 — Próximo Sprint
+## 🔄 Phase 1.1 — Marketplace Foundation (COMPLETED)
 
-**Objetivo:** Marketplace para plugins opcionales.
+**Objetivo:** Sistema de Marketplace para plugins opcionales.
 
-**Tasks:**
-1. Extender ModuleCatalogItem (metadata completa)
-2. Auto-discover GitHub org (ERPNexus)
-3. Install/uninstall commands
-4. Dynamic module loading (modules_enabled.py reload)
-5. Admin UI (Marketplace tab)
-6. API endpoints
-7. Validation + security (__meta__.py schema)
+**Entregables:**
 
-**Duración estimada:** 9h
+| Task | Descripción | Estado |
+|------|-------------|--------|
+| 1.1.1 | Extender ModuleCatalogItem (metadata) | ✅ |
+| 1.1.2 | Auto-Discover GitHub Org (scan_github_org) | ✅ |
+| 1.1.3 | Install/Uninstall commands | ✅ |
+| 1.1.4 | Dynamic App Loading (watcher) | ✅ |
+| 1.1.5 | Admin UI (Marketplace tab) | ✅ |
+| 1.1.6 | API Endpoints | ✅ |
+| 1.1.7 | Validation & Security | ✅ (basic) |
+
+**Result:**
+- Admin puede instalar `hr` desde GitHub (cuando repo exista)
+- Validación de `__meta__.py` (AST-safe)
+- modules_enabled.py gestionado dinámicamente
+- 4 management commands: `scan_github_org`, `module_install`, `module_uninstall`, `refresh_catalog`
+- 5 REST endpoints (catalog, install, uninstall, installed, status)
 
 ---
 
 ## 📈 Metrics
 
-**Code Stats (Phase 0.6):**
-- New modules: 6
-- Moved: 1 (facturacion_ec → facturacion)
-- Deleted: 3 demo
-- Total apps: 17
-- Commits: 10+ (Phase 0.6)
-- Files changed: ~120
+**Code Stats (Phase 0.6 + 1.1):**
+- New modules: 6 essential + 4 marketplace models
+- New management commands: 3
+- New API endpoints: 5 (marketplace)
+- Total apps: 17 + 1 core_marketplace
+- Commits: 20+ (Phases 0.6 + 1.1)
+- Files changed: ~150
 
 **Quality:**
 - Django check: ✅ OK
-- Migrations apply: ✅ OK
+- Migrations apply: ✅ OK (2 migrations core_marketplace)
 - Server starts: ✅ OK
-- No lint errors (ruff, mypy pending)
+- No lint errors (pending)
 
 ---
 
-## 🎯 Decisiones Arquitectónicas (Phase 0.6)
+## 🎯 Decisiones Arquitectónicas
 
 | Decisión | Opción | Elegido | Razón |
 |----------|--------|---------|-------|
 | Essential modules position | Separate repo vs apps/ | ✅ `apps/` | ERP funcional sin fricción |
-| Permissions module | Nuevo vs core_permissions | ✅core_permissions` | Ya existe, extender |
-| Notifications module | Separede vs core_events | ✅ Separado | Event Bus ≠ delivery |
-| Print manager | En facturacion vs separate | ✅ Separate | Reutilizable por múltiples módulos |
-| API REST vs GraphQL | GraphQL early vs REST-first | ✅ REST-first | Simplicidad, GraphQL solo cuando frontend justifique |
-| gRPC | Sí vs No | ❌ No | Overkill para monorepo |
-| Event Bus use | Todo via eventos vs REST directo | ✅ Híbrido | Loose-coupling para side-effects |
+| Marketplace command | Management vs web UI first | ✅ CLI first | Automatización + API después |
+| modules_enabled.py | DB storage vs file | ✅ File | Simplicidad, Django standard |
+| Validation approach | Schema library vs AST | ✅ AST safe | Sin dependencias externas |
+| API authentication | Session vs Token | ✅ JWTAuth | REST API stateless |
+| Admin actions | Custom view vs admin_action | ✅ Custom view | Mejor UX, botones dedicados |
 
 ---
 
@@ -170,10 +184,10 @@ Tier 3 — Optional Plugins (futuro) — via Marketplace
 
 - Architecture: `ARCHITECTURE_HYBRID.md`
 - ADRs: `ADR/007-hybrid-architecture.md`, `ADR/008-communication-channels.md`
-- Phase Plan: `.paul/phases/00-foundation/00-01-REPO-RESTRUCTURE.md`
-- Next Phase: `.paul/phases/01-marketplace/01-01-MARKETPLACE-FOUNDATION.md`
+- Phase 0.6 Plan: `.paul/phases/00-foundation/00-01-REPO-RESTRUCTURE.md`
+- Phase 1.1 Plan: `.paul/phases/01-marketplace/01-01-MARKETPLACE-FOUNDATION.md`
 
 ---
 
-**Current Status:** Phase 0.6 ✅ COMPLETADO | Phase 1.1 📋 PLAN
-**Next Action:** Execute Phase 1.1 — Marketplace Foundation
+**Current Status:** Phase 0.6 ✅ | Phase 1.1 ✅ | Phase 1.2 📋 NEXT
+**Next Action:** Phase 1.2 — Marketplace UI Polish + License Management
