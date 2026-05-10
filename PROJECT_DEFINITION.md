@@ -1,303 +1,381 @@
 # 📋 Definición del Proyecto — ERP Nexus
 
-**Proyecto:** ERP Nexus Framework  
+**Proyecto:** ERP Nexus Core (Framework)  
 **Versión:** 1.0.0-alpha  
 **Fecha de creación:** 2026-05-10  
-**Estado:** En desarrollo activo — Fase 1  
+**Estado:** En desarrollo activo — Fase 0 (Restructure)  
 **Licencia:** MIT  
 **Mantenedor:** ERP Nexus Team  
 **URL:** `github.com/ERPNexus/erp-nexus`
 
 ---
 
-## 🎯 ¿Qué es ERP Nexus?
+## 🎯 ¿Qué es ERP Nexus Core?
 
-ERP Nexus es un **framework Django modular** para construir sistemas ERP desde bloques independientes.
+**ERP Nexus Core** es el **framework base** sobre el cual se construyen módulos ERP.
 
-### **Problema que resuelve:**
-Los ERP tradicionales son monolíticos: todo el código en un solo repo, despliegue conjunto, imposible elegir módulos. ERP Nexus separa el **core framework** de los **módulos de negocio**, permitiendo:
-- Instalar solo lo que necesitas
-- Actualizar módulos independientemente
-- Crear módulos custom sin tocar el core
-- Marketplace de módulos (gratuitos + de pago)
-
-### **Analogía:**
-- **ERP Nexus Core** → WordPress (framework)
-- **Módulos** → Plugins de WordPress
-- **Marketplace** → Directorio de plugins
-- **Cliente** → Instala solo Facturación + Inventario (no necesita HR ni CRM)
+NO es un ERP completo. Es el **andamiaje** que permite:
+- Multi-tenant (múltiples empresas en una instancia)
+- Sistema de permisos granulares
+- Marketplace engine (descargar/activar módulos)
+- Event Bus (comunicación entre módulos)
+- API REST (Django Ninja)
+- Admin panel (Jazzmin)
 
 ---
 
-## 🏗️ Arquitectura de Alto Nivel
+## 🏗️ Arquitectura Multi-Repo
+
+### **Principio: Un módulo = Un repositorio**
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        CLIENTE (Empresa)                         │
-│  Usa: Facturación + Inventario + Ventas (solo lo que necesita)  │
-└─────────────────────────────┬───────────────────────────────────┘
-                              │
-┌─────────────────────────────▼───────────────────────────────────┐
-│               ERP NEXUS CORE (Framework)                         │
-│  ┌───────────────────────────────────────────────────────────┐  │
-│  │ Django + Config + Multi-tenant + Marketplace Engine     │  │
-│  └───────────────────────────────────────────────────────────┘  │
-│                                                                  │
-│  ┌───────────────────────────────────────────────────────────┐  │
-│  │ Module Registry — Catálogo + Instalador                  │  │
-│  │  [facturacion_ec] [inventory] [sales] ...               │  │
-│  └───────────────────────────────────────────────────────────┘  │
-└─────────────────────────────┬───────────────────────────────────┘
-                              │
-         ┌────────────────────┼────────────────────┐
-         │                    │                    │
-┌────────▼────────┐  ┌────────▼────────┐  ┌────────▼────────┐
-│  MÓDULO A       │  │  MÓDULO B       │  │  MÓDULO C       │
-│  facturacion_ec │  │  inventory      │  │  sales          │
-│                 │  │                 │  │                 │
-│  (Git repo)     │  │  (Git repo)     │  │  (Git repo)     │
-└──────────────────┘  └──────────────────┘  └──────────────────┘
+github.com/ERPNexus/
+├── erp-nexus/              ← ESTE REPO (Core framework only)
+│   ├── apps/               # 11 Django core apps
+│   ├── erp_nexus/          # Settings, URLs, config
+│   ├── docker/
+│   ├── pyproject.toml
+│   └── .paul/              # PAUL para core development
+│
+├── facturacion_ec/         ← Módulo independiente (OTRO repo)
+│   ├── facturacion_ec/
+│   │   ├── models.py
+│   │   ├── api/
+│   │   ├── services/
+│   │   └── __meta__.py
+│   ├── tests/
+│   ├── README.md
+│   └── .paul/              # PAUL para módulo
+│
+├── inventory/              ← Futuro módulo
+├── sales/                  ← Futuro módulo
+├── accounting/             ← Futuro módulo
+│
+├── sdk-nexus/              ← SDK para crear módulos
+├── nexus-cli/              ← CLI tool (nexus command)
+└── nexus-marketplace/      ← Marketplace server (catálogo)
 ```
 
 ---
 
-## 🎯 Objetivos del Proyecto
+## 🎯 Objetivos del Core
 
-### **Primario:**
-1. **Framework modular** — Core mínimo, módulos opcionales
-2. **Multi-tenant nativo** — Una instancia, múltiples empresas
-3. **Marketplace integrado** — Descargar/activar módulos desde UI
-4. **Extensible por terceros** — Cualquier dev puede crear módulos
+### **✅ SÍ incluye (Core):**
+1. **Django base** — Config, middleware, settings
+2. **Core apps (11):**
+   - `core_users` — Usuarios + perfiles
+   - `core_companies` — Multi-company (Company model)
+   - `core_groups` — Grupos y roles
+   - `core_permissions` — Permisos granulares
+   - `core_marketplace` — Catálogo + ModuleRegistry
+   - `core_events` — Event Bus (pub/sub)
+   - `core_api` — API layer (Django Ninja)
+   - `core_dashboard` — Dashboard admin
+   - `core_audit` — Audit log
+   - `core_stats` — Métricas
+   - `core_config` — Configuraciones
 
-### **Secundarios:**
-5. **API-first** — Todo exponible vía REST/GraphQL
-6. **Seguro por defecto** — Validación company, permisos granulares
-7. **Escalable** — 100+ empresas en un solo servidor
-8. **Documentado** — Cada módulo tiene su README + API docs
+3. **Marketplace Engine:**
+   - ModuleRegistry (DB de módulos instalados)
+   - ModuleInstaller (descarga/instala módulos)
+   - ModuleValidator (valida estructura _meta_)
+   - Activación/desactivación de módulos
 
----
+4. **Infraestructura:**
+   - Docker + docker-compose
+   - CI/CD base (GitHub Actions)
+   - Graphify integration (knowledge graph)
+   - Documentation framework
 
-## 📉 Fuera del Alcance (v1.0)
-
-❌ **NO incluye:**
-- Frontend SPA (React/Vue) — Solo admin Django (Jazzmin)
-- Módulos: CRM, HR, Manufacturing, Projects
-- Mobile app nativa
-- Integraciones bancarias/pasarelas
-- AI/ML features (post v1.0)
-- Multi-idioma (i18n) — Español únicamente (v1.x)
-
----
-
-## 👥 Público Objetivo
-
-| Segmento | Necesidad | Módulos que usará |
-|----------|-----------|-------------------|
-| **Empresas Ecuador** | Facturación electrónica SRI | facturacion_ec, inventory, sales |
-| **Startups latinoamérica** | ERP liviano | Core + 2-3 módulos |
-| **Desarrolladores** | Extender ERP | Crear módulos custom |
-| **Consultores** | Implementar para clientes | Varios módulos + customización |
-
----
-
-## 🏆 Visión a Largo Plazo
-
-**Año 1 (v1.x):**
-- Core estable + 5 módulos oficiales
-- 100 instalaciones activas
-- Marketplace con 10+ módulos community
-
-**Año 2 (v2.x):**
-- Frontend React (SPA)
-- Mobile app (React Native)
-- Integración bancaria automática
-- AI para预测 compras
-
-**Año 3 (v3.x):**
-- 1000+ empresas usando ERP Nexus
-- Marketplace de módulos de pago
-- Certified partner program
-- SaaS multi-tenant hosting propio
+### **❌ NO incluye (Core):**
+1. **Módulos de negocio** — facturacion_ec, inventory, sales, etc.
+2. **Certificados SRI** — Cada módulo los maneja
+3. **Lógica específica de país** — Cada módulo local
+4. **Frontend SPA** — v2.0 feature
+5. ** SDK / CLI** — Repos separados
 
 ---
 
-## 💰 Modelo de Negocio
-
-### **Open Core:**
-- **Core ERP Nexus:** MIT (gratuito, open source)
-- **Módulos oficiales:**
-  - `facturacion_ec` — Freemium (10 facturas/mes gratis)
-  - `inventory` — Gratis (sin límite)
-  - `sales` — Gratis (sin límite)
-  - `accounting` — De pago ($29/mes)
-
-### **Marketplace:**
-- Módulos community → gratuitos
-- Módulos certified → revisados por ERP Nexus
-- Módulos enterprise → con soporte SLA
-
----
-
-## 🛠️ Stack Tecnológico
-
-| Capa | Tecnología | Razón |
-|------|------------|-------|
-| **Backend** | Django 5.x + Python 3.12 | Madurez, ecosistema, ORM |
-| **API** | Django Ninja | FastAPI-like, OpenAPI autogenerado |
-| **DB** | PostgreSQL 15+ | ACID, JSONField, GIS opcional |
-| **Cache** | Redis | Sesiones, cache queries |
-| **Colas** | Celery + Redis | Tareas asíncronas (facturación masiva) |
-| **Auth** | Django JWT (simplejwt) | Tokens stateless |
-| **Admin** | Jazzmin | Theme moderno, responsive |
-| **Docs** | MkDocs / OpenAPI Swagger | Documentación viva |
-| **Tests** | pytest + pytest-django | Cobertura >80% |
-| **CI/CD** | GitHub Actions | Automatización tests + deploy |
-| **Docker** | Docker + docker-compose | Deploy multi-service |
-| **Monitoring** | Sentry (opcional) | Error tracking |
-
----
-
-## 📁 Estructura Final del Repo
+## 📦 Estructura Final (Core únicamente)
 
 ```
-erp-nexus/                    # ERP Nexus Core
-├── apps/                     # 11 core apps
-│   ├── core_auth/
+erp-nexus/                    # ERP Nexus Core (este repo)
+├── apps/                     # 11 core Django apps
+│   ├── core_auth/           # (renamed from core_users)
 │   ├── core_companies/
+│   ├── core_groups/
+│   ├── core_permissions/
 │   ├── core_marketplace/
-│   └── ...
+│   ├── core_events/
+│   ├── core_api/
+│   ├── core_dashboard/
+│   ├── core_audit/
+│   ├── core_stats/
+│   └── core_config/
+│
 ├── erp_nexus/
 │   ├── __init__.py
-│   ├── settings.py           # Config centralizada
-│   ├── urls.py               # URLs core
+│   ├── settings/
+│   │   ├── base.py          # Base settings (todos los módulos)
+│   │   ├── development.py
+│   │   └── production.py
+│   ├── urls.py              # URLs core + API
 │   ├── wsgi.py
 │   ├── asgi.py
-│   └── modules_enabled.py    # AUTO-GENERADO (no editar)
-├── modules/                  # ⚠️  SOLO development: módulos locales
-│   └── facturacion_ec/       # (en prod se instalan desde marketplace)
-├── docs/                     # Documentación del core
-├── tests/                    # Tests core (marketplace, middleware)
-├── scripts/                  # Scripts util (install_module, etc.)
+│   └── modules_registry.py  # Dinámico (DB-based), NO modules_enabled.py
+│
 ├── docker/
 │   ├── Dockerfile
-│   └── docker-compose.yml
-├── .github/
-│   └── workflows/
-│       └── ci.yml            # Tests + lint en cada PR
-├── pyproject.toml            # Dependencias Python (uv)
-├── requirements.txt          # Para producción
-├── manage.py
-├── README.md                 # Página principal
-├── ARCHITECTURE.md           # Diseño técnico
-├── REQUIREMENTS.md           # Requisitos funcionales/no-funcionales
-├── CODING_STANDARDS.md       # Reglas de código
-├── MODULE_SPEC.md            # Cómo construir módulos
-├── WORK_PLAN.md              # Roadmap temporal
-└── LICENSE (MIT)
+│   └── docker-compose.yml   # Core + PostgreSQL + Redis
+│
+├── docs/                    # Documentación del core
+├── tests/                   # Tests del core
+├── scripts/                 # Scripts de mantenimiento
+│
+├── pyproject.toml           # Dependencias core
+├── requirements.txt
+├── Makefile
+├── README.md                # Solo core documentation
+├── ARCHITECTURE.md
+├── CONTRIBUTING.md
+├── WORK_PLAN.md             # Roadmap del core
+└── .paul/                   # PAUL para core development
 ```
 
 ---
 
-## 🎓 Cómo Empezar a Desarrollar
+## 🔄 Flujo de Trabajo Multi-Repo
 
-### **Setup en 5 minutos:**
+### **1. Desarrollar Core (este repo)**
 ```bash
-# 1. Clone el repo
-git clone https://github.com/ERPNexus/erp-nexus.git
-cd erp-nexus
-
-# 2. Instalar dependencias
-uv sync
-uv pip install -e .
-
-# 3. Aplicar migraciones
-uv run python manage.py migrate
-
-# 4. Crear superusuario
-uv run python manage.py createsuperuser
-
-# 5. Levantar servidor
-uv run python manage.py runserver
-# → http://localhost:8000/admin
+cd repos/erp-nexus/
+uv run pytest apps/core_marketplace/tests/
+uv run python manage.py check
+# Commits a erp-nexus repo
 ```
 
-### **Crear un módulo nuevo:**
+### **2. Desarrollar Módulo (facturacion_ec repo)**
 ```bash
-# Usar cookiecutter template
-uv run python scripts/create_module.py mi_modulo
+cd repos/facturacion_ec/
+# Desarrollar independientemente
+# Depende de erp-nexus core (requirements: erp-nexus @ git+https://...)
+```
 
-# O manualmente: copiar modules/ejemplo_modulo/ → modules/mi_modulo/
-# Editar __meta__.py, models.py, etc.
-# Registrar en marketplace/admin
+### **3. Instalar Módulo en Core**
+```bash
+# En ERP Nexus core ejecutar:
+uv run python manage.py install_module --git https://github.com/ERPNexus/facturacion_ec.git
+
+# El Marketplace:
+# 1. Lee __meta__.py del módulo
+# 2. Valida dependencies (core version)
+# 3. Clona a ~/.erp-nexus/modules/facturacion_ec/
+# 4. Registra en DB (Module model)
+# 5. Añade a INSTALLED_APPS dinámicamente
+# 6. Ejecuta migrate
 ```
 
 ---
 
-## 📚 Documentación
+## 📊 Dependencias entre Repos
 
-| Documento | Propósito | Ubicación |
-|-----------|-----------|-----------|
-| `README.md` | Introducción + quickstart | Raíz |
-| `ARCHITECTURE.md` | Diseño técnico, diagramas | Raíz |
-| `REQUIREMENTS.md` | Requisitos funcionales/no-funcionales | Raíz |
-| `CODING_STANDARDS.md` | Reglas de codificación | Raíz |
-| `MODULE_SPEC.md` | Cómo crear módulos | Raíz |
-| `WORK_PLAN.md` | Roadmap temporal | Raíz |
-| `docs/` | Guías detalladas | `/docs/` |
-| `API Reference` | Documentación interactiva | `/api/v1/docs` |
-
----
-
-## 🤝 Cómo Contribuir
-
-1. **Fork** el repo
-2. **Crear branch** (`feat/mi-feature` o `fix/issue-123`)
-3. **Seguir CODING_STANDARDS.md**
-4. **Tests** — Añadir tests para cambios
-5. **Commit** — Conventional Commits
-6. **PR** — Describir cambios + referencia issue
-
-**Ver:** `CONTRIBUTING.md` (próximo a crearse)
-
----
-
-## 📄 Licencia
-
-MIT License — Ver `LICENSE`
-
+### **Core → No depende de módulos**
 ```
-Copyright (c) 2026 ERP Nexus Team
+erp-nexus (core)
+├── Django (pip)
+├── PostgreSQL driver (psycopg)
+├── Redis (django-redis)
+└── NO dependencias de modules/*
+```
 
-Se concede permiso, libre de cargos, a cualquier persona que obtenga una copia
-de este software y de la documentación asociada (el "Software"), a utilizar
-el Software sin restricción, incluyendo sin limitación los derechos a usar,
-copiar, modificar, fusionar, publicar, distribuir, sublicenciar, y/o vender
-copias del Software...
+### **Módulo → Depende de Core**
+```
+facturacion_ec/
+├── Depends: erp-nexus >= 0.5.0
+├── Uses: from apps.core_companies.models import Company
+├── Uses: from apps.core_events.bus import EventBus
+└── NO modifica core
+```
+
+**En requirements.txt del módulo:**
+```txt
+erp-nexus @ git+https://github.com/ERPNexus/erp-nexus.git@v0.5.0
+django-ninja
+lxml
+cryptography
 ```
 
 ---
 
-## 📞 Soporte y Contacto
+## 🚀 Marketplace Design
 
-- **Issues:** `github.com/ERPNexus/erp-nexus/issues`
-- **Discussions:** `github.com/ERPNexus/erp-nexus/discussions`
-- **Email:** dev@erpnexus.ec
-- **Website:** `erpnexus.ec` (futuro)
-- **Telegram:** @erpnexus_support (futuro)
+### **Marketplace como Catálogo (DB-based)**
+
+```python
+# apps/core_marketplace/models.py
+class ModuleCatalogItem(models.Model):
+    """Catálogo de módulos disponibles (no instalados)."""
+    technical_name = models.CharField(unique=True)
+    display_name = models.CharField()
+    description = models.TextField()
+    repository_url = models.URLField()  # GitHub repo
+    latest_version = models.CharField()
+    is_official = models.BooleanField()
+    author = models.CharField()
+    download_count = models.IntegerField(default=0)
+    # metadata: dependencies, settings_form, screenshots
+
+class Module(models.Model):
+    """Módulo instalado en esta instancia."""
+    catalog_item = models.ForeignKey(ModuleCatalogItem)
+    version = models.CharField()
+    installed_at = models.DateTimeField()
+    enabled = models.BooleanField(default=True)
+    module_path = models.CharField()  # ~/.erp-nexus/modules/{name}/
+```
+
+**Flujo:**
+1. Admin ve catálogo en `/admin/core_marketplace/`
+2. Click "Install" → `ModuleRegistry.install_from_git(url)`
+3. Clona a `~/.erp-nexus/modules/{name}/`
+4. Valida `__meta__.py`
+5. Registra en DB → `Module.objects.create(...)`
+6. Añade a `INSTALLED_APPS` runtime
+7. Ejecuta `migrate {module}`
 
 ---
 
-## 🎯 Próximos Pasos Inmediatos
+## 🔄 Workflows
 
-1. ✅ Documentación base creada (este documento + architecture, coding, module spec)
-2. 🔄 **AHORA:** Re-estructurar código existente según arquitectura definida
-   - Mover `facturacion_ec` a repo externo
-   - Dejar en `erp-nexus/` solo core
-   - Implementar marketplace engine
-3. 📝 Escribir `CONTRIBUTING.md`
-4. 🐳 Crear `docker-compose.yml` completo
-5. 🚀 Deploy demo en Railway/Render
+### **Core Development:**
+```bash
+# 1. Cambios en core (erp-nexus repo)
+git commit -m "feat(core_marketplace): add module auto-update"
+
+# 2. Tag release
+git tag -a v0.5.0 -m "Core 0.5.0"
+git push origin v0.5.0
+
+# 3. Módulos dependen de "erp-nexus >= 0.5.0"
+```
+
+### **Module Development:**
+```bash
+# 1. Crear módulo (facturacion_ec repo independiente)
+sdk-nexus create facturacion_ec --type=module --country=EC
+
+# 2. Desarrollar módulo (en su propio repo)
+cd repos/facturacion_ec/
+git commit -m "feat(xml): add XSD validation"
+
+# 3. Tag release
+git tag -a v0.1.0 -m "First release"
+git push origin v0.1.0
+
+# 4. Publicar en Marketplace
+# (auto-detecta desde GitHub releases o manual upload)
+```
+
+### **Installation (User):**
+```bash
+# En ERP Nexus core instalado:
+python manage.py install_module --git https://github.com/ERPNexus/facturacion_ec.git
+
+# O desde catálogo:
+# Admin → Marketplace → facturacion_ec → Install
+```
 
 ---
 
-**¿Listo para empezar?** → Ver `WORK_PLAN.md` para roadmap detallado.
+## 📁 Estructura de Directorios Final (Workspace Local)
+
+```
+/home/wcun/.openclaw/workspace/
+├── repos/
+│   ├── erp-nexus/              # CORE (este repo actual)
+│   ├── facturacion_ec/         # Módulo Ecuador (próximamente)
+│   ├── inventory/              # Futuro
+│   ├── sales/                  # Futuro
+│   ├── sdk-nexus/              # SDK (crear)
+│   ├── nexus-cli/              # CLI (crear)
+│   └── nexus-marketplace/      # Marketplace server (crear)
+│
+├── .erp-nexus/                 # Datos de instancia ERP (en producción)
+│   ├── modules/                # Módulos instalados (symlinks/clones)
+│   ├── media/
+│   └── logs/
+│
+├── career-ops/                 # Otro proyecto (no ERP Nexus)
+└── credit-evaluation/          # Proyecto completado
+```
+
+---
+
+## 🎯 Ventajas de Multi-Repo
+
+| Ventaja | Explicación |
+|---------|-------------|
+| **Separación clara** | Core nunca contiene módulos de negocio |
+| **Versionado independiente** | facturacion_ec v0.1.0 → v0.2.0 sin tocar core |
+| **Contribuciones aisladas** | Devs de facturacion_ec no necesitan/core acceso |
+| **Testing aislado** | Tests de módulo no corren en CI de core |
+| **Deploy selectivo** | Actualizar solo módulo que cambió |
+| **Licenciamiento diferenciado** | Core MIT, módulos pueden ser paid |
+
+---
+
+## ⚠️ Complejidades y Soluciones
+
+| Problema | Solución |
+|----------|----------|
+| **Dependencia circular** | Core NO depende de módulos. Módulos dependen de core API estable |
+| **Core cambio rompe módulos** | SemVer estricto: core v0.x → breaking changes → v1.0 |
+| **CI/CD múltiple** | GitHub Actions matrix: test contra múltiples core versions |
+| **Developer setup** | `sdk-nexus bootstrap` — clona todos los repos necesarios |
+| **Marketplace discovery** | DB central (nexus-marketplace) con catalog de todos los módulos |
+
+---
+
+## 📈 Roadmap de Repos
+
+### **Fase Actual (0.5.0) — Core Foundation**
+- [x] Core apps 11
+- [x] Multi-tenant middleware
+- [x] Marketplace engine básico
+- [ ] **Extraer facturacion_ec** → repo separado
+- [ ] Eliminar módulos demo del core
+
+### **Fase 0.6.0 — Multi-Repo Structure**
+- [ ] Crear `facturacion_ec/` repo
+- [ ] Crear `sdk-nexus/` repo
+- [ ] Crear `nexus-cli/` repo
+- [ ] Crear `nexus-marketplace/` repo
+- [ ] Documentar multi-repo en `MULTI_REPO_STRUCTURE.md`
+
+### **Fase 1.0.0 — Core Stable**
+- [ ] Core sin módulos de ejemplo
+- [ ] ModuleRegistry completo
+- [ ] Marketplace UI funcional
+- [ ] Mínimo 2 módulos oficiales instalables (facturacion_ec + inventory)
+
+---
+
+## 📚 Documentación Relacionada
+
+- `ARCHITECTURE.md` — Diseño técnico del core
+- `MODULE_SPEC.md` — Cómo construir módulos (para facturacion_ec repo)
+- `DEVELOPMENT.md` — Desarrollo del core
+- `MULTI_REPO_STRUCTURE.md` — Guía completa de organización multi-repo (próximo)
+- `MARKETPLACE_GUIDE.md` — Cómo publicar módulos (próximo)
+
+---
+
+## 🔗 Referencias Externas
+
+- **Git Subtree vs Submodule:** https://www.atlassian.com/git/tutorials/git-subtree
+- **Django App Modularization:** https://docs.djangoproject.com/en/dev/ref/applications/
+- **Plugin Architectures:** https://en.wikipedia.org/wiki/Plugin_architecture
+
+---
+
+**Nota:** Este documento define el **alcance del core ERP Nexus**. Cada módulo (facturacion_ec, inventory, sales) tiene su propio repositorio y documentación independiente.

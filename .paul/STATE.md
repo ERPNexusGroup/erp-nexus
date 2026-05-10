@@ -1,7 +1,7 @@
-# PAUL State — ERP Nexus
+# PAUL State — ERP Nexus Core
 
-**Project:** ERP Nexus Framework  
-**Phase:** 1 — facturacion_ec Completion  
+**Project:** ERP Nexus Core (Framework)  
+**Phase:** 0.6 — Repository Restructure  
 **Loop Position:** PLAN → APPLY → UNIFY  
 **Started:** 2026-05-10  
 **Last Updated:** 2026-05-10
@@ -17,114 +17,220 @@
 └─────────────────────────────────────────────┘
 ```
 
-**Current Phase:** FASE 1 — Módulo Demostración: facturacion_ec (Semanas 2-4)  
-**Current Position:** PLAN (defining tasks for Week 3)  
-**Next Action:** Create PLAN.md for Phase 1 (facturacion_ec services & API)
+**Current Phase:** 0.6 — Repository Restructure (Multi-Repo Separation)  
+**Current Position:** PLAN (Phase 0.6 defined, awaiting approval)  
+**Next Action:** Execute PLAN 0.6.2 — Extract facturacion_ec to separate repo
 
 ---
 
-## 🎯 Project Context
+## 🎯 Project Context — SCOPE CLARIFICATION
 
-**ERP Nexus** — ERP modular open-source (Django) con arquitectura de marketplace de módulos.
+### **IMPORTANTE: Qué es ERP Nexus Core**
 
-**Core Value:**
-- Core mínimo (11 apps Django)
-- Módulos independientes (instalables/desinstalables)
-- Multi-tenant nativo
-- Event Bus para desacoplamiento
+**ERP Nexus Core** = **Framework solamente**. NO incluye módulos de negocio.
 
-**Graphify Insights:**
-- 1,875 nodos · 2,300 edges · 209 comunidades
-- God Nodes: `JWTAuth`, `Product`, `ModuleCatalogItem`, `Invoice`, `EventBus`
-- 744 nodos aislados (documentación suelta)
-- Alta cohesión en módulos core y facturacion_ec
+**SCOPE DEL CORE:**
+✅ 11 Django core apps (auth, companies, marketplace, events, api, etc.)  
+✅ Multi-tenant middleware  
+✅ ModuleRegistry + ModuleInstaller  
+✅ Event Bus (comunicación entre módulos)  
+✅ REST API layer (Django Ninja)  
+✅ Admin panel + Dashboard  
+✅ Docker + deployment tooling  
+✅ Documentation framework  
 
-**Key Decisions (from ADRs):**
-1. ADR-001: Monolito modular (Django apps dinámicas)
-2. ADR-002: Event Bus para comunicación entre módulos
-3. ADR-003: Multi-company via CompanyId column
-4. ADR-004: Marketplace installation flow
-5. ADR-005: Django Ninja para API
-
----
-
-## 📋 Current Work
-
-### **Phase 1: facturacion_ec Module Completion** (Semanas 2-4) 🔥
-
-**Objective:** Tener módulo `facturacion_ec` completo y funcional como referencia para otros módulos.
-
-**Deliverables:**
-- ✅ Models (10 modelos) + Admin + Migrations
-- ✅ API endpoints básicos (7 endpoints)
-- ⬜ Servicios core:
-  - XML Generator con validación XSD
-  - Firma digital (.p12 certificado)
-  - Cliente SRI (SOAP API)
-  - Validator (RUC, cédula, totals)
-- ⬜ Tests unitarios (70% cobertura)
-- ⬜ Integración end-to-end (crear → XML → firma → envío)
-- ⬜ Documentación API (Swagger completo)
-
-**Current Status:**
-- Models: ✅ 100%
-- API endpoints: ✅ 70% (facturas, customers, products funcionando)
-- Services: ⬜ 20% (code_unique.py funcionando, falta XML, signature, SRI client)
-- Tests: ⬜ 10% (solo tests básicos)
-- Multi-company: ⬠ 50% (fixes aplicados, falta validar completo)
-
-**Blockers:**
-- 🔒 Certificado SRI no disponible (modo pruebas sin certificado funciona)
-- ⚠️ Tests de integración pendientes
+**OUT OF SCOPE (se van a otros repos):**
+❌ facturacion_ec → `github.com/ERPNexus/facturacion_ec`  
+❌ inventory → `github.com/ERPNexus/inventory` (futuro)  
+❌ sales → `github.com/ERPNexus/sales` (futuro)  
+❌ SDK/CLI/Marketplace server → repos separados
 
 ---
 
-## 🎯 Phase 1 Tasks (PLAN)
+## 📋 Arquitectura Multi-Repo (DECIDIDA)
 
-### Sprint 1 (Esta semana — Semana 3):
-1. **XML Generator** — Generar XML SRI válido contra XSD
-2. **Digital Signature** — Firma XML con certificado .p12
-3. **SRI Client** — Cliente SOAP para envío/recepción
-4. **Validator** — Validaciones de negocio (RUC, totals, formats)
-5. **Unit Tests** — Services tests (mocks de SRI)
+```
+Organización GitHub ERPNexus:
+┌──────────────────────────────────────────────────┐
+│  erp-nexus/           ← ESTE REPO (CORE)          │
+│  facturacion_ec/      ← MÓDULO (repo separado)    │
+│  inventory/           ← MÓDULO (repo separado)    │
+│  sales/               ← MÓDULO (repo separado)    │
+│  sdk-nexus/           ← SDK (repo separado)       │
+│  nexus-cli/           ← CLI (repo separado)       │
+│  nexus-marketplace/   ← Marketplace server        │
+└──────────────────────────────────────────────────┘
+```
 
-### Sprint 2 (Semana 4):
-6. **Integration** — Flujo completo factura → SRI
-7. **Refactor multi-company** — Asegurar aislamiento total
-8. **API documentation** — Swagger completo
-9. **Demo script** — Datos de prueba + demo walkthrough
-10. **Release v0.1.0** — Tag y documentación
+**Dependencias:**
+```
+facturacion_ec → erp-nexus >= 0.5.0
+inventory      → erp-nexus >= 0.6.0
+sales          → erp-nexus >= 0.7.0
+```
+
+**Marketplace flow:**
+1. Module developer publica módulo en GitHub
+2. Admin instala desde Marketplace: `manage.py install_module --git <url>`
+3. ModuleInstaller clona a `~/.erp-nexus/modules/{name}/`
+4. Core carga módulo dinámicamente
 
 ---
 
-## 📈 Metrics
+## 🎯 Phase 0.6 — Repository Restructure
 
-| Metric | Current | Target (End Phase 1) |
-|--------|---------|----------------------|
-| Code coverage | ~20% | >70% |
-| API endpoints working | 70% | 100% |
-| Service layer complete | 20% | 100% |
-| Documentation complete | 80% | 100% |
-| Graphify edges valid | 81% | 90% |
+**Objetivo:** Separar core de módulos. Dejar `erp-nexus/` como SOLO framework.
+
+### Tasks (9 tasks):
+
+| Task | Descripción | Estado | Estimación |
+|------|-------------|--------|------------|
+| 0.6.1 | Plan restructure | ✅ DONE | PLAN |
+| 0.6.2 | Extract facturacion_ec to separate repo | ⬜ Pending | 2h |
+| 0.6.3 | Remove demo modules (accounting_basic, etc.) | ⬜ Pending | 30min |
+| 0.6.4 | Update core settings (limpiar modules/) | ⬜ Pending | 1h |
+| 0.6.5 | Remove static modules_enabled.py | ⬜ Pending | 30min |
+| 0.6.6 | Reorganize workspace directory | ⬜ Pending | 1h |
+| 0.6.7 | Update documentation | ⬜ Pending | 2h |
+| 0.6.8 | Update PAUL for multi-repo | ⬜ Pending | 30min |
+| 0.6.9 | Validate everything works | ⬜ Pending | 1h |
+
+**Total estimado:** ~9 horas
 
 ---
 
-## 🔄 Loop History
+## 📊 State Before Phase 0.6
 
-| Date | Phase | Action | Notes |
-|------|-------|--------|-------|
-| 2026-05-10 | FASE 1 | PLAN (init) | Inicializando PAUL para ERP Nexus |
+```
+repos/erp-nexus/
+├── apps/                      # Core ✅
+├── modules/                   # ❌ Contiene módulos (mal)
+│   ├── facturacion_ec/        # Debería estar en repo separado
+│   ├── accounting_basic/      # Demo — eliminar
+│   └── inventory_basic/       # Demo — eliminar
+├── erp_nexus/modules_enabled.py  # ❌ Estático, debería ser dinámico
+└── manage.py                  # Core ✅
+```
+
+**Problema:** Core y módulos mezclados en un solo repo → No hay true modularity.
+
+---
+
+## 📈 State After Phase 0.6 (OBJETIVO)
+
+```
+repos/
+├── erp-nexus/                 # CORE ONLY
+│   ├── apps/                  # 11 core apps
+│   ├── erp_nexus/
+│   ├── docker/
+│   ├── pyproject.toml
+│   ├── .paul/                 # PAUL para core
+│   └── README.md              # Solo core docs
+│
+├── facturacion_ec/            # MÓDULO INDEPENDIENTE (nuevo repo)
+│   ├── facturacion_ec/
+│   ├── tests/
+│   ├── README.md              # Docs del módulo
+│   └── .paul/                 # PAUL para módulo (futuro)
+│
+└── (otros módulos futuros)
+```
+
+**Resultado:**
+- ✅ Core limpio, sin código de módulos
+- ✅ Cada módulo en su repo
+- ✅ Marketplace puede instalar desde Git URLs
+- ✅ Versionado independiente
+
+---
+
+## 🔄 Dependencies and Blockers
+
+### **Dependencies:**
+- Phase 0.6 NO depende de nada (foundation)
+- Phase 1.1 (services) depende de Phase 0.6 completado
+
+### **Blockers:**
+- ❌ No borrar facturacion_ec hasta tener repo separado (Task 0.6.2 first)
+- ❌ No modificar settings hasta limpiar imports (Task 0.6.4)
+- ❌ No eliminar modules_enabled.py hasta tener dynamic loader (Task 0.6.5)
+
+---
+
+## 📋 Acceptance Criteria (Summary)
+
+- [ ] `repos/facturacion_ec/` existe como directorio Git independiente
+- [ ] `repos/erp-nexus/modules/` NO existe (vacío o eliminado)
+- [ ] Demo modules removidos (`accounting_basic`, `inventory_basic`, `demo_flow`)
+- [ ] `modules_enabled.py` eliminado o convertido a dinámico
+- [ ] Ningún `from modules.` import en core apps
+- [ ] Tests core pasan sin modules/
+- [ ] Documentación actualizada (MULTI_REPO_STRUCTURE.md)
+- [ ] PAUL STATE actualizado (scope clarificado)
+
+---
+
+## 🗺️ Roadmap Impact
+
+**Esta phase reestructura el proyecto completo.**
+
+**Antes (monorepo):**
+```
+erp-nexus/
+├── core + facturacion_ec + accounting_basic + ...
+```
+
+**Después (multi-repo):**
+```
+repos/
+├── erp-nexus/        (core framework)
+├── facturacion_ec/   (módulo Ecuador)
+├── inventory/        (futuro)
+└── sdk-nexus/        (futuro)
+```
+
+**WORK_PLAN.md** actualizado:
+- M0: Core Foundation ✅ (ya)
+- M0.5: Graph Unify ⏸️ (pausado hasta restructure)
+- M1: facturacion_ec complete → **AHORA ES REPO SEPARADO**
+- M2: Marketplace engine → **EN CORE**
+- M3: inventory module → **REPO SEPARADO**
 
 ---
 
 ## 📝 Notes
 
-- Graphify ya generó el grafo — útil para navigation y understanding
-- facturacion_ec necesita refactor para CompanyBoundModel (actualmente tiene company FK pero no hereda de base)
-- SRI integration requiere certificado de pruebas (disponible en SRI portal)
-- Next después de Phase 1: Extraer facturacion_ec a repo separado (FASE 2)
+**Why multi-repo now?**
+Porque el usuario explicitó: "el modulo de facturacion_ec debe ser una extension del modulo de facturacion_core y debe estar aparte en otro repositorio".
+
+**Riesgo principal:**
+- Pérdida de historial git de facturacion_ec si hacemos copy (no subtree)
+- Solución: Usar `git subtree split` para mantener historial
+
+**Git strategy:**
+```bash
+# En erp-nexus:
+git subtree split --prefix=modules/facturacion_ec -b facturacion_ec-split
+
+# Crear nuevo repo
+mkdir ../facturacion_ec
+cd ../facturacion_ec
+git init
+git pull /home/wcun/.openclaw/workspace/repos/erp-nexus facturacion_ec-split
+# Ahora tiene historial completo
+```
 
 ---
 
-**PAUL State file:** Created  
-**Status:** Ready for PLAN → APPLY → UNIFY cycle
+## 🔗 References
+
+- PAUL Phase: `00-01-REPO-RESTRUCTURE.md`
+- Graph Health: `GRAPH_HEALTH.md` (validator integration pendiente)
+- Module Spec: `MODULE_SPEC.md` (para facturacion_ec repo)
+- Multi-Repo Guide: `MULTI_REPO_STRUCTURE.md` (crear en Task 0.6.7)
+
+---
+
+**Estado:** PLAN completado, esperando ejecución (/paul:apply)  
+**Prioridad:** 🔴 CRÍTICO — Debe hacerse antes de continuar con facturacion_ec development
