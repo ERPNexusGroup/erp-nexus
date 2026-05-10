@@ -28,9 +28,9 @@ class Command(BaseCommand):
             help="Technical name of the module to install (e.g., 'hr')",
         )
         parser.add_argument(
-            "--version",
+            "--tag",
             type=str,
-            help="Specific version to install (default: latest from catalog)",
+            help="Specific git tag/version to install (default: latest from catalog)",
         )
         parser.add_argument(
             "--force",
@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         tech_name = options["technical_name"]
-        version = options.get("version")
+        tag = options.get("tag")
         force = options["force"]
         keep_data = options["keep_data"]
         skip_validation = options["skip_validation"]
@@ -86,7 +86,7 @@ class Command(BaseCommand):
         modules_dir.mkdir(parents=True, exist_ok=True)
         target_path = modules_dir / tech_name
 
-        self._clone_or_update_repo(catalog_item.repo_url, target_path, version)
+        self._clone_or_update_repo(catalog_item.repo_url, target_path, tag)
 
         # ═══════════════════════════════════════════════════════════════
         # STEP 4 — Security & validation checks
@@ -112,14 +112,12 @@ class Command(BaseCommand):
         python_deps = meta.get("python_dependencies", {})
         if python_deps:
             self.stdout.write(f"   📋 Python dependencies: {python_deps}")
-            # Future: pip install -r requirements.txt aquí
 
         # ═══════════════════════════════════════════════════════════════
         # STEP 7 — Verify Django app structure exists
         # ═══════════════════════════════════════════════════════════════
         app_dir = target_path / django_app
         if not app_dir.exists():
-            # Try tech_name as directory if django_app differs
             app_dir = target_path / tech_name
             if not app_dir.exists():
                 raise CommandError(f"Module structure invalid: neither '{django_app}' nor '{tech_name}' directory found")
@@ -129,8 +127,6 @@ class Command(BaseCommand):
         # ═══════════════════════════════════════════════════════════════
         with transaction.atomic():
             if enabled and not keep_data:
-                # Mark old module as inactive before deleting data
-                # Future: run migrations zero for old app
                 enabled.delete()
 
             EnabledModule.objects.create(
@@ -150,7 +146,7 @@ class Command(BaseCommand):
         # ═══════════════════════════════════════════════════════════════
         ModuleDownload.objects.create(
             module_name=tech_name,
-            version=version or catalog_item.version,
+            version=tag or catalog_item.version,
             source=catalog_item.repo_url,
             status="success",
         )
@@ -162,7 +158,7 @@ class Command(BaseCommand):
     # ──────────────────────────────────────────────────────────────────
     # Helper methods
     # ──────────────────────────────────────────────────────────────────
-    def _clone_or_update_repo(self, repo_url: str, target_path: Path, version: str = None) -> None:
+    def _clone_or_update_repo(self, repo_url: str, target_path: Path, tag: str = None) -> None:
         if target_path.exists() and (target_path / ".git").exists():
             self.stdout.write(f"   🔄 Updating existing repo at {target_path}")
             result = subprocess.run(["git", "pull"], cwd=target_path, capture_output=True, text=True)
@@ -178,9 +174,9 @@ class Command(BaseCommand):
             if result.returncode != 0:
                 raise CommandError(f"Git clone failed: {result.stderr[:200]}")
 
-        if version:
-            self.stdout.write(f"   🏷️  Checking out version: {version}")
-            result = subprocess.run(["git", "checkout", version], cwd=target_path, capture_output=True, text=True)
+        if tag:
+            self.stdout.write(f"   🏷️  Checking out tag: {tag}")
+            result = subprocess.run(["git", "checkout", tag], cwd=target_path, capture_output=True, text=True)
             if result.returncode != 0:
                 raise CommandError(f"Git checkout failed: {result.stderr[:200]}")
 
@@ -220,11 +216,9 @@ class Command(BaseCommand):
             if field not in meta:
                 raise CommandError(f"Validation failed: __meta__.py missing required field '{field}'")
 
-        # Validate technical_name matches
         if meta["technical_name"] != tech_name:
             raise CommandError(f"Validation failed: technical_name mismatch")
 
-        # Validate version format (semver-like)
         version = meta["version"]
         if not self._is_valid_version(version):
             self.stdout.write(self.style.WARNING(f"   ⚠️  Version '{version}' doesn't look like semver (expected X.Y.Z)"))
@@ -233,18 +227,10 @@ class Command(BaseCommand):
 
     def _validate_module_safety(self, target_path: Path, tech_name: str) -> None:
         """Security check: module cannot write outside modules/ directory."""
-        # Check for suspicious files
-        suspicious = [
-            "../erp_nexus/",
-            "../../erp_nexus/",
-            "~erp_nexus",
-        ]
+        suspicious = ["../erp_nexus/", "../../erp_nexus/", "~erp_nexus"]
         for pattern in suspicious:
             if pattern in str(target_path):
                 raise CommandError(f"Security violation: unsafe path detected")
-
-        # Check __meta__.py doesn't define dangerous deps (basic)
-        # Future: expand with more sophisticated checks
         self.stdout.write("   ✅ Security checks passed")
 
     def _is_valid_version(self, version: str) -> bool:

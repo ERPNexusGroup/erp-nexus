@@ -204,12 +204,12 @@
     "hash": "2407bea92cc7d9b361bfdc7d45e30259"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/models.py": {
-    "mtime": 1777949371.3145394,
-    "hash": "a348e01d084e49220aa65fa80b30e992"
+    "mtime": 1778455426.0737636,
+    "hash": "5e94ac97548c4e6b136d29423b88d53b"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/admin.py": {
-    "mtime": 1777949371.3104155,
-    "hash": "f08f1f3988c8c61a637e9be2f4df4202"
+    "mtime": 1778455369.4147933,
+    "hash": "576f4b453af1c21d7c5bca67a36c5bf0"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/activation.py": {
     "mtime": 1777949371.3104155,
@@ -220,8 +220,8 @@
     "hash": "6206498a4c0f3c73f7b9242f51f6850b"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/apps.py": {
-    "mtime": 1777949371.3104155,
-    "hash": "cac0608d8a821a4053e63458ec3bde82"
+    "mtime": 1778455357.472155,
+    "hash": "0b4f8ae3fb7b9890a13862d515330aa7"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/manifest.py": {
     "mtime": 1777949371.3145394,
@@ -231,48 +231,52 @@
     "mtime": 1777961669.2989717,
     "hash": "70407dc4eb6039b65ee1330582fa1380"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/migrations/0004_moduledownload_moduleregistry.py": {
-    "mtime": 1777961669.2989717,
-    "hash": "c9e77562d35460195046a10b202fbbb6"
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/utils/__init__.py": {
+    "mtime": 1778455252.4637294,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/migrations/0002_modulecatalogitem_installed_at_and_more.py": {
-    "mtime": 1777949371.3145394,
-    "hash": "5dc5a4a21d4a97d875cee5421f082f26"
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/utils/module_loader.py": {
+    "mtime": 1778455231.8967304,
+    "hash": "0e3fe4577f0e457b3d86a24a4f9dd176"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/migrations/0003_modulecatalogitem_django_app_and_more.py": {
-    "mtime": 1777949371.3145394,
-    "hash": "f30976a2aedefbbef0f574a032d8839d"
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/migrations/0002_extend_catalog.py": {
+    "mtime": 1778455433.6085637,
+    "hash": "1354ee77621deec00d3e9bab855bd1ff"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/migrations/__init__.py": {
     "mtime": 1777949371.3145394,
     "hash": "acc6b91018e6375e624d248d93055063"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/migrations/0001_initial.py": {
-    "mtime": 1777949371.3145394,
-    "hash": "d8a2768d317bf3eac1f600ea0f08eb4a"
+    "mtime": 1778455289.4703515,
+    "hash": "e934206a81d2eab3058ec6345dae1dab"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/management/__init__.py": {
-    "mtime": 1777949371.3145394,
+    "mtime": 1778454902.9624157,
     "hash": "c23cff9bc59949fc6f55c337fb61c51b"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/management/commands/enable_module.py": {
     "mtime": 1777949371.3145394,
     "hash": "dda8117a0badf062049c6cd401de18ab"
   },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/management/commands/scan_github_org.py": {
+    "mtime": 1778454921.9071743,
+    "hash": "ea9834b86a05f8400f9fd352b345014b"
+  },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/management/commands/module_uninstall.py": {
-    "mtime": 1778438656.7659278,
-    "hash": "b53118110eed251241809b33a2f47890"
+    "mtime": 1778455250.000037,
+    "hash": "14cabea040a182d62636207e3c793326"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/management/commands/module_install.py": {
-    "mtime": 1777961703.821474,
-    "hash": "71991167e90dadc63d712013361b7cbf"
+    "mtime": 1778455405.279112,
+    "hash": "37dc69dbec8eb9acd45f9ddfc581b2c7"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/management/commands/sync_modules.py": {
     "mtime": 1777949371.3145394,
     "hash": "7cd09e71e171bc420174690851da4137"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/management/commands/__init__.py": {
-    "mtime": 1777949371.3145394,
+    "mtime": 1778454902.9624157,
     "hash": "e90e4384ea56b6c716b6e5a525113346"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/management/commands/apply_modules.py": {
@@ -776,8 +780,8 @@
     "hash": "00c7a08f956c4e39c06b9d837f71ee55"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_api/v1/marketplace.py": {
-    "mtime": 1777961669.2865524,
-    "hash": "fdad9bc3cec6e185b25552d9602f34c1"
+    "mtime": 1778455390.9904583,
+    "hash": "30786cc31e2e94f9c8b14281a3f1e303"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_audit/models.py": {
     "mtime": 1777961669.290692,
