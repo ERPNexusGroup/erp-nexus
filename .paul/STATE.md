@@ -2,174 +2,206 @@
 
 **Project:** ERP Nexus Core (Framework + Essential Modules)
 **Architecture:** Hybrid — Essential modules in core, Optional modules as plugins
-**Phase:** 0.6 — Hybrid Restructure (COMPLETADO ✅)
-**Loop Position:** UNIFY
-**Started:** 2026-05-10
-**Last Updated:** 2026-05-10
-**Completed:** 2026-05-10
+**Current Phase:** 1.1 — Marketplace Foundation (PLAN)
+**Loop Position:** PLAN → APPLY → UNIFY
+**Last Completed:** Phase 0.6 — Hybrid Restructure (2026-05-10)
+**Next Milestone:** M2 — Marketplace & Plugin System
 
 ---
 
-## 🎯 Architecture Decision — HYBRID MODEL ✅ CONFIRMADO
+## ✅ Phase 0.6 — Hybrid Restructure (COMPLETED)
 
-**Decisión (Walter, 2026-05-10):**
+**Status:** ✅ ALL 9 TASKS DONE
 
-ERP Nexus usa **Hybrid Architecture**:
+| Task | Descripción | Estado |
+|------|-------------|--------|
+| 0.6.1 | Definir arquitectura híbrida | ✅ |
+| 0.6.2 | Mover `facturacion_ec/` → `apps/facturacion/` | ✅ |
+| 0.6.3 | Eliminar módulos demo | ✅ |
+| 0.6.4 | Clean core settings | ✅ |
+| 0.6.5 | Crear `apps/inventory/` | ✅ |
+| 0.6.6 | Crear sales, purchases, notifications, print_manager | ✅ |
+| 0.6.7 | Update documentation | ✅ |
+| 0.6.8 | Rebuild graph + finalize state | ✅ |
+| 0.6.9 | Validation | ✅ |
 
-### **Tier 1 — Core Framework (11 apps — always present):**
-`core_users`, `core_companies`, `core_events`, `core_api`, `core_marketplace`,
-`core_permissions`, `core_audit`, `core_stats`, `core_config`, `core_dashboard`,
-`core_pagebuilder`
-
-### **Tier 2 — Essential Business Modules (6 apps — integrated, NOT plugins):**
-- `facturacion` — Facturación SRI Ecuador ✅
-- `inventory` — Inventario/stock ✅
-- `sales` — Ventas/cotizaciones ✅
-- `purchases` — Compras/proveedores ✅
-- `notifications` — Email + Telegram ✅
-- `print_manager` — PDF generation ✅
-
-### **Tier 3 — Optional Plugins (futuro):**
-`hr`, `crm`, `accounting_adv`, `project_mgmt`, `pos`, `ecommerce`
+**Result:** 17 Django apps (11 core + 6 essential). ERP funcional out-of-the-box.
 
 ---
 
-## 📊 Final State (Phase 0.6 — DONE)
+## 📋 Phase 1.1 — Marketplace Foundation (PLAN)
 
-```
-repos/erp-nexus/
-├── apps/                      # 17 Django apps (11 core + 6 essential)
-│   ├── core_users/
-│   ├── core_companies/
-│   ├── core_events/           # Event Bus
-│   ├── core_api/              # REST API (Django Ninja)
-│   ├── core_marketplace/
-│   ├── core_permissions/
-│   ├── core_audit/
-│   ├── core_stats/
-│   ├── core_config/
-│   ├── core_dashboard/
-│   ├── core_pagebuilder/
-│   │
-│   ├── facturacion/           ✅ Essential — SRI invoices
-│   ├── inventory/             ✅ Essential — stock
-│   ├── sales/                 ✅ Essential — orders/quotes
-│   ├── purchases/             ✅ Essential — PO/suppliers
-│   ├── notifications/         ✅ Essential — email/telegram/queue
-│   └── print_manager/         ✅ Essential — PDF
-│
-├── modules/                   # Vacío (solo plugins futuros)
-│   ├── README.md
-│   └── registry.json
-│
-├── erp_nexus/
-│   ├── settings/
-│   │   └── base.py            # INSTALLED_APPS: 17 apps
-│   ├── modules_enabled.py     # Vacío (plugins dinámicos)
-│   └── ...
-│
-├── .paul/
-│   ├── STATE.md               # Este archivo (COMPLETADO)
-│   ├── PROJECT.md
-│   └── ROADMAP.md
-│
-├── docs/
-│   └── INSTALL.md             # Guía instalación 5 min
-├── API_REFERENCE.md           # API completa 6 módulos
-├── MODULE_SPEC.md             # Specs técnicos
-├── ARCHITECTURE_HYBRID.md     # Guía arquitectónica
-├── ADR/007-hybrid-architecture.md
-├── ADR/008-communication-channels.md
-└── MULTI_REPO_STRUCTURE.md    # Hybrid model explicado
+**Objetivo:** Implementar sistema de Marketplace para plugins opcionales.
+
+**Context:** Phase 0.6 integró essential modules. Phase 1.1 agrega capacidad de instalar módulos **opcionales** (hr, crm, accounting_adv, project_mgmt, pos, ecommerce) desde repos externos.
+
+### Tasks
+
+| Task | Descripción | Estimación | Estado |
+|------|-------------|------------|--------|
+| 1.1.1 | Extender ModuleCatalogItem metadata | 1h | ⬜ |
+| 1.1.2 | Auto-Discover GitHub Organization | 2h | ⬜ |
+| 1.1.3 | Install/Uninstall management commands | 1.5h | ⬜ |
+| 1.1.4 | Dynamic App Loading (modules_enabled.py reload) | 1h | ⬜ |
+| 1.1.5 | Admin UI — Marketplace tab | 1h | ⬜ |
+| 1.1.6 | API Endpoints (catalog, install, uninstall) | 1h | ⬜ |
+| 1.1.7 | Validation & Security (__meta__.py schema, checksum) | 1.5h | ⬜ |
+
+**Total:** ~9h
+
+---
+
+## 🔄 Phase 1.1 — Detalle por Task
+
+### **1.1.1 — Extend ModuleCatalogItem**
+
+`apps/core_marketplace/models.py` exists. Añadir:
+
+```python
+class ModuleCatalogItem(models.Model):
+    # existing fields...
+    module_type = models.CharField(choices=[
+        ('essential', 'Essential (core)'),
+        ('optional', 'Optional Plugin'),
+        ('plugin', 'Third-party Plugin'),
+    ], default='optional')
+    min_erp_version = models.CharField()  # "0.6.0"
+    max_erp_version = models.CharField(null=True, blank=True)
+    python_dependencies = models.JSONField(default=dict)  # {"packages": ["celery"]}
+    system_dependencies = models.JSONField(default=dict)  # {"bin": ["wkhtmltopdf"]}
+    documentation_url = models.URLField(blank=True)
 ```
 
----
-
-## ✅ Phase 0.6 — Tasks Completadas
-
-| Task | Descripción | Estado | Commit |
-|------|-------------|--------|--------|
-| 0.6.1 | Definir arquitectura híbrida | ✅ DONE | docs(arch): hybrid model ADR 007, 008 |
-| 0.6.2 | Mover `facturacion_ec/` → `apps/facturacion/` | ✅ DONE | chore(0.6.2): integrate facturacion_ec as essential |
-| 0.6.3 | Eliminar módulos demo | ✅ DONE | chore(0.6.3): remove demo modules |
-| 0.6.4 | Clean core settings | ✅ DONE | chore(0.6.4): clean core settings |
-| 0.6.5 | Crear `apps/inventory/` | ✅ DONE | feat(0.6.5): create essential inventory |
-| 0.6.6 | Crear sales, purchases, notifications, print_manager | ✅ DONE | feat(0.6.6): create 4 essential modules |
-| 0.6.7 | Update documentation | ✅ DONE | docs(0.6.7): update for hybrid architecture |
-| 0.6.8 | Rebuild graph + finalize state | ✅ DONE | chore(0.6.8): finalize state |
-| 0.6.9 | Validation | ✅ DONE | test(0.6.9): all 17 apps load, migrations apply |
+**Commit:** `feat(marketplace): extend catalog metadata`
 
 ---
 
-## 📈 Statistics
+### **1.1.2 — Auto-Discover GitHub Organization**
 
-- **Commits Phase 0.6:** 9 commits
-- **New modules:** 6 essential (facturacion, inventory, sales, purchases, notifications, print_manager)
-- **Moved modules:** 1 (facturacion_ec → facturacion)
-- **Deleted modules:** 3 demo (accounting_basic, inventory_basic, demo_flow)
-- **Total apps:** 17 Django apps
-- **Docs updated:** 15+ archivos
-- **ADRs added:** 2 (ADR 007, 008)
-- **Graphify rebuilds:** Auto-triggered (10+ rebuilds)
+```bash
+python manage.py scan_github_org ERPNexus
+```
 
----
+**Implementación:**
+- Usar GitHub API: `GET /orgs/ERPNexus/repos`
+- Filtrar repos con `__meta__.py` en root
+- Parsear `__meta__.py` (AST) → extraer technical_name, version, dependencies
+- Crear/actualizar ModuleCatalogItem
+- Task periódica: `python manage.py refresh_marketplace_catalog` (Celery beat)
 
-## 🎯 Deliverables Phase 0.6
-
-✅ **Code:**
-- 17 Django apps en `apps/`
-- Essential modules integrados (no plugins)
-- REST API (Django Ninja) para cada módulo
-- Event Bus (core_events) para comunicación loose-coupling
-- Migrations limpias, FK correctos, índices con nombre
-
-✅ **Documentation:**
-- Hybrid Architecture definida (Tier 1/2/3)
-- Communication Channels (REST vs EventBus vs GraphQL vs gRPC)
-- Installation guide simplificada (5 min)
-- API Reference completo
-- Module Specs para 6 essential modules
-
-✅ **Validation:**
-- Django startup OK
-- `makemigrations --check` sin cambios
-- `migrate` aplica todas las migraciones
-- `runserver` arranca sin errores
+**Commit:** `feat(marketplace): auto-discover modules from GitHub org`
 
 ---
 
-## 🔜 Próximos Phases
+### **1.1.3 — Install/Uninstall Commands**
 
-**Phase 1.x — Marketplace & Plugin System** (Planeado)
-- Instalar/desinstalar plugins opcionales (hr, crm, …)
-- Marketplace UI en admin
-- Module catalog desde repos externos GitHub
+```bash
+# Install
+python manage.py module_install hr
+# → clone https://github.com/ERPNexus/hr.git → modules/hr/
+# → EnabledModule.objects.create(technical_name='hr', django_app='hr', status='active')
+# → write_modules_enabled()
 
-**Phase 2.x — Production Ready**
-- Docker deployment
-- PostgreSQL + Redis
-- Celery workers (notifications async)
-- Monitoring (prometheus + grafana)
+# Uninstall
+python manage.py module_uninstall hr
+# → EnabledModule.status = 'inactive'
+# → eliminar directorio modules/hr/ (opcional: keep_data=True)
+# → write_modules_enabled()
+```
 
----
-
-## 🎉 Conclusión
-
-**ERP Nexus Phase 0.6 — Hybrid Restructure COMPLETADO EXITOSAMENTE.**
-
-El sistema ahora es un **ERP funcional out-of-the-box** con:
-- Facturación electrónica SRI ✅
-- Inventario ✅
-- Ventas ✅
-- Compras ✅
-- Notificaciones ✅
-- Impresión de PDFs ✅
-
-**Sin necesidad de instalar plugins adicionales.**
-
-Arquitectura híbrida implementada y validada.
+**Commit:** `feat(marketplace): install/uninstall management commands`
 
 ---
 
-**Estado:** ✅ PHASE 0.6 COMPLETADO  
-**Próxima fase:** 1.x — Marketplace & Plugin System (pendiente)
+### **1.1.4 — Dynamic App Loading**
+
+Actualmente `modules_enabled.py` se lee al startup. Mejorar:
+
+```python
+# erp_nexus/apps.py
+class ERPConfig(AppConfig):
+    def ready(self):
+        # Watch modules_enabled.py modification time
+        # Si cambia, recargar apps dinámicamente (requiere restart o reload)
+        pass
+```
+
+**Para desarrollo:** Auto-reload cuando modules_enabled.py cambia (StatReloader).
+**Para producción:** Restart automático via systemd o Docker.
+
+**Commit:** `feat(marketplace): dynamic module reload on config change`
+
+---
+
+### **1.1.5 — Admin UI**
+
+Extender `core_marketplace/admin.py`:
+
+- ModuleCatalogItemAdmin: list + install button (action)
+- EnabledModuleAdmin: list + uninstall button
+- Warning: module not compatible with current ERP version
+
+**Commit:** `feat(marketplace): admin UI for catalog and installed modules`
+
+---
+
+### **1.1.6 — API Endpoints**
+
+`apps/core_api/api.py` → new router:
+
+```python
+router = Router(tags=["Marketplace"])
+@router.get("/catalog/")
+@router.post("/{name}/install/")
+@router.post("/{name}/uninstall/")
+@router.get("/installed/")
+```
+
+**Commit:** `feat(marketplace): REST API endpoints`
+
+---
+
+### **1.1.7 — Validation & Security**
+
+**Validaciones antes de install:**
+1. `__meta__.py` existe y es parseable (AST)
+2. Schema: required fields (technical_name, version, dependencies)
+3. Checksum SHA256 del repo commit (verify integrity)
+4. Sandbox check: no puede sobrescribir `erp_nexus/` o `apps/` (solo modules/)
+
+**Commit:** `feat(marketplace): security validation for plugin installation`
+
+---
+
+## 📋 Acceptance Criteria Phase 1.1
+
+- [ ] ModuleCatalogItem extendido con todos los campos metadata
+- [ ] `scan_github_org ERPNexus` lista 6+ plugins (hr, crm, …)
+- [ ] `module_install hr` clona y registra correctamente
+- [ ] `module_uninstall hr` desinstala limpiamente
+- [ ] modules_enabled.py se actualiza automáticamente
+- [ ] Admin UI tiene pestaña Marketplace funcional
+- [ ] API endpoints: GET/POST trabajan con auth
+- [ ] Validación rechaza __meta__.py malformados
+- [ ] Tests: `pytest apps/core_marketplace/tests/` pasan
+
+---
+
+## 🔗 Dependencies
+
+✅ Phase 0.6 — Hybrid Restructure COMPLETED
+🆕 core_marketplace app exists (Phase M0)
+
+---
+
+## 🎯 Phase 1.1 Deliverable
+
+**Marketplace v0.1.0 funcional:**
+- Admin puede instalar hr desde GitHub
+- Sistema valida __meta__.py
+- modules_enabled.py dinámico
+- API + Admin UI operativos
+
+---
+
+**Estado:** 📋 PLANEADO — Esperando APPLY
