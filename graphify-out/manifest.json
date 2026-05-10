@@ -871,9 +871,13 @@
     "mtime": 1778428477.6685636,
     "hash": "cbf0b49d330af84298871f1a8af74df7"
   },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/MULTI_REPO_STRUCTURE.md": {
+    "mtime": 1778436439.4799097,
+    "hash": "90abf4072a2ee911f5d3682ed1a3c873"
+  },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/WORK_PLAN.md": {
-    "mtime": 1778428360.440442,
-    "hash": "faad5225f46d714f6612c6c2fee5f072"
+    "mtime": 1778436467.5336797,
+    "hash": "2adfce60fa439660ccb014604576a22f"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/REQUIREMENTS.md": {
     "mtime": 1778428263.5215356,
@@ -882,6 +886,10 @@
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/API_REFERENCE.md": {
     "mtime": 1778428655.1326807,
     "hash": "9eb9014166185e5cb9e9edfb72fdf706"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/GRAPH_HEALTH.md": {
+    "mtime": 1778435961.1812944,
+    "hash": "44cd89c5d0d9f1db7f30afbdb78599b5"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ARCHITECTURE.md": {
     "mtime": 1778428284.000708,
@@ -915,6 +923,10 @@
     "mtime": 1778428615.6675565,
     "hash": "a88ad506f7c49f541d965ef3874ed21b"
   },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/MODULE_INTEGRATION_STATUS.md": {
+    "mtime": 1778435975.0556946,
+    "hash": "82569dcf88dc2cf7aecf6eac0c048e4a"
+  },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/INSTALL.md": {
     "mtime": 1778428635.2823741,
     "hash": "195e9d8e236100514aa704bb79c7b04a"
@@ -924,8 +936,8 @@
     "hash": "6753828e4d99c6f5a2371301c79871c4"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/PROJECT_DEFINITION.md": {
-    "mtime": 1778428382.9865294,
-    "hash": "888c5a94c9ddaf9bc0f4f1dc25e5f4f1"
+    "mtime": 1778436392.6137905,
+    "hash": "964e45652fa3f5cae6fbc60bd55b82ec"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_dashboard/templates/admin/index.html": {
     "mtime": 1777949371.3021674,

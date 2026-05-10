@@ -1,26 +1,24 @@
-# 📈 Roadmap — ERP Nexus Ecosystem
+# 📈 Roadmap — ERP Nexus Core (Framework Only)
 
 **Versión:** 1.0.0-alpha  
 **Fecha:** 2026-05-10  
-**Estrategia:** Multi-Repo Architecture
+**Estrategia:** Plugin-based Architecture (Core + Módulos Independientes)
 
 ---
 
 ## 🎯 Filosofía del Roadmap
 
-ERP Nexus no es un solo proyecto. Es un **ecosistema** de repos independientes:
+**ESTE ROADMAP CUBRE SOLO EL CORE (`erp-nexus/` repo).**
+
+Los plugins (facturacion_ec, inventory, sales) tienen sus propios roadmaps en sus repositorios.
 
 ```
-ERP Nexus Ecosystem
-├── erp-nexus/          ← Core Framework (este roadmap)
-├── facturacion_ec/     ← Módulo Ecuador (roadmap separado)
-├── inventory/          ← Módulo Inventario (roadmap separado)
-├── sdk-nexus/          ← SDK (roadmap separado)
-├── nexus-cli/          ← CLI (roadmap separado)
-└── nexus-marketplace/  ← Marketplace (roadmap separado)
+ERP Nexus Ecosystem Roadmaps:
+├── erp-nexus/          ← ESTE DOCUMENTO (Core framework)
+├── facturacion_ec/     ← Roadmap separado (módulo Ecuador)
+├── inventory/          ← Roadmap separado (futuro)
+└── sdk-nexus/          ← Roadmap separado (SDK)
 ```
-
-**Este roadmap cubre SOLO el CORE (`erp-nexus/`).**
 
 ---
 
@@ -51,245 +49,180 @@ v1.0.0                                    ████████████
 **Entregables:**
 - [x] 11 core Django apps
 - [x] Multi-tenant middleware (`ActiveCompanyMiddleware`)
-- [x] ModuleRegistry básico
-- [x] Event Bus (`core_events`)
+- [x] Event Bus básico (`core_events`)
 - [x] API layer (Django Ninja)
 - [x] Audit log system
-- [x] Dashboard admin
 - [x] Settings base (dev/prod)
 - [x] Docker Compose stack
+- [x] Documentación inicial (14 archivos)
 
 ---
 
-### **M0.5 — Graphify Integration (v0.5.x)** 🔄 IN PROGRESS
+### **M0.5 — Graphify Integration (v0.5.x)** 🔄 PAUSADO
 **Semana:** 3 (2026-05-10)  
-**Estado:** 🔄 En progreso
+**Estado:** ⏸️ Pausado hasta completar M0.6
 
-**Objetivo:** Integrar knowledge graph para navigation y analysis.
+**Objetivo:** Integrar knowledge graph para navegación y análisis.
 
-**Fases:**
-- **P0.5.1** — Graphify analysis completado ✅
-  - 1,875 nodos, 2,300 edges, 209 comunidades
-  - 5 nodos aislados críticos (validator.py)
-- **P0.5.2** — Graph Unify (integrar validator) ⏸️ Pausado hasta restructure
-  - Integrar validator en API endpoints
-  - Verificar EventBus usage
-  - Regenerar grafo
+**Hallazgos:**
+- 1,875 nodos · 2,300 edges (81% extraídos, 18% inferidos)
+- 61 nodos aislados (3%)
+- **Crítico:** `validator.py` (5 nodos) — funciones no usadas
+- **Falso positivo:** `bus.py` (6 nodos) — EventBus sí se usa
 
-**Bloqueado por:** Phase 0.6 (repo restructure) debe ir primero.
+**Bloqueado por:** M0.6 (restructure) debe ir primero.
+
+**Post-M0.6:** Re-evaluar grafo (facturacion_ec ya no en core).
 
 ---
 
-### **M0.6 — Multi-Repo Restructure (v0.6.0)** 🔥 NEXT
+### **M0.6 — Multi-Repo Restructure (v0.6.0)** 🔥 PRÓXIMO
 **Semanas:** 4-5 (2026-05-17 → 2026-05-31)  
-**Estado:** ⏳ Planificado
+**Estado:** 📋 Planificado (PLAN completado)
 
-**Objetivo:** Separar core de módulos. Extraer facturacion_ec a repo propio.
+**Objetivo:** Separar core de módulos. Extraer `facturacion_ec` a repo propio.
 
-**Fases:**
-- **Phase 0.6.1** — Plan (✅ completado)
-- **Phase 0.6.2** — Extract facturacion_ec → `repos/facturacion_ec/`
-- **Phase 0.6.3** — Remove demo modules (accounting_basic, inventory_basic)
-- **Phase 0.6.4** — Clean core settings
-- **Phase 0.6.5** — Eliminate static `modules_enabled.py`
-- **Phase 0.6.6** — Reorganize workspace
-- **Phase 0.6.7** — Update docs
-- **Phase 0.6.8** — Update PAUL
-- **Phase 0.6.9** — Validate everything
+**Fases (9 tasks):**
+- Phase 0.6.1 — Plan ✅ (completado)
+- Phase 0.6.2 — Extract `facturacion_ec/` → `repos/facturacion_ec/`
+- Phase 0.6.3 — Remove demo modules (`accounting_basic`, `inventory_basic`, `demo_flow`)
+- Phase 0.6.4 — Clean core settings
+- Phase 0.6.5 — Eliminate static `modules_enabled.py`
+- Phase 0.6.6 — Reorganize workspace
+- Phase 0.6.7 — Update docs
+- Phase 0.6.8 — Update PAUL
+- Phase 0.6.9 — Validate everything
 
 **Deliverables:**
 - `erp-nexus/` → Solo core (11 apps)
-- `facturacion_ec/` → Repo independiente en `repos/`
+- `facturacion_ec/` → Repo independiente
 - `MULTI_REPO_STRUCTURE.md` — Guía completa
 - Tests core pasan sin modules/ locales
 
 **Riesgos:**
-- ⚠️ Pérdida de historial git (mitigar con `git subtree split`)
+- ⚠️ Pérdida de historial git (usar `git subtree split`)
 - ⚠️ Dependencias rotas (validar imports)
-- ⚠️ Despliegue interrumpido (rollback plan)
+
+**Documentación:**
+- [`MULTI_REPO_STRUCTURE.md`](./MULTI_REPO_STRUCTURE.md)
+- PAUL Phase `00-01-REPO-RESTRUCTURE.md`
 
 ---
 
-### **M1 — Marketplace Engine Complete (v0.7.0)**
+### **M1 — Marketplace Engine (v0.7.0)** 📋 PLANEADO
 **Semanas:** 6-7 (2026-06-07 → 2026-06-21)  
 **Estado:** 📋 Planeado
 
-**Objetivo:** Sistema de marketplace funcional para instalar/desinstalar módulos.
+**Objetivo:** Sistema completo de marketplace para instalar/desinstalar plugins.
 
 **Fases:**
-- **Phase 1.1** — ModuleCatalog (catálogo DB de módulos disponibles)
-- **Phase 1.2** — ModuleInstaller mejorado (download + verify + install)
-- **Phase 1.3** — Module activation/deactivation UI
-- **Phase 1.4** — Update checks (notify module updates)
-- **Phase 1.5** — License management (free/paid tiers)
+- Phase 1.1 — ModuleCatalog (catálogo DB)
+- Phase 1.2 — ModuleInstaller mejorado (download + verify + install)
+- Phase 1.3 — Module activation/deactivation UI
+- Phase 1.4 — Update checks
+- Phase 1.5 — License management (free/paid)
 
 **Deliverables:**
-- Admin UI: Marketplace → Catalogo → Install
+- Admin UI: Marketplace catalogo
 - CLI: `python manage.py install_module --git <url>`
-- DB schema: `core_marketplace_ModuleCatalogItem`, `Module`
+- DB: `ModuleCatalogItem`, `Module` models
 - Auto-discovery: GitHub repos con `__meta__.py`
 
-**Success criteria:**
-- Instalar `facturacion_ec` desde GitHub oficial
-- Desinstalar sin romper dependencias
-- Actualizar módulo a nueva versión
+**Success:** Instalar `facturacion_ec` desde GitHub oficial.
 
 ---
 
-### **M2 — SDK & CLI (v0.8.0)**
+### **M2 — SDK & CLI (v0.8.0)** 📋 PLANEADO
 **Semanas:** 8-9 (2026-06-28 → 2026-07-12)  
 **Estado:** 📋 Planeado
 
-**Objetivo:** Herramientas para desarrolladores de módulos.
+**Objetivo:** Herramientas para desarrolladores de plugins.
 
 **Fases:**
-- **Phase 2.1** — SDK (`sdk-nexus` repo)
+- Phase 2.1 — SDK (`sdk-nexus` repo)
   - `sdk-nexus create` — scaffolding
-  - `sdk-nexus validate` — validación estructura
+  - `sdk-nexus validate` — validación
   - `sdk-nexus package` — empaquetar .npkg
-- **Phase 2.2** — CLI (`nexus-cli` repo)
-  - `nexus install <module>`
+- Phase 2.2 — CLI (`nexus-cli` repo)
+  - `nexus install <plugin>`
   - `nexus list`
-  - `nexus update`
   - `nexus marketplace search`
 
 **Deliverables:**
 - `sdk-nexus` PyPI package
-- `nexus-cli` binary (PyInstaller o Go)
-- Guías de desarrollo
+- `nexus-cli` binary
+- Developer guides
 
 ---
 
-### **M3 — Facturacion_ec Stable (v0.9.0)** 📦 Módulo
-**Semanas:** 10-12 (2026-07-19 → 2026-08-09)  
-**Estado:** 📋 Planeado (en su propio repo)
-
-**Nota:** Este milestone es PARA EL MÓDULO `facturacion_ec`, NO del core.
-Ver `facturacion_ec/ROADMAP.md` para detalle.
-
-**Módulo facturacion_ec milestones:**
-- M1: Services layer (XML, signature, SRI) — Semanas 2-4
-- M2: API completion + integration — Semanas 5-6
-- M3: Tests + validation — Semana 7
-- M4: Extract to separate repo — Semana 8 (ya hecho por core Phase 0.6)
-- M5: Stable release v1.0.0 — Semana 12
-
----
-
-### **M4 — Core v1.0.0 Release (v1.0.0)** 🎯 FINAL
+### **M3 — Core v1.0.0 Stable (v1.0.0)** 🎯 FINAL
 **Semana:** 12 (2026-08-16)  
 **Estado:** 📋 Planeado
 
-**Objetivo:** Core estable, documentado, con módulos oficiales.
+**Objetivo:** Core estable, documentado, con plugins oficiales.
 
 **Checklist:**
 - [ ] Core sin bugs críticos (0 P0)
 - [ ] Test coverage >80%
 - [ ] CI/CD funcionando (GitHub Actions)
-- [ ] Documentación completa (INSTALL, DEVELOPMENT, API_REFERENCE)
-- [ ] Al menos 2 módulos oficiales publicados (facturacion_ec + inventory)
-- [ ] Demo desplegada en Railway/Render
-- [ ] GitHub Discussions + Issues templates
+- [ ] Docs 100% (INSTALL, DEVELOPMENT, API_REFERENCE)
+- [ ] Module system completo (install/upgrade/uninstall)
+- [ ] Al menos 2 plugins oficiales disponibles (facturacion_ec + inventory)
+- [ ] Demo desplegada
 - [ ] CHANGELOG completo
-- [ ] SemVer asegurado (no breaking changes post-1.0)
+- [ ] SemVer asegurado
 
-**Entregable:** Release v1.0.0 en GitHub → Adopción inicial.
+**Entregable:** Release v1.0.0 — Adopción inicial.
 
 ---
 
-## 📋 Cross-Repo Dependencies
+## 📋 Facturacion_ec Plugin — Milestone Separado
+
+**IMPORTANTE:** `facturacion_ec` tiene su propio roadmap (en su repositorio).
+
+**Sin embargo, coordenadas temporales:**
+
+| Fase | Plugin facturacion_ec | Core dependency |
+|------|----------------------|----------------|
+| P0 — Setup | v0.5.0 — Models + Admin | Core v0.5.0 ✅ |
+| P1 — Services | v0.6.0 — XML, Signature, SRI | Core v0.5.0 ✅ |
+| P2 — Integration | v0.7.0 — API completion | Core v0.6.0 |
+| P3 — Stable | v1.0.0 — Release | Core v0.7.0 |
+
+**Cuando core lanza v0.6.0 (restructure), facturacion_ec se extrae a repo separado** y continúa su desarrollo en paralelo.
+
+---
+
+## 🔄 Dependencies entre Core y Plugins
 
 ```
-Phase 0.6 (este phase)  → erp-nexus core
-                            └── Extrae facturacion_ec → nuevo repo
-
-Phase 1.1 (services)     → facturacion_ec repo (su propio PAUL)
-                            Depende de: erp-nexus >= 0.6.0
-
-Phase 2.1 (SDK)          → sdk-nexus repo
-                            Depende de: erp-nexus >= 0.7.0
-
-Phase 3.1 (inventory)    → inventory repo
-                            Depende de: erp-nexus >= 0.7.0
+Core erp-nexus v0.5.x  ───→ Compatible con plugins v0.5.x
+Core erp-nexus v0.6.x  ───→ Requiere plugins >= 0.6.0
+Core erp-nexus v1.0.0  ───→ Compatible con plugins v1.0.0
 ```
 
-**Matrix de compatibilidad (futuro):**
+**Matrix de compatibilidad:**
 
-| Core \ Módulo | facturacion_ec v0.1 | facturacion_ec v0.2 | inventory v0.1 |
-|---------------|--------------------|--------------------|----------------|
-| v0.5.x        | ✅                 | ❌                 | ❌             |
-| v0.6.x        | ✅                 | ⚠️ beta            | ❌             |
-| v0.7.x        | ✅                 | ✅                 | ✅             |
-| v1.0.x        | ✅                 | ✅                 | ✅             |
+| Core \ Plugin | facturacion_ec v0.5 | facturacion_ec v0.6 | inventory v0.1 |
+|---------------|--------------------|--------------------|---------------|
+| v0.5.x        | ✅                 | ❌                 | ❌            |
+| v0.6.x        | ✅                 | ⚠️ beta            | ❌            |
+| v0.7.x        | ✅                 | ✅                 | ✅            |
+| v1.0.x        | ✅                 | ✅                 | ✅            |
 
 ---
 
 ## 📊 Métricas de Progreso (Core)
 
-| Métrica | Actual (v0.5.0) | v0.6.0 Target | v1.0.0 Target |
-|---------|----------------|---------------|---------------|
-| Apps core | 11 | 11 | 11 |
+| Métrica | v0.5.0 (actual) | v0.6.0 Target | v1.0.0 Target |
+|---------|-----------------|---------------|---------------|
+| Core apps | 11 | 11 | 11 |
 | Test coverage | ~20% | >50% | >80% |
 | Nodos aislados Graphify | 61 (3%) | <30 (<2%) | <10 (<1%) |
-| Módulos extraídos | 0 | 1 (facturacion_ec) | 3+ |
+| Plugins extraídos | 0 | 1 (facturacion_ec) | 3+ |
 | Docs completas | 70% | 80% | 100% |
-| CI/CD | No | GitHub Actions | GitHub Actions |
+| CI/CD | No | GitHub Actions | ✅ |
 | Docker image size | — | <200MB | <150MB |
-
----
-
-## 🔄 Workflow Semanal (Core Devs)
-
-```
-Lunes
-├── Revisar PAUL progress (.paul/STATE.md)
-├── Sprint planning (qué tasks esta semana)
-└── Actualizar ROADMAP si hay bloqueos
-
-Martes-Jueves
-├── Desarrollo focused
-├── Commits diarios (conventional commits)
-├── Tests locales (pytest -xvs)
-└── Graphify update (si cambios grandes)
-
-Viernes
-├── PR review (si hay colaboradores)
-├── Actualizar WORK_PLAN.md con progreso
-├── Documentar decisiones (ADR/)
-└── PAUL unify (cerrar loops phases)
-```
-
----
-
-## 📈 Release Cadence
-
-```
-v0.5.x  — Foundation (actual)
-   ├── Bug fixes
-   └── Pequeñas features
-
-v0.6.x  — Multi-repo restructure
-   ├── Breaking change: modules fuera del core
-   └── Migration guide
-
-v0.7.x  — Marketplace completo
-   ├── Install/Uninstall modules
-   └── Module lifecycle
-
-v0.8.x  — SDK + CLI
-   ├── Developer tooling
-   └── Boilerplate generation
-
-v0.9.x  — Stability + polish
-   ├── Bugfixing
-   ├── Test coverage >80%
-   └── Performance optimization
-
-v1.0.0 — Stable release
-   ├── No breaking changes desde v0.9.x
-   ├── Docs 100%
-   └── Production-ready
-```
 
 ---
 
@@ -297,56 +230,38 @@ v1.0.0 — Stable release
 
 | Riesgo | Probabilidad | Impacto | Mitigación |
 |--------|--------------|---------|------------|
-| **facturacion_ec extraction falla** | Media | Alto | Backup, rollback plan, git subtree |
-| **Módulos dependen de core APIs que cambian** | Media | Alto | SemVer, deprecation warnings, 2-cycle policy |
-| **Marketplace no adoptado** | Baja | Medio | Docs claros, ejemplos, sdk-nexus facilita |
-| **Community no contribuye** | Media | Bajo | Open source + buen onboarding |
-| **Performance en multi-tenant** | Media | Alto | Index DB, query optimization early |
+| **Plugin extraction falla** | Media | Alto | Backup, `git subtree split`, rollback plan |
+| **Core change rompe plugins** | Media | Alto | SemVer, deprecation warnings, 2-cycle policy |
+| **Plugins no se adoptan** | Baja | Medio | Docs excelentes, ejemplos, sdk-nexus fácil |
+| **Community lenta** | Media | Bajo | Open source + buen onboarding |
 
 ---
 
 ## 💡 Decisiones Pendientes
 
 1. **¿Marketplace como servicio cloud o self-hosted?**
-   - Opción A: Marketplace central (marketplace.erpnexus.ec) — más control
-   - Opción B: Self-hosted (cada instancia tiene su catálogo local) — más descentralizado
-   - **Pendiente:** Decidir para v1.0
+   - A: Central (marketplace.erpnexus.ec) — más control
+   - B: Self-hosted (cada instancia su catálogo) — más descentralizado
+   - Pendiente para v0.7.x
 
-2. **¿Module packages (.npkg) o Git clones directos?**
+2. **¿Plugin packages (.npkg) o Git clones?**
    - .npkg: signed, versioned, distributable
-   - Git clone: simple, sin empaquetado
-   - **Pendiente:** Implementar .npkg en v0.8.x
+   - Git clone: simple
+   - Decisión en v0.8.x (SDK)
 
 3. **¿Core monolith o microservices?**
    - Actual: monolith (Django)
-   - Futuro: Separar Event Bus, ModuleRegistry en services?
-   - **Pendiente:** Evaluar en v2.0
+   - Futuro: ¿Separar Event Bus, ModuleRegistry en microservices?
+   - Evaluar en v2.0
 
 ---
 
-## 📞 Contacto y Canales
+## 📞 Canales
 
-- **Core Issues:** `github.com/ERPNexus/erp-nexus/issues`
-- **Módulo Issues:** Respectivo repo (facturacion_ec/issues, etc.)
+- **Core issues:** `github.com/ERPNexus/erp-nexus/issues`
+- **Plugin issues:** Respectivo repo (facturacion_ec/issues, …)
 - **Discussions:** `github.com/ERPNexus/.github/discussions`
-- **Telegram:** @erpnexus_support (futuro)
 
 ---
 
-## 🗺️ Visual Timeline
-
-```
-2026-05-10  [M0.5] Graphify integration
-2026-05-17  [M0.6] Multi-repo restructure ─┐
-2026-06-07  [M1]   Marketplace engine      │ Core releases
-2026-06-28  [M2]   SDK + CLI               │ (cada 2-3 semanas)
-2026-07-19  [M3]   facturacion_ec v1.0     │  ──────────────
-2026-08-16  [M4]   Core v1.0.0 release     ┘
-                ↑
-                │  Módulo facturacion_ec paralelo
-                └── Su propio roadmap (facturacion_ec/ROADMAP.md)
-```
-
----
-
-**Última actualización:** 2026-05-10 — Phase 0.6 plan completado
+**Última actualización:** 2026-05-10 — Phase 0.6 plan completado, esperando ejecución

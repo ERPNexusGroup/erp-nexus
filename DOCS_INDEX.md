@@ -1,7 +1,7 @@
 # 📚 Documentación ERP Nexus — Índice Maestro
 
 **Última actualización:** 2026-05-10  
-**Versión:** 0.5.0-alpha
+**Versión:** 0.6.0-alpha (Plugin Architecture)
 
 ---
 
@@ -10,23 +10,31 @@
 | Si eres… | Lee esto |
 |-----------|----------|
 | **Nuevo usuario** | `README.md` → `INSTALL.md` |
-| **Developer de módulos** | `DEVELOPMENT.md` → `MODULE_SPEC.md` |
-| **Contribuyente** | `CONTRIBUTING.md` → `CODING_STANDARDS.md` |
-| **DevOps** | `docker-compose.yml` → `INSTALL.md#opción-docker` |
-| **Tech Lead** | `ARCHITECTURE.md` → ADRs |
+| **Developer de plugins** | `ARCHITECTURE_PLUGIN.md` → `MODULE_SPEC.md` |
+| **Contribuyente al core** | `CONTRIBUTING.md` → `CODING_STANDARDS.md` |
+| **DevOps** | `docker-compose.yml` → `INSTALL.md#docker` |
+| **Tech Lead / Arquitecto** | `ADR/` → Decisiones arquitectónicas |
 
 ---
 
 ## 📄 Documentos por Categoría
 
-### **🏗️ Visión y Arquitectura**
+### **🏗️ Arquitectura (IMPORTANTE)**
 
 | Documento | Propósito | Enlace |
 |-----------|-----------|--------|
-| `PROJECT_DEFINITION.md` | Definición del proyecto, objetivos, stack, modelo negocio | [Ver](./PROJECT_DEFINITION.md) |
-| `ARCHITECTURE.md` | Diseño técnico profundo, diagramas, decisiones | [Ver](./ARCHITECTURE.md) |
-| `REQUIREMENTS.md` | Requisitos funcionales y no-funcionales | [Ver](./REQUIREMENTS.md) |
-| `ADR/` | Architecture Decision Records (decisiones técnicas) | [Ver ADRs](./ADR/) |
+| `ARCHITECTURE_PLUGIN.md` | **Arquitectura principal**: Core + Plugins independientes | [Ver](./ARCHITECTURE_PLUGIN.md) |
+| `PROJECT_DEFINITION.md` | Definición del proyecto, scope del core | [Ver](./PROJECT_DEFINITION.md) |
+| `MULTI_REPO_STRUCTURE.md` | Guía completa multi-repo | [Ver](./MULTI_REPO_STRUCTURE.md) |
+| `ADR/006-plugin-architecture.md` | ADR: Plugin-based architecture | [Ver](./ADR/006-plugin-architecture.md) |
+
+**ADRs (Architecture Decision Records):**
+- [ADR-001](./ADR/001-modular-architecture.md) — Modular architecture (monolito vs microservicios)
+- [ADR-002](./ADR/002-event-bus.md) — Event Bus para comunicación
+- [ADR-003](./ADR/003-multi-company.md) — Multi-company strategy
+- [ADR-004](./ADR/004-marketplace.md) — Marketplace installation flow
+- [ADR-005](./ADR/005-api-framework.md) — Django Ninja vs DRF
+- [ADR-006](./ADR/006-plugin-architecture.md) — Plugin-based architecture ⭐
 
 ---
 
@@ -34,8 +42,8 @@
 
 | Documento | Propósito | Enlace |
 |-----------|-----------|--------|
-| `DEVELOPMENT.md` | Guía completa para desarrolladores de módulos | [Ver](./DEVELOPMENT.md) |
-| `MODULE_SPEC.md` | Especificación técnica de módulos (contrato) | [Ver](./MODULE_SPEC.md) |
+| `DEVELOPMENT.md` | Cómo desarrollar el **core** | [Ver](./DEVELOPMENT.md) |
+| `MODULE_SPEC.md` | **Contrato técnico de plugins** (qué debe tener un plugin) | [Ver](./MODULE_SPEC.md) |
 | `CODING_STANDARDS.md` | Reglas de codificación (PEP8, Django style) | [Ver](./CODING_STANDARDS.md) |
 | `CONTRIBUTING.md` | Cómo contribuir, git flow, PR checklist | [Ver](./CONTRIBUTING.md) |
 
@@ -45,10 +53,10 @@
 
 | Documento | Propósito | Enlace |
 |-----------|-----------|--------|
-| `README.md` | Página principal, quickstart, stack | [Ver](./README.md) |
+| `README.md` | Página principal, quickstart | [Ver](./README.md) |
 | `INSTALL.md` | Instalación paso a paso (local + Docker) | [Ver](./INSTALL.md) |
-| `docker-compose.yml` | Stack Docker completo (ERP + DB + Redis) | [Ver](./docker-compose.yml) |
-| `Makefile` | Comandos shortcuts (make dev, make test, …) | [Ver](./Makefile) |
+| `docker-compose.yml` | Stack Docker completo | [Ver](./docker-compose.yml) |
+| `Makefile` | Comandos shortcuts (`make dev`, `make test`) | [Ver](./Makefile) |
 
 ---
 
@@ -56,9 +64,9 @@
 
 | Documento | Propósito | Enlace |
 |-----------|-----------|--------|
-| `API_REFERENCE.md` | Documentación completa REST API v1 | [Ver](./API_REFERENCE.md) |
-| `/api/v1/docs/` | Swagger UI (auto-generado) | *server 실행 시* |
-| `/api/v1/schema/` | OpenAPI JSON schema | *server 실행 시* |
+| `API_REFERENCE.md` | Documentación REST API v1 (core endpoints) | [Ver](./API_REFERENCE.md) |
+| `/api/v1/docs/` | Swagger UI (auto-generado, server running) | *en runtime* |
+| `MODULE_SPEC.md` | Cómo construir plugins (APIs que pueden exponer) | [Ver](./MODULE_SPEC.md) |
 
 ---
 
@@ -66,9 +74,11 @@
 
 | Documento | Propósito | Enlace |
 |-----------|-----------|--------|
-| `WORK_PLAN.md` | Roadmap 12 semanas, hitos, timeline | [Ver](./WORK_PLAN.md) |
-| `CHANGELOG.md` | Historial de releases y cambios | [Ver](./CHANGELOG.md) |
-| `ACTIVE_PROJECTS.md` | Proyectos activos del equipo | [Ver](./ACTIVE_PROJECTS.md) |
+| `WORK_PLAN.md` | Roadmap **core** (M0-M4) | [Ver](./WORK_PLAN.md) |
+| `CHANGELOG.md` | Historial de releases | [Ver](./CHANGELOG.md) |
+| `ACTIVE_PROJECTS.md` | Proyectos activos del workspace | [Ver](./ACTIVE_PROJECTS.md) |
+| `GRAPH_HEALTH.md` | Salud del grafo Graphify | [Ver](./GRAPH_HEALTH.md) |
+| `MODULE_INTEGRATION_STATUS.md` |Estado integración plugins | [Ver](./MODULE_INTEGRATION_STATUS.md) |
 
 ---
 
@@ -76,12 +86,12 @@
 
 | Archivo | Propósito |
 |---------|-----------|
-| `pyproject.toml` | Config: black, isort, ruff, mypy, pytest, coverage |
-| `.pre-commit-config.yaml` | Hooks pre-commit automáticos |
-| `.env.example` | Variables de entorno de ejemplo |
-| `Makefile` | Comandos `make dev`, `make test`, `make lint` |
-| `setup-dev.sh` | Setup automático primera vez |
-| `docker/Dockerfile` | Build multi-stage para producción |
+| `pyproject.toml` | Black, isort, ruff, mypy, pytest config |
+| `.pre-commit-config.yaml` | Pre-commit hooks automáticos |
+| `.env.example` | Variables de entorno ejemplo |
+| `Makefile` | Comandos desarrollo |
+| `setup-dev.sh` | Setup automatizado primera vez |
+| `docker/Dockerfile` | Multi-stage build producción |
 
 ---
 
@@ -89,109 +99,129 @@
 
 | Plantilla | Propósito |
 |-----------|-----------|
-| `_template_module/` | Boilerplate completo para nuevo módulo |
-| `modules/README.md` | Cómo crear/instalar módulos |
+| `_template_module/` | Boilerplate para plugins (Django app) |
+| `ARCHITECTURE_PLUGIN.md` | Template de arquitectura para plugins |
 
 ---
 
-## 🗺️ Estructura de Archivos
+## 🗺️ Estructura de Archivos (Core Únicamente)
 
 ```
-erp-nexus/
-├── README.md                    # Página principal
-├── PROJECT_DEFINITION.md        # ¿Qué es ERP Nexus?
-├── ARCHITECTURE.md              # Diseño técnico
-├── CODING_STANDARDS.md          # Reglas de código
-├── DEVELOPMENT.md               # Guía para desarrolladores
-├── INSTALL.md                   # Instalación
-├── API_REFERENCE.md             # Documentación API
-├── REQUIREMENTS.md              # Requisitos
-├── MODULE_SPEC.md               # Especificación módulos
-├── WORK_PLAN.md                 # Roadmap
-├── CHANGELOG.md                 # Historial versions
-├── CONTRIBUTING.md              # Cómo contribuir
-├── ACTIVE_PROJECTS.md           # Proyectos actuales
+erp-nexus/                    # ERP Nexus Core (framework)
+├── README.md                 # Página principal (core only)
+├── PROJECT_DEFINITION.md     # Qué es ERP Nexus Core
+├── ARCHITECTURE_PLUGIN.md    # ⭐ Arquitectura de plugins
+├── MULTI_REPO_STRUCTURE.md   # Estructura multi-repo
+├── DEVELOPMENT.md            # Desarrollo del core
+├── MODULE_SPEC.md            # Cómo construir plugins
+├── INSTALL.md                # Instalación core
+├── API_REFERENCE.md          # API core
+├── WORK_PLAN.md              # Roadmap core
+├── CODING_STANDARDS.md       # Reglas código
+├── CONTRIBUTING.md           # Cómo contribuir
+├── GRAPH_HEALTH.md           # Graphify status
+├── MODULE_INTEGRATION_STATUS.md # Estado plugins
 │
-├── ADR/                         # Decisiones arquitectónicas
-│   ├── 001-modular-architecture.md
-│   ├── 002-event-bus.md
-│   ├── 003-multi-company.md
-│   ├── 004-marketplace.md
-│   └── 005-api-framework.md
-│
-├── _template_module/            # Plantilla de módulo
-│   ├── __meta__.py
-│   ├── apps.py
-│   ├── models.py
-│   ├── admin.py
-│   ├── api/routes.py
-│   ├── services/
-│   └── tests/
-│
-├── modules/                     # Módulos en desarrollo
-│   └── facturacion_ec/          # Módulo facturación Ecuador
-│       ├── models.py
-│       ├── api/routes.py
-│       ├── services/
-│       └── tests/
-│
-├── apps/                        # Django core apps
-│   ├── core_api/
+├── apps/                     # 11 core Django apps
+│   ├── core_users/
 │   ├── core_companies/
+│   ├── core_groups/
+│   ├── core_permissions/
+│   ├── core_marketplace/
 │   ├── core_events/
-│   └── ...
+│   ├── core_api/
+│   ├── core_dashboard/
+│   ├── core_audit/
+│   ├── core_stats/
+│   └── core_config/
+│
+├── erp_nexus/
+│   ├── settings/
+│   ├── urls.py
+│   ├── wsgi.py
+│   └── asgi.py
 │
 ├── docker/
-│   └── Dockerfile               # Multi-stage build
-├── docker-compose.yml           # Stack completo
+├── docs/
+├── tests/
 ├── scripts/
-│   └── init-db.sql              # DB initialization
-│
-├── pyproject.toml               # Herramientas calidad código
-├── .pre-commit-config.yaml      # Pre-commit hooks
-├── .env.example                 # Variables entorno
-├── Makefile                     # Comandos shortcuts
-└── setup-dev.sh                 # Setup rápido
+├── pyproject.toml
+├── .paul/                    # PAUL para core development
+└── ADR/                      # Architecture Decision Records
 ```
 
 ---
 
 ## 📖 Leer en Orden Recomendado
 
-**Primera vez:**
+**Primera vez (nuevo usuario):**
+1. `README.md` — Overview (5 min)
+2. `PROJECT_DEFINITION.md` — Scope del core (5 min)
+3. `ARCHITECTURE_PLUGIN.md` — Cómo funcionan los plugins (10 min)
+4. `INSTALL.md` — Instalar (10 min)
 
-1. `README.md` — Overview rápido (5 min)
-2. `PROJECT_DEFINITION.md` — Entender el proyecto (10 min)
-3. `ARCHITECTURE.md` — Diseño técnico (15 min)
-4. `INSTALL.md` — Instalar localmente (10 min)
-5. `DEVELOPMENT.md` — Empezar a desarrollar (20 min)
-
-**Para contribuir:**
-
-1. `CONTRIBUTING.md`
+**Para desarrollar el core:**
+1. `DEVELOPMENT.md`
 2. `CODING_STANDARDS.md`
-3. `ADR/` — Leer ADRs relevantes
-4. `MODULE_SPEC.md`
+3. `ADR/` — Decisiones arquitectónicas
+4. `API_REFERENCE.md`
 
-**Para usar API:**
-
-1. `INSTALL.md` → Levantar server
-2. `API_REFERENCE.md` → Referencia endpoints
-3. `/api/v1/docs/` → Swagger interactivo
-
----
-
-## 🔄 Documentación Viva
-
-Este proyecto cree en **documentación viva**:
-
-- `README.md` — Se actualiza con cada release
-- `CHANGELOG.md` — Cada commit documentado
-- `API_REFERENCE.md` — Auto-generado desde docstrings (futuro)
-- ADRs — Evolucionan con decisiones
-
-**¿Encontraste un docs error?** → Abre un Issue o PR.
+**Para crear un plugin (módulo de negocio):**
+1. `ARCHITECTURE_PLUGIN.md` — Entender modelo plugin
+2. `MODULE_SPEC.md` — Contrato técnico
+3. `MULTI_REPO_STRUCTURE.md` — Dónde vive el código
+4. `_template_module/` — Plantilla de referencia
 
 ---
 
-**¿Listo para empezar?** → `INSTALL.md` → ¡Manos a la obra!
+## 🔄 Cambios vs Versión Anterior
+
+**v0.5.x → v0.6.0:**
+- ✅ **Nuevo:** Plugin Architecture definido formalmente
+- ✅ **Nuevo:** Multi-repo structure documentado
+- ✅ **Nuevo:** ADR-006 (plugin-based architecture)
+- ✅ **Actualizado:** WORK_PLAN.md (roadmap por componente)
+- ✅ **Actualizado:** PROJECT_DEFINITION.md (scope clarificado)
+
+**Core vs Plugins:**
+- **Antes:** Todo mezclado en `erp-nexus/` (core + módulos)
+- **Ahora:** Core solo + plugins en repos separados
+
+---
+
+## 💡 Conceptos Clave
+
+### **Plugin = Django App independiente**
+- Instalable/desinstalable en caliente
+- Versionado independiente
+- Depende del core (no al revés)
+- Ejemplo: `facturacion_ec` es un plugin
+
+### **Core = Framework**
+- NO contiene plugins de negocio
+- Expone APIs, EventBus, ModuleRegistry
+- Proporciona base para plugins
+
+### **Marketplace**
+- Catálogo de plugins disponibles
+- `install_module --git <url>` los instala
+- Admin UI para gestionar
+
+### **Multi-Repo**
+- `erp-nexus/` — Core
+- `facturacion_ec/` — Plugin 1
+- `inventory/` — Plugin 2
+- `sdk-nexus/` — SDK
+- `nexus-cli/` — CLI
+
+---
+
+## 📞 Canales
+
+- **Core Issues:** `github.com/ERPNexus/erp-nexus/issues`
+- **Plugin Issues:** Respectivo repo (facturacion_ec/issues, …)
+- **Discussions:** `github.com/ERPNexus/.github/discussions`
+
+---
+
+**¿Listo?** → Empieza con `README.md` → `INSTALL.md` → `ARCHITECTURE_PLUGIN.md`
