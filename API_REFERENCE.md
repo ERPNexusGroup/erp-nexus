@@ -76,7 +76,7 @@ GET /api/v1/modules/
 ```json
 [
   {
-    "technical_name": "facturacion_ec",
+    "technical_name": "facturacion",
     "name": "Facturación Ecuador",
     "version": "0.1.0",
     "active": true,
@@ -94,7 +94,7 @@ GET /api/v1/modules/{technical_name}/
 **Respuesta:**
 ```json
 {
-  "technical_name": "facturacion_ec",
+  "technical_name": "facturacion",
   "name": "Facturación Ecuador",
   "version": "0.1.0",
   "description": "Facturación electrónica SRI Ecuador",
@@ -139,7 +139,7 @@ GET /api/v1/events/?limit=50&offset=0
     {
       "id": 1,
       "event_type": "invoice.created",
-      "source": "facturacion_ec",
+      "source": "facturacion",
       "payload": {
         "invoice_id": 42,
         "total": "150.00"
@@ -186,14 +186,14 @@ GET /api/v1/events/stats/
 
 ---
 
-## 🧾 Módulo facturacion_ec
+## 🧾 Módulo facturacion
 
 ### **Invoices (Facturas)**
 
 #### Listar facturas
 
 ```http
-GET /api/v1/facturacion_ec/invoices/?status=pending&limit=20
+GET /api/v1/facturacion/invoices/?status=pending&limit=20
 ```
 
 **Query params:**
@@ -229,7 +229,7 @@ GET /api/v1/facturacion_ec/invoices/?status=pending&limit=20
 #### Crear factura
 
 ```http
-POST /api/v1/facturacion_ec/invoices/
+POST /api/v1/facturacion/invoices/
 Content-Type: application/json
 
 {
@@ -277,7 +277,7 @@ Content-Type: application/json
 #### Detalle factura
 
 ```http
-GET /api/v1/facturacion_ec/invoices/{id}/
+GET /api/v1/facturacion/invoices/{id}/
 ```
 
 **Respuesta:**
@@ -309,7 +309,7 @@ GET /api/v1/facturacion_ec/invoices/{id}/
 #### Descargar XML
 
 ```http
-GET /api/v1/facturacion_ec/invoices/{id}/xml/
+GET /api/v1/facturacion/invoices/{id}/xml/
 ```
 
 **Respuesta:**
@@ -326,7 +326,7 @@ Content-Disposition: attachment; filename="factura_001-001-000000042.xml"
 #### Enviar a SRI (manual)
 
 ```http
-POST /api/v1/facturacion_ec/invoices/{id}/send/
+POST /api/v1/facturacion/invoices/{id}/send/
 ```
 
 **Respuesta:**
@@ -345,7 +345,7 @@ POST /api/v1/facturacion_ec/invoices/{id}/send/
 #### Listar clientes
 
 ```http
-GET /api/v1/facturacion_ec/customers/?identification=1791234567001
+GET /api/v1/facturacion/customers/?identification=1791234567001
 ```
 
 **Respuesta:**
@@ -366,7 +366,7 @@ GET /api/v1/facturacion_ec/customers/?identification=1791234567001
 #### Crear cliente
 
 ```http
-POST /api/v1/facturacion_ec/customers/
+POST /api/v1/facturacion/customers/
 Content-Type: application/json
 
 {
@@ -393,9 +393,9 @@ Content-Type: application/json
 ### **Products (Productos)**
 
 ```http
-GET /api/v1/facturacion_ec/products/
+GET /api/v1/facturacion/products/
 
-POST /api/v1/facturacion_ec/products/
+POST /api/v1/facturacion/products/
 {
   "name": "Producto A",
   "sku": "PROD-001",
@@ -462,7 +462,7 @@ payload = {
     ]
 }
 resp = requests.post(
-    f"{BASE}/facturacion_ec/invoices/",
+    f"{BASE}/facturacion/invoices/",
     json=payload,
     headers=headers
 )
@@ -479,7 +479,7 @@ TOKEN=$(curl -s -X POST http://localhost:8000/api/v1/auth/token/ \
   -d '{"username":"admin","password":"admin"}' | jq -r .access)
 
 # Crear factura
-curl -X POST http://localhost:8000/api/v1/facturacion_ec/invoices/ \
+curl -X POST http://localhost:8000/api/v1/facturacion/invoices/ \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"customer_id":5,"lines":[{"product_id":1,"quantity":2}]}'
@@ -501,7 +501,7 @@ async function login() {
 }
 
 async function createInvoice(token) {
-  const resp = await fetch(`${BASE}/facturacion_ec/invoices/`, {
+  const resp = await fetch(`${BASE}/facturacion/invoices/`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -515,6 +515,143 @@ async function createInvoice(token) {
   return resp.json();
 }
 ```
+
+---
+
+## 📦 Inventory API
+
+**Base:** `/api/v1/inventory/`
+
+### GET /api/v1/inventory/products/
+Lista todos los productos.
+
+**Respuesta:**
+```json
+[
+  {
+    "id": 1,
+    "sku": "PROD-001",
+    "name": "Producto A",
+    "category": "Electrónica",
+    "stock_quantity": 50.0,
+    "unit_price": "100.00",
+    "is_low_stock": false
+  }
+]
+```
+
+### GET /api/v1/inventory/stock-movements/
+Lista movimientos de inventario.
+
+### POST /api/v1/inventory/stock-movements/
+Registra movimiento (entrada/salida/ajuste). Automáticamente actualiza stock del producto.
+
+---
+
+## 🛒 Sales API
+
+**Base:** `/api/v1/sales/`
+
+### Quotes
+
+`GET /api/v1/sales/quotes/` — Lista cotizaciones
+`GET /api/v1/sales/quotes/{id}/` — Detalle con líneas
+`POST /api/v1/sales/quotes/` — Crear cotización
+```json
+{
+  "quote_number": "Q-001",
+  "customer_id": 5,
+  "expiry_date": "2026-05-20",
+  "lines": [
+    {"product_id": 1, "quantity": 2, "unit_price": 100}
+  ]
+}
+```
+`POST /api/v1/sales/quotes/{id}/accept/` — Aceptar cotización
+`POST /api/v1/sales/quotes/{id}/reject/` — Rechazar cotización
+
+### Orders
+
+`GET /api/v1/sales/orders/` — Lista órdenes
+`POST /api/v1/sales/orders/` — Crear orden
+`POST /api/v1/sales/orders/{id}/confirm/` — Confirmar (verifica stock, reserva)
+`POST /api/v1/sales/orders/{id}/invoice/` — Convertir orden en factura (llama a facturacion)
+
+---
+
+## 🛒 Purchases API
+
+**Base:** `/api/v1/purchases/`
+
+### Suppliers
+
+`GET /api/v1/purchases/suppliers/` — Lista proveedores
+
+### Purchase Orders
+
+`GET /api/v1/purchases/purchase-orders/` — Lista OC
+`POST /api/v1/purchases/purchase-orders/` — Crear OC
+```json
+{
+  "po_number": "PO-001",
+  "supplier_id": 3,
+  "expected_delivery": "2026-05-25",
+  "lines": [
+    {"product_id": 1, "quantity_ordered": 100, "unit_price": 80}
+  ]
+}
+```
+`POST /api/v1/purchases/purchase-orders/{id}/send/` — Marcar como enviada
+`POST /api/v1/purchases/purchase-orders/{id}/receive/` — Registrar recepción
+```json
+{ "lines": [{"line_id": 1, "quantity_received": 50}] }
+```
+Actualiza stock en inventory automaticamente.
+
+---
+
+## 🔔 Notifications API
+
+**Base:** `/api/v1/notifications/`
+
+### Inbox (usuario actual)
+
+`GET /api/v1/notifications/inbox/` — Notificaciones no leídas
+`POST /api/v1/notifications/inbox/{nid}/read/` — Marcar como leída
+
+### Queue
+
+`POST /api/v1/notifications/send/` — Encolar notificación
+```json
+{
+  "type": "email",
+  "recipient": "cliente@example.com",
+  "title": "Factura creada",
+  "message": "Su factura #001-001-000000001 está lista",
+  "template": "invoice_created"
+}
+```
+`GET /api/v1/notifications/templates/` — Lista plantillas disponibles
+
+---
+
+## 🖨️ Print Manager API
+
+**Base:** `/api/v1/print/`
+
+`GET /api/v1/print/templates/` — Plantillas activas
+`POST /api/v1/print/render/` — Renderizar PDF (genera PrintJob)
+```json
+{
+  "template_key": "invoice",
+  "context": {
+    "invoice": {"number": "001-001", "total": 224},
+    "company": {"name": "Mi Empresa"}
+  },
+  "filename": "factura_001.pdf"
+}
+```
+`GET /api/v1/print/jobs/{id}/` — Consultar estado del job
 
 ---
 
@@ -535,15 +672,15 @@ async function createInvoice(token) {
 ## 📊 Paginación
 
 ```http
-GET /api/v1/facturacion_ec/invoices/?limit=20&offset=40
+GET /api/v1/facturacion/invoices/?limit=20&offset=40
 ```
 
 **Respuesta:**
 ```json
 {
   "count": 150,
-  "next": "http://localhost:8000/api/v1/facturacion_ec/invoices/?limit=20&offset=60",
-  "previous": "http://localhost:8000/api/v1/facturacion_ec/invoices/?limit=20&offset=20",
+  "next": "http://localhost:8000/api/v1/facturacion/invoices/?limit=20&offset=60",
+  "previous": "http://localhost:8000/api/v1/facturacion/invoices/?limit=20&offset=20",
   "results": [...]
 }
 ```

@@ -54,13 +54,13 @@ Un **módulo** es una app Django autocontenida que extiende ERP Nexus. Vive en s
 MODULE_META = {
     # Identificación
     "name": "Facturación Electrónica Ecuador",
-    "technical_name": "facturacion_ec",
+    "technical_name": "facturacion",
     "version": "0.1.0",
     "description": "Emisión de facturas electrónicas SRI Ecuador (XML, firma digital, envío)",
     "summary": "Facturación electrónica para Ecuador",
     "author": "ERP Nexus Team",
     "author_email": "dev@erpnexus.ec",
-    "repo": "https://github.com/ERPNexus/facturacion_ec",
+    "repo": "https://github.com/ERPNexus/facturacion",
     "license": "MIT",
 
     # Dependencias
@@ -98,8 +98,8 @@ MODULE_META = {
     "menu_order": 10,                   # Orden en menú
 
     # URLs
-    "docs_url": "https://erpnexus.facturacion_ec/docs",
-    "support_url": "https://github.com/ERPNexus/facturacion_ec/issues",
+    "docs_url": "https://erpnexus.facturacion/docs",
+    "support_url": "https://github.com/ERPNexus/facturacion/issues",
 }
 ```
 
@@ -116,7 +116,7 @@ from django.db.models.signals import post_migrate
 
 class FacturacionEcConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'modules.facturacion_ec'
+    name = 'modules.facturacion'
     verbose_name = "Facturación Electrónica Ecuador"
 
     def ready(self):
@@ -125,7 +125,7 @@ class FacturacionEcConfig(AppConfig):
         Importar signals aquí para que se registren.
         """
         # Importar signals
-        import modules.facturacion_ec.signals  # noqa: F401
+        import modules.facturacion.signals  # noqa: F401
 
         # Hook post-migrate para seed data
         post_migrate.connect(self.seed_initial_data, sender=self)
@@ -388,7 +388,7 @@ def invoice_pre_delete(sender, instance, **kwargs):
 import pytest
 from django.conf import settings
 
-from modules.facturacion_ec.models import Customer, Invoice
+from modules.facturacion.models import Customer, Invoice
 
 
 @pytest.mark.django_db
@@ -407,7 +407,7 @@ class TestCustomer:
 # tests/test_api.py
 from ninja.testing import TestClient
 
-from modules.facturacion_ec.api.routes import router
+from modules.facturacion.api.routes import router
 
 client = TestClient(router)
 
@@ -444,8 +444,8 @@ Módulo ERP Nexus para emisión de facturas electrónicas SRI Ecuador.
 # Desde el marketplace de ERP Nexus
 POST /api/v1/modules/
 {
-  "technical_name": "facturacion_ec",
-  "repo": "https://github.com/ERPNexus/facturacion_ec",
+  "technical_name": "facturacion",
+  "repo": "https://github.com/ERPNexus/facturacion",
   "version": "0.1.0"
 }
 ```
@@ -464,11 +464,11 @@ FACTURACION_EC_AUTO_SEND = True
 
 | Endpoint | Método | Descripción |
 |----------|--------|-------------|
-| `/api/v1/facturacion_ec/` | GET | Lista facturas |
-| `/api/v1/facturacion_ec/` | POST | Crea factura |
-| `/api/v1/facturacion_ec/{id}/` | GET | Detalle factura |
-| `/api/v1/facturacion_ec/{id}/xml` | GET | Descarga XML |
-| `/api/v1/facturacion_ec/customers/` | GET | Buscar clientes |
+| `/api/v1/facturacion/` | GET | Lista facturas |
+| `/api/v1/facturacion/` | POST | Crea factura |
+| `/api/v1/facturacion/{id}/` | GET | Detalle factura |
+| `/api/v1/facturacion/{id}/xml` | GET | Descarga XML |
+| `/api/v1/facturacion/customers/` | GET | Buscar clientes |
 
 ## Licencia
 
@@ -483,10 +483,10 @@ Para instaladores que usan YAML:
 
 ```yaml
 name: Facturación Electrónica Ecuador
-technical_name: facturacion_ec
+technical_name: facturacion
 version: 0.1.0
 description: Módulo para facturación electrónica SRI Ecuador
-repo: https://github.com/ERPNexus/facturacion_ec
+repo: https://github.com/ERPNexus/facturacion
 license: MIT
 dependencies:
   - core_companies >= 0.5.0
@@ -522,10 +522,10 @@ settings:
 El módulo se distribuye como **repositorio Git**:
 
 ```
-https://github.com/ERPNexus/facturacion_ec/
+https://github.com/ERPNexus/facturacion/
 ├── .git/
 ├── modules/
-│   └── facturacion_ec/     ← Código fuente
+│   └── facturacion/     ← Código fuente
 ├── requirements.txt         ← Dependencias Python extra
 ├── pyproject.toml          ← Config build (opcional)
 └── README.md
@@ -533,8 +533,8 @@ https://github.com/ERPNexus/facturacion_ec/
 
 **Instalación ERP Nexus:**
 1. Clona repo a `~/.erp-nexus/apps/facturacion/`
-2. Agrega `modules.facturacion_ec` a `INSTALLED_APPS`
-3. Ejecuta `python manage.py migrate facturacion_ec`
+2. Agrega `modules.facturacion` a `INSTALLED_APPS`
+3. Ejecuta `python manage.py migrate facturacion`
 4. Registra en `ModuleCatalogItem`
 
 ---

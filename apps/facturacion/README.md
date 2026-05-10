@@ -17,8 +17,8 @@ Módulo oficial para ERP Nexus que permite emitir, firmar y enviar facturas elec
 
 ```bash
 cd erp-nexus
-# El módulo ya está en modules/facturacion_ec
-uv run python manage.py makemigrations facturacion_ec
+# El módulo ya está en apps/facturacion
+uv run python manage.py makemigrations facturacion
 uv run python manage.py migrate
 ```
 
@@ -59,7 +59,7 @@ El módulo incluye sistema de licencias configurable remotamente:
 
 ```python
 # Asignar licencia a empresa (admin)
-from modules.facturacion_ec.models import LicenseType, CompanyLicense, Company
+from modules.facturacion.models import LicenseType, CompanyLicense, Company
 
 license_type = LicenseType.objects.get(plan_id="monthly_10")
 CompanyLicense.objects.create(
@@ -132,7 +132,7 @@ uv run python manage.py send_pending_facturacion --limit=10
 ## Estructura de Archivos
 
 ```
-modules/facturacion_ec/
+apps/facturacion/
 ├── __meta__.py           # Metadata (nexus CLI)
 ├── models.py             # Modelos Django
 ├── admin.py              # Admin integrado
@@ -153,10 +153,10 @@ modules/facturacion_ec/
 ```bash
 cd erp-nexus
 uv sync
-uv run pytest modules/facturacion_ec/tests/ -v
+uv run pytest apps/facturacion/tests/ -v
 
 # Generar migraciones
-uv run python manage.py makemigrations facturacion_ec
+uv run python manage.py makemigrations facturacion
 uv run python manage.py migrate
 ```
 
@@ -184,7 +184,7 @@ uv run python manage.py migrate
 ## Soporte
 
 - 📧 contact@erpnexus.ec
-- 🐛 Issues: https://github.com/ERPNexusGroup/facturacion_ec/issues
+- 🐛 Issues: https://github.com/ERPNexusGroup/facturacion/issues
 - 📖 Documentación: `/docs/` en repo
 
 ## Licencia

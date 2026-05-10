@@ -128,7 +128,7 @@ python manage.py migrate hr
 │   │   │   └── ...
 │   │   └── erp_nexus/
 │   │
-│   ├── facturacion_ec/     ❌ YA NO EXISTE (fusionado en core)
+│   ├── facturacion/     ❌ YA NO EXISTE (fusionado en core)
 │   ├── inventory/          ❌ YA NO EXISTE (fusionado en core)
 │   │
 │   ├── hr/                 ← PLUGIN (futuro, clonar cuando se necesite)
