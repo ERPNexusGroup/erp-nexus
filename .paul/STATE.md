@@ -1,10 +1,10 @@
 # PAUL State — ERP Nexus Core (Hybrid Architecture)
 
-**Project:** ERP Nexus Core (Framework + Essential Modules)  
-**Architecture:** Hybrid — Essential modules in core, Optional modules as plugins  
-**Phase:** 0.6 — Hybrid Restructure (Mover essential modules a apps/)  
-**Loop Position:** PLAN → APPLY → UNIFY  
-**Started:** 2026-05-10  
+**Project:** ERP Nexus Core (Framework + Essential Modules)
+**Architecture:** Hybrid — Essential modules in core, Optional modules as plugins
+**Phase:** 0.6 — Hybrid Restructure (Integrate essential modules)
+**Loop Position:** PLAN → APPLY → UNIFY
+**Started:** 2026-05-10
 **Last Updated:** 2026-05-10
 
 ---
@@ -15,36 +15,31 @@
 
 ERP Nexus usa **Hybrid Architecture**:
 
-### **Tier 1 — Core Framework (always present):**
-- `core_users`, `core_companies`, `core_events`, `core_api`, `core_marketplace`, `core_permissions`, `core_audit`, `core_stats`, `core_config`, `core_dashboard`
+### **Tier 1 — Core Framework (11 apps — always present):**
+`core_users`, `core_companies`, `core_events`, `core_api`, `core_marketplace`,
+`core_permissions`, `core_audit`, `core_stats`, `core_config`, `core_dashboard`,
+`core_pagebuilder` (web builder)
 
-### **Tier 2 — Essential Business Modules (integrated, NOT plugins):**
-- `facturacion` — Facturación SRI Ecuador
-- `inventory` — Inventario/stock
-- `sales` — Ventas/cotizaciones
-- `purchases` — Compras/proveedores
-- `notifications` — Email + Telegram
-- `permissions` — Permisos extendidos
-- `dashboard` — Dashboard principal
-- `print_manager` — PDF generation
+### **Tier 2 — Essential Business Modules (6 apps — integrated, NOT plugins):**
+- `facturacion` — Facturación SRI Ecuador ✅ DONE (0.6.2)
+- `inventory` — Inventario/stock ⏳ Pending (0.6.5)
+- `sales` — Ventas/cotizaciones ⏳ Pending (0.6.6)
+- `purchases` — Compras/proveedores ⏳ Pending (0.6.6)
+- `notifications` — Email + Telegram ⏳ Pending (0.6.6)
+- `print_manager` — PDF generation ⏳ Pending (0.6.6)
 
-**Motivo:** ERP debe ser funcional "out-of-the-box" para PYMES. No tiene sentido hacer instalar facturación como plugin cuando todo ERP necesita facturar.
+**Motivo:** ERP debe ser funcional "out-of-the-box" para PYMES.
 
-### **Tier 3 — Optional Plugins (externos, instalables):**
-- `hr` — Recursos humanos (repo separado)
-- `crm` — CRM (repo separado)
-- `accounting_adv` — Contabilidad avanzada (repo separado)
-- `project_mgmt` — Gestión de proyectos (repo separado)
-- `pos` — Punto de venta (repo separado)
-- `ecommerce` — Tienda online (repo separado)
+### **Tier 3 — Optional Plugins (futuro, instalables via Marketplace):**
+`hr`, `crm`, `accounting_adv`, `project_mgmt`, `pos`, `ecommerce`
 
 ---
 
-## 📊 Current State (After Phase 0.6.2 — Task Complete)
+## 📊 Current State (After Phase 0.6.3 — DONE)
 
 ```
 repos/erp-nexus/
-├── apps/                      # ✅ 11 core + facturacion (essential)
+├── apps/                      # 11 core + 1 essential (facturacion)
 │   ├── core_users/
 │   ├── core_companies/
 │   ├── core_events/
@@ -55,179 +50,141 @@ repos/erp-nexus/
 │   ├── core_stats/
 │   ├── core_config/
 │   ├── core_dashboard/
+│   ├── core_pagebuilder/
 │   │
-│   ├── facturacion/           ✅ MOVED from modules/facturacion_ec/
+│   ├── facturacion/           ✅ MOVED (0.6.2)
 │   │   ├── models.py
 │   │   ├── api/routes.py
 │   │   ├── services/
 │   │   └── ...
 │   │
-│   ├── inventory/             ⏳ Pendiente (ya existe en modules?)
-│   ├── sales/                 ⏳ Pendiente
-│   ├── purchases/             ⏳ Pendiente
-│   ├── notifications/         ⏳ Pendiente
-│   ├── permissions/           ⏳ Pendiente
-│   ├── dashboard/             ⏳ Pendiente
-│   └── print_manager/         ⏳ Pendiente
+│   ├── inventory/             ⏳ 0.6.5 (recuperar de inventory_basic)
+│   ├── sales/                 ⏳ 0.6.6 (crear nuevo)
+│   ├── purchases/             ⏳ 0.6.6 (crear nuevo)
+│   ├── notifications/         ⏳ 0.6.6 (crear nuevo)
+│   └── print_manager/         ⏳ 0.6.6 (crear nuevo)
 │
-├── modules/                   # ❌ Vacío (a eliminar en 0.6.3)
-│   ├── accounting_basic/      # Demo — eliminar
-│   ├── inventory_basic/       # Demo — eliminar
-│   └── demo_flow/             # Demo — eliminar
+├── modules/                   # ✅ Vacío (demo eliminados en 0.6.3)
+│   ├── README.md
+│   └── registry.json
 │
 ├── erp_nexus/
-│   ├── settings.py           # ✅ Actualizado
-│   ├── modules_enabled.py    # ✅ Actualizado a apps.facturacion
+│   ├── settings/
+│   │   └── base.py            # INSTALLED_APPS incluye facturacion
+│   ├── modules_enabled.py     # Vacío (plugins futuros)
 │   └── ...
 │
 ├── docker/
 ├── .paul/
+│   ├── STATE.md              # Este archivo
+│   ├── PROJECT.md
+│   └── ROADMAP.md
 └── README.md
 ```
 
-**Task 0.6.2 completada:**
-- ✅ `facturacion_ec/` movido a `apps/facturacion/`
-- ✅ Package rename: `facturacion_ec` → `facturacion`
-- ✅ Imports actualizados en core (core_api, tests, management commands)
-- ✅ Settings actualizados (modules_enabled.py, INSTALLED_APPS implícito)
-- ✅ Docsactualizadas (INSTALL.md, DEVELOPMENT.md, CONTRIBUTING.md)
-
-**Próximo:** Task 0.6.3 — Eliminar módulos demo
+**Completado (0.6.1 — 0.6.3):**
+- ✅ Arquitectura híbrida definida (ADR/007, ADR/008)
+- ✅ `facturacion_ec/` → `apps/facturacion/` (rename package preservado)
+- ✅ Demo modules eliminados (`accounting_basic`, `inventory_basic`, `demo_flow`)
+- ✅ Settings limpios (INSTALLED_APPS actualizado, modules_enabled.py vacío)
+- ✅ Documentación arquitectónica actualizada
 
 ---
 
-## 📋 Phase 0.6 — Hybrid Restructure (PLAN)
+## 📋 Phase 0.6 — Hybrid Restructure (PLAN → APPLY → UNIFY)
 
-**Objetivo:** Reorganizar core para hybrid architecture (essential modules en `apps/`).
+**Objetivo:** Integrar todos los Essential Modules en `apps/` y eliminar demos.
 
-**Estado actual:** ✅ Task 0.6.2 COMPLETADA — facturacion movido a `apps/facturacion/`
-
-### Tasks pendientes (8 tasks):
+### Tasks
 
 | Task | Descripción | Estado | Estimación |
 |------|-------------|--------|------------|
 | 0.6.1 | Definir arquitectura híbrida | ✅ DONE | PLAN |
 | 0.6.2 | Mover `facturacion_ec/` → `apps/facturacion/` | ✅ DONE | 2h |
-| 0.6.3 | Eliminar módulos demo | ⬜ Pending | 30min |
+| 0.6.3 | Eliminar módulos demo | ✅ DONE | 30min |
 | 0.6.4 | Clean core settings | ⬜ Pending | 1h |
-| 0.6.5 | Eliminar estático modules_enabled.py | ⬜ Pending | 30min |
-| 0.6.6 | Reorganizar workspace | ⬜ Pending | 1h |
-| 0.6.7 | Actualizar documentación | ⬜ Pending | 2h |
-| 0.6.8 | Actualizar PAUL | ⬜ Pending | 30min |
-| 0.6.9 | Validar todo | ⬜ Pending | 1h |
+| 0.6.5 | Create `apps/inventory/` desde `inventory_basic` | ⬜ Pending | 2h |
+| 0.6.6 | Crear módulos esenciales restantes (sales, purchases, notifications, print_manager) | ⬜ Pending | 4h |
+| 0.6.7 | Update documentation | ⬜ Pending | 2h |
+| 0.6.8 | Rebuild graph + finalize state | ⬜ Pending | 1h |
+| 0.6.9 | Validation | ⬜ Pending | 1h |
 
-**Total:** ~9 horas
-
----
-
-## 🗺️ Phase 0.6.2 — Detalle (Mover facturacion_ec → apps/facturacion/)
-
-### **Before:**
-```
-modules/facturacion_ec/
-├── facturacion_ec/
-│   ├── models.py
-│   ├── api/routes.py
-│   └── services/
-```
-
-### **After:**
-```
-apps/facturacion/
-├── __init__.py
-├── apps.py              (AppConfig — rename: FacturacionConfig)
-├── models.py
-├── admin.py
-├── api/
-│   └── routes.py
-├── services/
-├── migrations/
-└── tests/
-```
-
-**Cambios:**
-1. Mover directorio: `modules/facturacion_ec/facturacion_ec/` → `apps/facturacion/`
-2. Rename package: `facturacion_ec` → `facturacion` (en apps.py, imports)
-3. Actualizar imports rotos en core (de `modules.facturacion_ec` → `apps.facturacion`)
-4. Añadir a `INSTALLED_APPS` en settings (como los otros core apps)
+**Total pendiente:** ~12h
 
 ---
 
-## 📈 Expected State After Phase 0.6
+## 📈 Expected State After Phase 0.6.9 (VALIDATION)
 
 ```
 repos/erp-nexus/
-├── apps/                      # 19 Django apps (11 core + 8 essential)
-│   ├── core_users/
+├── apps/                      # 17 Django apps (11 core + 6 essential)
+│   ├── core_users/            # Framework
 │   ├── core_companies/
-│   ├── core_events/
-│   ├── core_api/
+│   ├── core_events/           # Event Bus
+│   ├── core_api/              # REST API (Django Ninja)
 │   ├── core_marketplace/
-│   ├── core_permissions/
+│   ├── core_permissions/      # Permissions framework
 │   ├── core_audit/
 │   ├── core_stats/
 │   ├── core_config/
-│   ├── core_dashboard/
+│   ├── core_dashboard/        # Dashboard framework
+│   ├── core_pagebuilder/      # Web builder
 │   │
-│   ├── facturacion/           ✅ Moved from modules/
-│   ├── inventory/             ✅ (ya existe o por crear)
-│   ├── sales/                 ✅ (ya existe o por crear)
-│   ├── purchases/             ✅ (ya existe o por crear)
-│   ├── notifications/         ✅ (ya existe o por crear)
-│   ├── permissions/           ✅ (ya existe o por crear)
-│   ├── dashboard/             ✅ (ya existe o por crear)
-│   └── print_manager/         ✅ (ya existe o por crear)
+│   ├── facturacion/           ✅ Essential — SRI invoices
+│   ├── inventory/             ✅ Essential — stock
+│   ├── sales/                 ✅ Essential — orders/quotes
+│   ├── purchases/             ✅ Essential — PO
+│   ├── notifications/         ✅ Essential — email/telegram
+│   └── print_manager/         ✅ Essential — PDF
 │
+├── modules/                   # Vacío (solo plugins futuros via Marketplace)
 ├── erp_nexus/
-│   ├── settings/
-│   │   ├── base.py           # INSTALLED_APPS con los 19 apps
-│   │   └── ...
-│   ├── urls.py
-│   └── ...
-│
-├── docker/
-├── .paul/
-├── README.md
-└── (sin modules/ directory)
+│   ├── settings/base.py       # INSTALLED_APPS incluye los 17
+│   └── modules_enabled.py     # Vacío
+└── (otros archivos core)
 ```
+
+**Nota:** `permissions`, `dashboard`, `web_builder` ya existen como
+`core_permissions`, `core_dashboard`, `core_pagebuilder` (Tier 1).
 
 ---
 
 ## 🔄 Dependencies
 
 **Phase 0.6 dependencies:**
-- ❌ Ninguno — es foundation
+- ✅ 0.6.2 (facturacion integrado) — DONE
+- ✅ 0.6.3 (demo modules eliminados) — DONE
 
-**Phase 1.1 (Marketplace) dependencies:**
-- ✅ Phase 0.6 completado
+**Phase 1.x (Marketplace) dependencies:**
+- ⏳ Phase 0.6 completo → requisito para Marketplace
 
 ---
 
 ## 📋 Acceptance Criteria
 
-- [ ] `erp-nexus/apps/` contiene 19 Django apps
-- [ ] No existe `modules/` directorio (o solo plugins externos futuros)
-- [ ] `facturacion_ec/` movido a `apps/facturacion/` (rename package)
-- [ ] Todos los essential modules registrados en `INSTALLED_APPS`
-- [ ] No imports rotos (`grep -r "modules.facturacion"` → 0 results)
-- [ ] `modules_enabled.py` eliminado o convertido a dinámico
-- [ ] Tests core pasan (pytest apps/)
+- [ ] `apps/` contiene 17 Django apps (11 core + 6 essential)
+- [ ] `modules/` vacío (solo README.md, registry.json)
+- [ ] Sin imports de `modules.facturacion_ec` (solo `apps.facturacion`)
+- [ ] `modules_enabled.py` vacío (plug & play essential modules)
+- [ ] Todos los essential modules en `INSTALLED_APPS`
+- [ ] `pytest` pasa para cada app esencial
+- [ ] `python manage.py migrate` aplica sin errores
+- [ ] `python manage.py runserver` arranca
+- [ ] API endpoints /api/v1/facturacion/ & /api/v1/inventory/ funcionan
 - [ ] Graphify rebuild sin errores
-- [ ] Documentación ARCHITECTURE_HYBRID.md actualizada
+- [ ] Documentación (ARCHITECTURE_HYBRID.md, MULTI_REPO_STRUCTURE.md) actualizada
 
 ---
 
 ## 🔗 References
 
 - Architecture: `ARCHITECTURE_HYBRID.md`
-- ADR: `ADR/007-hybrid-architecture.md`
+- ADRs: `ADR/007-hybrid-architecture.md`, `ADR/008-communication-channels.md`
 - Project Definition: `PROJECT_DEFINITION.md`
 - Work Plan: `WORK_PLAN.md`
-- Phase Plan: `.paul/phases/00-foundation/00-01-REPO-RESTRUCTURE.md`
+- Phase Spec: `.paul/phases/00-foundation/00-01-REPO-RESTRUCTURE.md`
 
 ---
 
-**Estado Actual:** PLAN completado, esperando APPLY  
-**Próxima acción:** Ejecutar Phase 0.6.2 (mover facturacion_ec → apps/facturacion/)
-
-**Nota:** Ya no se extraerá facturacion_ec a repo separado (era enfoque plugin-only). Ahora es hybrid con essential modules en core.
+**Estado Actual:** PLAN (0.6.2 y 0.6.3 ya APPLYed)
+**Próxima acción:** Ejecutar Task 0.6.4 — Clean core settings

@@ -1,15 +1,15 @@
 {
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/test_facturacion_ec.py": {
-    "mtime": 1777961703.8297486,
-    "hash": "288e28d942a859b220e3a95e8db1855d"
+    "mtime": 1778438611.3440566,
+    "hash": "874d167e18f5dd315b638a1e250fdf1c"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/manage.py": {
     "mtime": 1777961669.3031116,
     "hash": "60a064e18e11eb9116a0313f38bddbf5"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/config/facturacion_ec_settings_example.py": {
-    "mtime": 1777961703.821474,
-    "hash": "dd817c3301e10c2d47fe53dbbf4ea0d1"
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/config/facturacion_settings_example.py": {
+    "mtime": 1778438628.4771883,
+    "hash": "422a1d7fda223226b87f684ba14e0c5a"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/tests/test_audit.py": {
     "mtime": 1777961669.3113909,
@@ -188,8 +188,8 @@
     "hash": "dda8117a0badf062049c6cd401de18ab"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/management/commands/module_uninstall.py": {
-    "mtime": 1777961703.821474,
-    "hash": "714d1a63bf618990b8225a0e9491c121"
+    "mtime": 1778438656.7659278,
+    "hash": "b53118110eed251241809b33a2f47890"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_marketplace/management/commands/module_install.py": {
     "mtime": 1777961703.821474,
@@ -306,6 +306,110 @@
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_chart_of_accounts/apps.py": {
     "mtime": 1777961703.821474,
     "hash": "d66290656f0a63eab0bee71f3cf48837"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/models.py": {
+    "mtime": 1778438795.2395518,
+    "hash": "22804ddf390f9a090c7b39b261720633"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/admin.py": {
+    "mtime": 1778438499.1610627,
+    "hash": "0427b351de2590bf90789ef5ba3e4a2c"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/__init__.py": {
+    "mtime": 1778438522.4987779,
+    "hash": "93ae71eeb17c7d9d4ecafda34662872f"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/apps.py": {
+    "mtime": 1778438515.0261111,
+    "hash": "9272243bf16504fd116effd9610fbdbc"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/urls.py": {
+    "mtime": 1778438766.7122009,
+    "hash": "f0fd8c858cc0c445efa9d6ef588e75b8"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/signals.py": {
+    "mtime": 1778438769.9058676,
+    "hash": "a8c116296453c3dc4c912fb2ed9f0038"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/__meta__.py": {
+    "mtime": 1778438558.8959916,
+    "hash": "a58cca9f3052aa7d655bef04719a7d45"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/tests/conftest.py": {
+    "mtime": 1778438499.1683962,
+    "hash": "e19874c3932d0a6143c6f1e2bab210e1"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/tests/test_services.py": {
+    "mtime": 1778438575.6921754,
+    "hash": "9f9691b0d66d833440070c510613021a"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/services/digital_signature.py": {
+    "mtime": 1778438499.1647294,
+    "hash": "2fb0869b2249fd3ac2fab1666d5f9b3e"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/services/xml_generator.py": {
+    "mtime": 1778438499.1647294,
+    "hash": "8a79178eb96338595139055cd89e37da"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/services/code_unique.py": {
+    "mtime": 1778438499.1647294,
+    "hash": "e250da9139bb0c3b8f73772edee25241"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/services/__init__.py": {
+    "mtime": 1778438499.1647294,
+    "hash": "f2cc241a3b746ce76d9413d17ed6ef0d"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/services/facturation_integration.py": {
+    "mtime": 1778438499.1647294,
+    "hash": "9da299d7067e01cb6274950410e6ba08"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/services/sri_client.py": {
+    "mtime": 1778438499.1647294,
+    "hash": "e68923b81d975006dcf49ba805867c59"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/services/validator.py": {
+    "mtime": 1778438499.1647294,
+    "hash": "f097e576a786128d21f9061c590ba79a"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/static/facturacion_ec/js/dashboard.js": {
+    "mtime": 1778438499.1647294,
+    "hash": "bbaa202a347cc182468c16675f9e558c"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/migrations/0002_invoice_guia_remision_number.py": {
+    "mtime": 1778438788.8845344,
+    "hash": "40138bb47b8d64cb809ef04be3ee18e5"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/migrations/__init__.py": {
+    "mtime": 1778438788.8845344,
+    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/migrations/0003_invoiceline_discount.py": {
+    "mtime": 1778438788.8845344,
+    "hash": "7038cfaf9cf7956eac6ac7d4a2390135"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/migrations/0001_initial.py": {
+    "mtime": 1778438788.8808677,
+    "hash": "c475123d5794d694ff2d14c24b14c32e"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/management/__init__.py": {
+    "mtime": 1778438528.438778,
+    "hash": "cd061053afddb2cdf6a7cf7ddf24370d"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/management/commands/__init__.py": {
+    "mtime": 1778438499.1647294,
+    "hash": "49fd419e9eeb6bd6956bd55d4bdf89bb"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/management/commands/register_facturacion_ec.py": {
+    "mtime": 1778438538.1407776,
+    "hash": "65275b20484fcbc66776ea4869a13791"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/management/commands/send_pending_facturacion.py": {
+    "mtime": 1778438544.5537775,
+    "hash": "de172f911ae7f57c8e3b7b486adc24f2"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/api/routes.py": {
+    "mtime": 1778438499.1647294,
+    "hash": "a3b37e859a60f1ef036fac36b8c95b89"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_auth/models.py": {
     "mtime": 1777949371.2856712,
@@ -468,8 +572,8 @@
     "hash": "7d18a94c7dea513577b65c69e6cd1913"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_api/api.py": {
-    "mtime": 1778425089.0787826,
-    "hash": "ad52a0a27ea02e117b2e8bec3f481766"
+    "mtime": 1778438635.7225225,
+    "hash": "6be187a54b521e398419b5345c7dc35b"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_api/auth.py": {
     "mtime": 1777961669.2865524,
@@ -516,8 +620,8 @@
     "hash": "68cffe53d16bfffa562750e25934b109"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_api/v1/facturacion_ec.py": {
-    "mtime": 1778425081.5664964,
-    "hash": "82d5099db057c8787dd6e055d500d62b"
+    "mtime": 1778438589.1688516,
+    "hash": "38b255f0e71550480c42603d3d272d78"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_api/v1/users.py": {
     "mtime": 1777961669.2865524,
@@ -675,125 +779,21 @@
     "mtime": 1777961669.3072512,
     "hash": "44619c0ab03d9ff167001562e12f6c49"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/models.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "1b1a3cb151cf6f52fa309424a56b60e5"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/admin.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "0427b351de2590bf90789ef5ba3e4a2c"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/__init__.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "64232b6532cf3eccc262ad379f972eee"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/apps.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "af04b70af50857c33baa89233783ae1b"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/urls.py": {
-    "mtime": 1778425072.1128964,
-    "hash": "ecfdd1a2a43f7cbaae1b3cbe4f05c10b"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/signals.py": {
-    "mtime": 1777961703.8297486,
-    "hash": "d597fcbdb6a265ad417a4c5a9678aa5d"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/__meta__.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "f69e68884851cb14ec490da15d8a35db"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/tests/conftest.py": {
-    "mtime": 1777961703.8297486,
-    "hash": "e19874c3932d0a6143c6f1e2bab210e1"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/tests/test_services.py": {
-    "mtime": 1777961703.8297486,
-    "hash": "9cb4c805c2da3b2cd539aa6ee469cd9c"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/services/digital_signature.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "2fb0869b2249fd3ac2fab1666d5f9b3e"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/services/xml_generator.py": {
-    "mtime": 1777961703.8297486,
-    "hash": "8a79178eb96338595139055cd89e37da"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/services/code_unique.py": {
-    "mtime": 1778425313.1022437,
-    "hash": "e250da9139bb0c3b8f73772edee25241"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/services/__init__.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "f2cc241a3b746ce76d9413d17ed6ef0d"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/services/facturation_integration.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "9da299d7067e01cb6274950410e6ba08"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/services/sri_client.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "e68923b81d975006dcf49ba805867c59"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/services/validator.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "f097e576a786128d21f9061c590ba79a"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/static/facturacion_ec/js/dashboard.js": {
-    "mtime": 1777961703.8297486,
-    "hash": "bbaa202a347cc182468c16675f9e558c"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/migrations/0002_invoice_guia_remision_number.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "514609528b57152be37d53c9536076f2"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/migrations/__init__.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "d41d8cd98f00b204e9800998ecf8427e"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/migrations/0003_invoiceline_discount.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "7e6621b9f0dee1f18617baeee7640829"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/migrations/0001_initial.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "71e42efa2db47cf4d4185d28d46491c2"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/management/__init__.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "aee8ed63434a3c2e2bd770fe52737715"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/management/commands/__init__.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "49fd419e9eeb6bd6956bd55d4bdf89bb"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/management/commands/register_facturacion_ec.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "c37c608f9757fc9a4e58f418583a9d97"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/management/commands/send_pending_facturacion.py": {
-    "mtime": 1777961703.8256114,
-    "hash": "c0086f4b5a65f0c64cb56a59b05fc4c3"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/api/routes.py": {
-    "mtime": 1778425305.1044683,
-    "hash": "a3b37e859a60f1ef036fac36b8c95b89"
-  },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/scripts/init-db.sql": {
     "mtime": 1778428796.267855,
     "hash": "da2ff5eafeef383a8861e0e63b55b68a"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/erp_nexus/settings.py": {
-    "mtime": 1777961707.6838794,
-    "hash": "07e0d44e73a9da083b767be75ca6cb27"
+    "mtime": 1778438642.9605227,
+    "hash": "a1b40fc4ff134f396db99892fa98dab9"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/erp_nexus/__init__.py": {
     "mtime": 1777949371.3310356,
     "hash": "ae92833cc1f3a6c5695c9f38d5eae5ed"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/erp_nexus/modules_enabled.py": {
-    "mtime": 1777961712.624884,
-    "hash": "7638226c21f5d9ded13d6d5768779c43"
+    "mtime": 1778438708.205281,
+    "hash": "b7f8ecf8df13973f0ae4ef567c3d5019"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/erp_nexus/asgi.py": {
     "mtime": 1777949371.3310356,
@@ -872,12 +872,12 @@
     "hash": "cbf0b49d330af84298871f1a8af74df7"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/MULTI_REPO_STRUCTURE.md": {
-    "mtime": 1778436439.4799097,
-    "hash": "90abf4072a2ee911f5d3682ed1a3c873"
+    "mtime": 1778438698.0522811,
+    "hash": "f1a54927e4abc2aa7863261c12940582"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/WORK_PLAN.md": {
-    "mtime": 1778436874.5366843,
-    "hash": "bf548113c73e583eff86bdaa28b19468"
+    "mtime": 1778438340.4918113,
+    "hash": "e6f3758c333dace509965bffdd408e29"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/REQUIREMENTS.md": {
     "mtime": 1778428263.5215356,
@@ -888,16 +888,20 @@
     "hash": "9eb9014166185e5cb9e9edfb72fdf706"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/GRAPH_HEALTH.md": {
-    "mtime": 1778435961.1812944,
-    "hash": "44cd89c5d0d9f1db7f30afbdb78599b5"
+    "mtime": 1778438693.2626443,
+    "hash": "64e7ab42f61e07f5dfa5929084421e1f"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ARCHITECTURE_PLUGIN.md": {
     "mtime": 1778436820.6474977,
     "hash": "74bab75b34d5e27577a5de2f08637fd3"
   },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/ARCHITECTURE_HYBRID.md": {
+    "mtime": 1778438287.5790427,
+    "hash": "1104277d1362211bd75e282a9a50a34b"
+  },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ARCHITECTURE.md": {
-    "mtime": 1778428284.000708,
-    "hash": "cd8bd4a49b0d64a704aa199bd527c062"
+    "mtime": 1778438715.5606143,
+    "hash": "8ae4a099c3896189f22b0dcb548c4b7d"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/docker-compose.yml": {
     "mtime": 1778428780.3663378,
@@ -908,28 +912,28 @@
     "hash": "37c43a92bf1a40cae5620a1d7c998b87"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/CONTRIBUTING.md": {
-    "mtime": 1778428405.681097,
-    "hash": "5b7e00ad22dcad077a20011489890199"
+    "mtime": 1778438693.2586443,
+    "hash": "0177d74fd05561e7f5dd3e613bf1a23d"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/DOCS_INDEX.md": {
     "mtime": 1778436896.8447847,
     "hash": "90af4d1eb27deec82910acc73d83731c"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/CODING_STANDARDS.md": {
-    "mtime": 1778428339.2406583,
-    "hash": "ad5d5223561760508cfd23470eeeef19"
+    "mtime": 1778438693.2626443,
+    "hash": "aa7818e51286269db27f3405264c9c03"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/MODULE_SPEC.md": {
-    "mtime": 1778428312.7762642,
-    "hash": "bb456c005889a99c2fea758ee5acce76"
+    "mtime": 1778438693.2626443,
+    "hash": "6f833bec2c0edc1294f59497dd28b14f"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/DEVELOPMENT.md": {
-    "mtime": 1778428615.6675565,
-    "hash": "a88ad506f7c49f541d965ef3874ed21b"
+    "mtime": 1778438693.2626443,
+    "hash": "6e48782bcb11da2fcd225b1ded0b7a79"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/MODULE_INTEGRATION_STATUS.md": {
-    "mtime": 1778435975.0556946,
-    "hash": "82569dcf88dc2cf7aecf6eac0c048e4a"
+    "mtime": 1778438693.2626443,
+    "hash": "68cf77a9049930c01a97792e4e9ba1af"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/INSTALL.md": {
     "mtime": 1778428635.2823741,
@@ -940,36 +944,36 @@
     "hash": "6753828e4d99c6f5a2371301c79871c4"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/PROJECT_DEFINITION.md": {
-    "mtime": 1778436853.6357648,
-    "hash": "55a38bbb0deb59060f80be2ca3071c39"
+    "mtime": 1778438320.3262644,
+    "hash": "dfdb75d4573849e6a93d7be928b8f03f"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_dashboard/templates/admin/index.html": {
     "mtime": 1777949371.3021674,
     "hash": "f356311117ab05f6963e3a38a0fd4bcc"
   },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/README.md": {
+    "mtime": 1778438499.1610627,
+    "hash": "949a8d5b42704262c0993cdf98a76e43"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/facturacion/templates/facturacion_ec/dashboard.html": {
+    "mtime": 1778438499.1647294,
+    "hash": "949ecc298eeb4e2d7e4d7f4b18421f9e"
+  },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/docs/INSTALL_FACTURACION_EC.md": {
-    "mtime": 1777961703.8256114,
-    "hash": "43aff3d1f034bb28dc4e71153eafc42d"
+    "mtime": 1778438693.2586443,
+    "hash": "e2b13a1de6d15d18fffaa2e6819956ff"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/docs/INSTALL.md": {
-    "mtime": 1777961703.8256114,
-    "hash": "ac7b76d6da95672b60626d4a62b4459e"
+    "mtime": 1778438693.2586443,
+    "hash": "b61f0b8cab189fb4c889c40351550383"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/README.md": {
     "mtime": 1778428437.1960442,
     "hash": "e23f228c7e8ca7edc287e3a9fce00caf"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/README.md": {
-    "mtime": 1777961703.8256114,
-    "hash": "949a8d5b42704262c0993cdf98a76e43"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/facturacion_ec/templates/facturacion_ec/dashboard.html": {
-    "mtime": 1777961703.8297486,
-    "hash": "949ecc298eeb4e2d7e4d7f4b18421f9e"
-  },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/004-marketplace.md": {
-    "mtime": 1778428709.7842553,
-    "hash": "2b338844f9ac93e45fc6fb03fe343083"
+    "mtime": 1778438698.0522811,
+    "hash": "d51fd22c0fd21d8fd2bb0058ed1473a6"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/001-modular-architecture.md": {
     "mtime": 1778428669.632299,
@@ -983,12 +987,16 @@
     "mtime": 1778428681.5986998,
     "hash": "e80bcb638c8b1b42a051005006fcbf38"
   },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/007-hybrid-architecture.md": {
+    "mtime": 1778438300.5847092,
+    "hash": "2ca18f591eb13a134c85d46d3f253d91"
+  },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/006-plugin-architecture.md": {
-    "mtime": 1778436834.8840106,
-    "hash": "23f202a6301e318bc7f6622442330920"
+    "mtime": 1778438698.0522811,
+    "hash": "c37d7e8aec63dec45893cd42765ac66c"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/005-api-framework.md": {
-    "mtime": 1778428719.29774,
-    "hash": "85b34f6b88e452960f48433e461ba9c1"
+    "mtime": 1778438698.0522811,
+    "hash": "2ee348b7959971fed768cbccd3579c59"
   }
 }

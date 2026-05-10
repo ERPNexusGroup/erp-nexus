@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "apps.core_audit",
     "apps.core_stats",
     "apps.core_pagebuilder",
+    "apps.facturacion",            # Essential module (integrated)
 ]
 
 # Módulos externos cargados dinámicamente
