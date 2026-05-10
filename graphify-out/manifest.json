@@ -876,8 +876,8 @@
     "hash": "90abf4072a2ee911f5d3682ed1a3c873"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/WORK_PLAN.md": {
-    "mtime": 1778436467.5336797,
-    "hash": "2adfce60fa439660ccb014604576a22f"
+    "mtime": 1778436874.5366843,
+    "hash": "bf548113c73e583eff86bdaa28b19468"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/REQUIREMENTS.md": {
     "mtime": 1778428263.5215356,
@@ -890,6 +890,10 @@
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/GRAPH_HEALTH.md": {
     "mtime": 1778435961.1812944,
     "hash": "44cd89c5d0d9f1db7f30afbdb78599b5"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/ARCHITECTURE_PLUGIN.md": {
+    "mtime": 1778436820.6474977,
+    "hash": "74bab75b34d5e27577a5de2f08637fd3"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ARCHITECTURE.md": {
     "mtime": 1778428284.000708,
@@ -908,8 +912,8 @@
     "hash": "5b7e00ad22dcad077a20011489890199"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/DOCS_INDEX.md": {
-    "mtime": 1778428836.4632215,
-    "hash": "dca9e8d6bbdb1517f55706a6d11f0867"
+    "mtime": 1778436896.8447847,
+    "hash": "90af4d1eb27deec82910acc73d83731c"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/CODING_STANDARDS.md": {
     "mtime": 1778428339.2406583,
@@ -936,8 +940,8 @@
     "hash": "6753828e4d99c6f5a2371301c79871c4"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/PROJECT_DEFINITION.md": {
-    "mtime": 1778436392.6137905,
-    "hash": "964e45652fa3f5cae6fbc60bd55b82ec"
+    "mtime": 1778436853.6357648,
+    "hash": "55a38bbb0deb59060f80be2ca3071c39"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/core_dashboard/templates/admin/index.html": {
     "mtime": 1777949371.3021674,
@@ -978,6 +982,10 @@
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/002-event-bus.md": {
     "mtime": 1778428681.5986998,
     "hash": "e80bcb638c8b1b42a051005006fcbf38"
+  },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/006-plugin-architecture.md": {
+    "mtime": 1778436834.8840106,
+    "hash": "23f202a6301e318bc7f6622442330920"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/005-api-framework.md": {
     "mtime": 1778428719.29774,

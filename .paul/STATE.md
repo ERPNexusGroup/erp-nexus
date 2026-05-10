@@ -1,236 +1,198 @@
-# PAUL State — ERP Nexus Core
+# PAUL State — ERP Nexus Core (Hybrid Architecture)
 
-**Project:** ERP Nexus Core (Framework)  
-**Phase:** 0.6 — Repository Restructure  
+**Project:** ERP Nexus Core (Framework + Essential Modules)  
+**Architecture:** Hybrid — Essential modules in core, Optional modules as plugins  
+**Phase:** 0.6 — Hybrid Restructure (Mover essential modules a apps/)  
 **Loop Position:** PLAN → APPLY → UNIFY  
 **Started:** 2026-05-10  
 **Last Updated:** 2026-05-10
 
 ---
 
-## 📊 Current Loop Status
+## 🎯 Architecture Decision — HYBRID MODEL ✅ CONFIRMADO
 
-```
-┌─────────────────────────────────────────────┐
-│  PLAN  │  APPLY  │  UNIFY                    │
-│  ✅    │  ⬜     │  ⬜                       │
-└─────────────────────────────────────────────┘
-```
+**Decisión (Walter, 2026-05-10):**
 
-**Current Phase:** 0.6 — Repository Restructure (Multi-Repo Separation)  
-**Current Position:** PLAN (Phase 0.6 defined, awaiting approval)  
-**Next Action:** Execute PLAN 0.6.2 — Extract facturacion_ec to separate repo
+ERP Nexus usa **Hybrid Architecture**:
 
----
+### **Tier 1 — Core Framework (always present):**
+- `core_users`, `core_companies`, `core_events`, `core_api`, `core_marketplace`, `core_permissions`, `core_audit`, `core_stats`, `core_config`, `core_dashboard`
 
-## 🎯 Project Context — SCOPE CLARIFICATION
+### **Tier 2 — Essential Business Modules (integrated, NOT plugins):**
+- `facturacion` — Facturación SRI Ecuador
+- `inventory` — Inventario/stock
+- `sales` — Ventas/cotizaciones
+- `purchases` — Compras/proveedores
+- `notifications` — Email + Telegram
+- `permissions` — Permisos extendidos
+- `dashboard` — Dashboard principal
+- `print_manager` — PDF generation
 
-### **IMPORTANTE: Qué es ERP Nexus Core**
+**Motivo:** ERP debe ser funcional "out-of-the-box" para PYMES. No tiene sentido hacer instalar facturación como plugin cuando todo ERP necesita facturar.
 
-**ERP Nexus Core** = **Framework solamente**. NO incluye módulos de negocio.
-
-**SCOPE DEL CORE:**
-✅ 11 Django core apps (auth, companies, marketplace, events, api, etc.)  
-✅ Multi-tenant middleware  
-✅ ModuleRegistry + ModuleInstaller  
-✅ Event Bus (comunicación entre módulos)  
-✅ REST API layer (Django Ninja)  
-✅ Admin panel + Dashboard  
-✅ Docker + deployment tooling  
-✅ Documentation framework  
-
-**OUT OF SCOPE (se van a otros repos):**
-❌ facturacion_ec → `github.com/ERPNexus/facturacion_ec`  
-❌ inventory → `github.com/ERPNexus/inventory` (futuro)  
-❌ sales → `github.com/ERPNexus/sales` (futuro)  
-❌ SDK/CLI/Marketplace server → repos separados
+### **Tier 3 — Optional Plugins (externos, instalables):**
+- `hr` — Recursos humanos (repo separado)
+- `crm` — CRM (repo separado)
+- `accounting_adv` — Contabilidad avanzada (repo separado)
+- `project_mgmt` — Gestión de proyectos (repo separado)
+- `pos` — Punto de venta (repo separado)
+- `ecommerce` — Tienda online (repo separado)
 
 ---
 
-## 📋 Arquitectura Multi-Repo (DECIDIDA)
+## 📊 Current State (Before Phase 0.6)
 
 ```
-Organización GitHub ERPNexus:
-┌──────────────────────────────────────────────────┐
-│  erp-nexus/           ← ESTE REPO (CORE)          │
-│  facturacion_ec/      ← MÓDULO (repo separado)    │
-│  inventory/           ← MÓDULO (repo separado)    │
-│  sales/               ← MÓDULO (repo separado)    │
-│  sdk-nexus/           ← SDK (repo separado)       │
-│  nexus-cli/           ← CLI (repo separado)       │
-│  nexus-marketplace/   ← Marketplace server        │
-└──────────────────────────────────────────────────┘
+repos/erp-nexus/
+├── apps/                      # Solo 11 core framework apps
+│
+├── modules/                   # ❌ Contiene facturacion_ec (como módulo aislado)
+│   ├── facturacion_ec/        # ❌ Debería estar en apps/facturacion/
+│   ├── accounting_basic/      # ❌ Demo module — eliminar
+│   ├── inventory_basic/       # ❌ Demo module — eliminar
+│   └── demo_flow/             # ❌ Demo module — eliminar
+│
+├── erp_nexus/modules_enabled.py  # ❌ Estático
+└── manage.py                  # ✅ Core
 ```
 
-**Dependencias:**
-```
-facturacion_ec → erp-nexus >= 0.5.0
-inventory      → erp-nexus >= 0.6.0
-sales          → erp-nexus >= 0.7.0
-```
-
-**Marketplace flow:**
-1. Module developer publica módulo en GitHub
-2. Admin instala desde Marketplace: `manage.py install_module --git <url>`
-3. ModuleInstaller clona a `~/.erp-nexus/modules/{name}/`
-4. Core carga módulo dinámicamente
+**Problemas:**
+1. `facturacion_ec` en `modules/` (debería ser `apps/facturacion/`)
+2. Módulos demo ocupan espacio
+3. `modules_enabled.py` estático (debería ser dinámico desde DB)
 
 ---
 
-## 🎯 Phase 0.6 — Repository Restructure
+## 📋 Phase 0.6 — Hybrid Restructure (PLAN)
 
-**Objetivo:** Separar core de módulos. Dejar `erp-nexus/` como SOLO framework.
+**Objetivo:** Reorganizar core para hybrid architecture (essential modules en `apps/`).
 
 ### Tasks (9 tasks):
 
 | Task | Descripción | Estado | Estimación |
 |------|-------------|--------|------------|
-| 0.6.1 | Plan restructure | ✅ DONE | PLAN |
-| 0.6.2 | Extract facturacion_ec to separate repo | ⬜ Pending | 2h |
-| 0.6.3 | Remove demo modules (accounting_basic, etc.) | ⬜ Pending | 30min |
-| 0.6.4 | Update core settings (limpiar modules/) | ⬜ Pending | 1h |
-| 0.6.5 | Remove static modules_enabled.py | ⬜ Pending | 30min |
-| 0.6.6 | Reorganize workspace directory | ⬜ Pending | 1h |
-| 0.6.7 | Update documentation | ⬜ Pending | 2h |
-| 0.6.8 | Update PAUL for multi-repo | ⬜ Pending | 30min |
-| 0.6.9 | Validate everything works | ⬜ Pending | 1h |
+| 0.6.1 | Definir arquitectura híbrida | ✅ DONE | PLAN |
+| 0.6.2 | Mover `facturacion_ec/` → `apps/facturacion/` | ⬜ Pending | 2h |
+| 0.6.3 | Eliminar módulos demo | ⬜ Pending | 30min |
+| 0.6.4 | Clean core settings | ⬜ Pending | 1h |
+| 0.6.5 | Eliminar estático modules_enabled.py | ⬜ Pending | 30min |
+| 0.6.6 | Reorganizar workspace | ⬜ Pending | 1h |
+| 0.6.7 | Actualizar documentación | ⬜ Pending | 2h |
+| 0.6.8 | Actualizar PAUL | ⬜ Pending | 30min |
+| 0.6.9 | Validar todo | ⬜ Pending | 1h |
 
-**Total estimado:** ~9 horas
+**Total:** ~9 horas
 
 ---
 
-## 📊 State Before Phase 0.6
+## 🗺️ Phase 0.6.2 — Detalle (Mover facturacion_ec → apps/facturacion/)
+
+### **Before:**
+```
+modules/facturacion_ec/
+├── facturacion_ec/
+│   ├── models.py
+│   ├── api/routes.py
+│   └── services/
+```
+
+### **After:**
+```
+apps/facturacion/
+├── __init__.py
+├── apps.py              (AppConfig — rename: FacturacionConfig)
+├── models.py
+├── admin.py
+├── api/
+│   └── routes.py
+├── services/
+├── migrations/
+└── tests/
+```
+
+**Cambios:**
+1. Mover directorio: `modules/facturacion_ec/facturacion_ec/` → `apps/facturacion/`
+2. Rename package: `facturacion_ec` → `facturacion` (en apps.py, imports)
+3. Actualizar imports rotos en core (de `modules.facturacion_ec` → `apps.facturacion`)
+4. Añadir a `INSTALLED_APPS` en settings (como los otros core apps)
+
+---
+
+## 📈 Expected State After Phase 0.6
 
 ```
 repos/erp-nexus/
-├── apps/                      # Core ✅
-├── modules/                   # ❌ Contiene módulos (mal)
-│   ├── facturacion_ec/        # Debería estar en repo separado
-│   ├── accounting_basic/      # Demo — eliminar
-│   └── inventory_basic/       # Demo — eliminar
-├── erp_nexus/modules_enabled.py  # ❌ Estático, debería ser dinámico
-└── manage.py                  # Core ✅
-```
-
-**Problema:** Core y módulos mezclados en un solo repo → No hay true modularity.
-
----
-
-## 📈 State After Phase 0.6 (OBJETIVO)
-
-```
-repos/
-├── erp-nexus/                 # CORE ONLY
-│   ├── apps/                  # 11 core apps
-│   ├── erp_nexus/
-│   ├── docker/
-│   ├── pyproject.toml
-│   ├── .paul/                 # PAUL para core
-│   └── README.md              # Solo core docs
+├── apps/                      # 19 Django apps (11 core + 8 essential)
+│   ├── core_users/
+│   ├── core_companies/
+│   ├── core_events/
+│   ├── core_api/
+│   ├── core_marketplace/
+│   ├── core_permissions/
+│   ├── core_audit/
+│   ├── core_stats/
+│   ├── core_config/
+│   ├── core_dashboard/
+│   │
+│   ├── facturacion/           ✅ Moved from modules/
+│   ├── inventory/             ✅ (ya existe o por crear)
+│   ├── sales/                 ✅ (ya existe o por crear)
+│   ├── purchases/             ✅ (ya existe o por crear)
+│   ├── notifications/         ✅ (ya existe o por crear)
+│   ├── permissions/           ✅ (ya existe o por crear)
+│   ├── dashboard/             ✅ (ya existe o por crear)
+│   └── print_manager/         ✅ (ya existe o por crear)
 │
-├── facturacion_ec/            # MÓDULO INDEPENDIENTE (nuevo repo)
-│   ├── facturacion_ec/
-│   ├── tests/
-│   ├── README.md              # Docs del módulo
-│   └── .paul/                 # PAUL para módulo (futuro)
+├── erp_nexus/
+│   ├── settings/
+│   │   ├── base.py           # INSTALLED_APPS con los 19 apps
+│   │   └── ...
+│   ├── urls.py
+│   └── ...
 │
-└── (otros módulos futuros)
+├── docker/
+├── .paul/
+├── README.md
+└── (sin modules/ directory)
 ```
 
-**Resultado:**
-- ✅ Core limpio, sin código de módulos
-- ✅ Cada módulo en su repo
-- ✅ Marketplace puede instalar desde Git URLs
-- ✅ Versionado independiente
+---
+
+## 🔄 Dependencies
+
+**Phase 0.6 dependencies:**
+- ❌ Ninguno — es foundation
+
+**Phase 1.1 (Marketplace) dependencies:**
+- ✅ Phase 0.6 completado
 
 ---
 
-## 🔄 Dependencies and Blockers
+## 📋 Acceptance Criteria
 
-### **Dependencies:**
-- Phase 0.6 NO depende de nada (foundation)
-- Phase 1.1 (services) depende de Phase 0.6 completado
-
-### **Blockers:**
-- ❌ No borrar facturacion_ec hasta tener repo separado (Task 0.6.2 first)
-- ❌ No modificar settings hasta limpiar imports (Task 0.6.4)
-- ❌ No eliminar modules_enabled.py hasta tener dynamic loader (Task 0.6.5)
-
----
-
-## 📋 Acceptance Criteria (Summary)
-
-- [ ] `repos/facturacion_ec/` existe como directorio Git independiente
-- [ ] `repos/erp-nexus/modules/` NO existe (vacío o eliminado)
-- [ ] Demo modules removidos (`accounting_basic`, `inventory_basic`, `demo_flow`)
+- [ ] `erp-nexus/apps/` contiene 19 Django apps
+- [ ] No existe `modules/` directorio (o solo plugins externos futuros)
+- [ ] `facturacion_ec/` movido a `apps/facturacion/` (rename package)
+- [ ] Todos los essential modules registrados en `INSTALLED_APPS`
+- [ ] No imports rotos (`grep -r "modules.facturacion"` → 0 results)
 - [ ] `modules_enabled.py` eliminado o convertido a dinámico
-- [ ] Ningún `from modules.` import en core apps
-- [ ] Tests core pasan sin modules/
-- [ ] Documentación actualizada (MULTI_REPO_STRUCTURE.md)
-- [ ] PAUL STATE actualizado (scope clarificado)
-
----
-
-## 🗺️ Roadmap Impact
-
-**Esta phase reestructura el proyecto completo.**
-
-**Antes (monorepo):**
-```
-erp-nexus/
-├── core + facturacion_ec + accounting_basic + ...
-```
-
-**Después (multi-repo):**
-```
-repos/
-├── erp-nexus/        (core framework)
-├── facturacion_ec/   (módulo Ecuador)
-├── inventory/        (futuro)
-└── sdk-nexus/        (futuro)
-```
-
-**WORK_PLAN.md** actualizado:
-- M0: Core Foundation ✅ (ya)
-- M0.5: Graph Unify ⏸️ (pausado hasta restructure)
-- M1: facturacion_ec complete → **AHORA ES REPO SEPARADO**
-- M2: Marketplace engine → **EN CORE**
-- M3: inventory module → **REPO SEPARADO**
-
----
-
-## 📝 Notes
-
-**Why multi-repo now?**
-Porque el usuario explicitó: "el modulo de facturacion_ec debe ser una extension del modulo de facturacion_core y debe estar aparte en otro repositorio".
-
-**Riesgo principal:**
-- Pérdida de historial git de facturacion_ec si hacemos copy (no subtree)
-- Solución: Usar `git subtree split` para mantener historial
-
-**Git strategy:**
-```bash
-# En erp-nexus:
-git subtree split --prefix=modules/facturacion_ec -b facturacion_ec-split
-
-# Crear nuevo repo
-mkdir ../facturacion_ec
-cd ../facturacion_ec
-git init
-git pull /home/wcun/.openclaw/workspace/repos/erp-nexus facturacion_ec-split
-# Ahora tiene historial completo
-```
+- [ ] Tests core pasan (pytest apps/)
+- [ ] Graphify rebuild sin errores
+- [ ] Documentación ARCHITECTURE_HYBRID.md actualizada
 
 ---
 
 ## 🔗 References
 
-- PAUL Phase: `00-01-REPO-RESTRUCTURE.md`
-- Graph Health: `GRAPH_HEALTH.md` (validator integration pendiente)
-- Module Spec: `MODULE_SPEC.md` (para facturacion_ec repo)
-- Multi-Repo Guide: `MULTI_REPO_STRUCTURE.md` (crear en Task 0.6.7)
+- Architecture: `ARCHITECTURE_HYBRID.md`
+- ADR: `ADR/007-hybrid-architecture.md`
+- Project Definition: `PROJECT_DEFINITION.md`
+- Work Plan: `WORK_PLAN.md`
+- Phase Plan: `.paul/phases/00-foundation/00-01-REPO-RESTRUCTURE.md`
 
 ---
 
-**Estado:** PLAN completado, esperando ejecución (/paul:apply)  
-**Prioridad:** 🔴 CRÍTICO — Debe hacerse antes de continuar con facturacion_ec development
+**Estado Actual:** PLAN completado, esperando APPLY  
+**Próxima acción:** Ejecutar Phase 0.6.2 (mover facturacion_ec → apps/facturacion/)
+
+**Nota:** Ya no se extraerá facturacion_ec a repo separado (era enfoque plugin-only). Ahora es hybrid con essential modules en core.

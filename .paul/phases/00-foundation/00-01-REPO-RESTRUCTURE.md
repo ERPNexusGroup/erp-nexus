@@ -1,477 +1,213 @@
----
-phase: 0.6
-plan: repo-restructure
-type: execute
-autonomous: false
----
+# Phase 0.6 — Repository Restructure (Hybrid Model)
 
-<objective>
-Restructurar el proyecto actual separando el CORE de módulos independientes.
-
-**Why:** El código actual mezcla:
-- CORE framework (11 apps, middleware, marketplace engine)
-- Módulos específicos (facturacion_ec, accounting_basic, inventory_basic)
-- Templates y ejemplos
-
-Esto viola el principio de modularidad. Necesitamos:
-1. ERP Nexus CORE — solo framework (11 apps + marketplace engine)
-2. facturacion_ec — repo separado (módulo independiente)
-3. Limpiar módulos demo/ejemplo del core
-
-**Output:**
-- `repos/erp-nexus/` → Solo core (11 apps + marketplace)
-- `repos/facturacion_ec/` → Módulo extraído (nuevo repo)
-- `repos/` → Directorio con todos los proyectos independientes
-- Marketplace configurado para instalar módulos desde GitHub
-</objective>
-
-<context>
-## Estado Actual (INCORRECTO)
-
-```
-repos/erp-nexus/
-├── apps/                    # 11 core apps ✅ (debería quedarse)
-├── modules/                 # ❌ MÓDULOS AQUÍ NO VAN
-│   ├── facturacion_ec/      # Debe ser repo separado
-│   ├── accounting_basic/    # Demo, debe salir
-│   ├── inventory_basic/     # Demo, debe salir
-│   └── demo_flow/           # Demo, debe salir
-├── modules_enabled.py       # ❌ Debe generarse desde Marketplace
-├── erp_nexus/settings.py    # ✅ Core (quedarse)
-└── manage.py                # ✅ Core (quedarse)
-```
-
-**Problema:** 
-- Core contiene módulos — no es modular
-- `modules_enabled.py` manual — debería ser auto-generado
-- No hay separación clara: core vs módulos
-
-## Estado Deseado (CORRECTO)
-
-```
-repos/
-├── erp-nexus/               # CORE ONLY
-│   ├── apps/               # 11 core Django apps
-│   ├── erp_nexus/
-│   │   ├── settings/
-│   │   ├── urls.py
-│   │   └── modules_enabled.py  # AUTO-GENERADO
-│   ├── docker/
-│   ├── pyproject.toml
-│   └── .paul/              # PAUL para core
-│
-├── facturacion_ec/          # MÓDULO INDEPENDIENTE (repo propio)
-│   ├── facturacion_ec/
-│   │   ├── models.py
-│   │   ├── api/
-│   │   ├── services/
-│   │   └── __meta__.py
-│   ├── tests/
-│   ├── README.md
-│   └── .paul/              # PAUL para módulo
-│
-├── sdk-nexus/              # SDK (crear módulos)
-├── nexus-cli/              # CLI tool
-└── nexus-marketplace/      # Marketplace server
-```
-
-## Cambios Requeridos
-
-### 1. Extraer facturacion_ec a repo separado
-- Crear `repos/facturacion_ec/` (nuevo git repo)
-- Mover TODO el código de `modules/facturacion_ec/` allí
-- Mantener historial git (filter-branch o subtree split)
-- Actualizar `erp-nexus/` para que NO contenga facturacion_ec
-
-### 2. Eliminar módulos demo del core
-- `modules/accounting_basic/` → eliminar
-- `modules/inventory_basic/` → eliminar  
-- `modules/demo_flow/` → eliminar
-- `config/facturacion_ec_settings_example.py` → eliminar
-
-### 3. Limpiar references a modules/ en core
-- Buscar imports de `modules.*` en core
-- Reemplazar con `apps.*` (core) o eliminar
-- Actualizar `INSTALLED_APPS` si hay referencias
-
-### 4. ModuleRegistry → auto-generate from marketplace
-- `modules_enabled.py` debe generarse dinámicamente
-- Leer de DB (Module model) en runtime
-- No archivo estático
-
-### 5. Actualizar documentation
-- Actualizar `WORK_PLAN.md` — separar phases por repo
-- Actualizar `DOCS_INDEX.md` — estructura multi-repo
-- Crear `MULTI_REPO_STRUCTURE.md` — guía de organization
-
-## Complejidad
-
-⚠️ **ALTA COMPLEJIDAD** — Cambios estructurales profundos:
-- Historial git (mantener commits de facturacion_ec)
-- Dependencias cross-repo (facturacion_ec depende de core apps)
-- CI/CD para múltiples repos
-- Submodule vs subtree decision
-
-## Alternatives Considered
-
-### Alt A: Monorepo (TODO en un repo) — ACTUALMENTE
-**Pros:** Simple, un solo CI, un solo deploy
-**Cons:** No hay true modularity, difícil separar módulos, coupling alto
-
-### Alt B: Multi-repo (cada módulo repo independiente) — ELEGIDO
-**Pros:** True isolation, cada módulo versiona independiente, clara separación
-**Cons:** Más repos, CI más complejo, dependencias cross-repo
-
-### Alt C: Hybrid (core repo + modules/ subtree)
-**Pros:** Core standalone, módulos como subtrees
-**Cons:** Complejo de mantener, git subtree overhead
-
-**Decisión:** Multi-repo puro (Alt B) — Mayor claridad, mejor para contributions externas.
-</context>
-
-<skills>
-# Git expertice
-- git subtree split (extraer directorio a repo separado manteniendo historial)
-- git filter-branch (rewrite history)
-- Submodule management (si usamos submodules)
-
-# Django modularization
-- Django app config (AppConfig)
-- Dynamic INSTALLED_APPS
-- ModuleRegistry pattern
-
-# Project organization
-- Multi-repo strategies
-- Dependency management (requirements con paths)
-</skills>
-
-<acceptance_criteria>
-# Acceptance Criteria
-
-## Git Structure
-- [ ] `repos/` directory exists with independent repos
-- [ ] `erp-nexus/` es SOLO core (11 apps + marketplace engine)
-- [ ] `facturacion_ec/` es repo independiente con su propio historial
-- [ ] `accounting_basic/`, `inventory_basic/`, `demo_flow/` removidos del core
-- [ ] `.gitmodules` (si usamos submodules) o documentación de dependencias
-
-## Code Separation
-- [ ] Ningún `modules/` directorio en erp-nexus core
-- [ ] `INSTALLED_APPS` en core NO referencia módulos externos
-- [ ] `modules_enabled.py` es generado dinámicamente (no estático)
-- [ ] Core apps no importan de `modules.*`
-
-## Documentation
-- [ ] `MULTI_REPO_STRUCTURE.md` creado
-- [ ] `WORK_PLAN.md` actualizado (roadmap por repo)
-- [ ] `CONTRIBUTING.md` actualizado (cómo contribuir a cada repo)
-- [ ] `README.md` core actualizado (solo core scope)
-- [ ] `INSTALL.md` actualizado (instalación modular)
-
-## Testing
-- [ ] Tests core pasan (pytest erp-nexus/)
-- [ ] facturacion_ec tests pasan en su repo (si se move con tests)
-
-## CI/CD
-- [ ] GitHub Actions configurado para erp-nexus (core)
-- [ ] GitHub Actions configurado para facturacion_ec (módulo)
-- [ ] Workflow de dependencia: facturacion_ec CI depende de core estable
-</acceptance_criteria>
-
-<boundaries>
-# Scope
-
-## IN SCOPE (ESTE PLAN)
-- ✅ Mover facturacion_ec a repo separado
-- ✅ Eliminar módulos demo (accounting_basic, inventory_basic, demo_flow)
-- ✅ Limpiar core de referencias a modules/
-- ✅ Documentar nueva estructura multi-repo
-- ✅ Configurar git (subtree split o manual copy)
-
-## OUT OF SCOPE (FUTURO)
-- ❌ Crear facturacion_ec repo en GitHub (solo local por ahora)
-- ❌ Configurar CI/CD para cada repo (solo estructura local)
-- ❌ SDK/CLI/Marketplace (fases 2-3 del roadmap)
-- ❌ Extraer inventory/sales (futuro, ahora solo facturacion_ec)
-
-## Decisions Pendientes
-1. **¿git subtree o manual copy?**
-   - subtree: mantiene historial, más complejo
-   - manual copy: simple, pierde historial (pero ok para v0.1.0)
-   - Recomendación: manual copy (facturacion_ec joven, historial corto)
-
-2. **¿Marketplace como DB o como Git clone?**
-   - DB: registry de módulos (name, version, git_url)
-   - Installer: clona git_url a ~/.erp-nexus/modules/
-   - Elegido: DB registry + git clone
-</boundaries>
-
-<tasks>
-## Task 0.6.1 — Plan Restructure (DONE — este PLAN)
-**Type:** checkpoint:decision  
-**Estimate:** Complete
+**Objective:** Reorganize `erp-nexus/` para Hybrid Architecture
+**Status:** PLANNED
+**Estimated:** 9h
 
 ---
 
-## Task 0.6.2 — Extract facturacion_ec to Separate Repo
+## Context
 
-**Type:** auto  
-**Estimate:** 2 hours
+ERP Nexus adopta **Hybrid Architecture**:
+- **Essential modules** (facturacion, inventory, sales, purchases, notifications, permissions, dashboard, print_manager) → Integrated in core (`apps/`)
+- **Optional modules** (hr, crm, projects, …) → External plugins via Marketplace
 
-```yaml
-action: GIT_OPERATION
-description: >
-  Extraer modules/facturacion_ec/ a repos/facturacion_ec/ manteniendo historial.
-  
-  Opción A (subtree split — mantiene historial):
-  git subtree split --prefix=modules/facturacion_ec -b facturacion_ec-split
-  git clone --depth=1 . repos/facturacion_ec
-  (en facturacion_ec) git checkout facturacion_ec-split
-  
-  Opción B (manual copy — más simple, pierde historial):
-  mkdir -p repos/facturacion_ec
-  cp -r modules/facturacion_ec/* repos/facturacion_ec/
-  (en facturacion_ec) git init; git add .; git commit -m "Initial import"
-  
-  RECOMENDADO: Opción B (facturacion_ec es joven, 1 semana de commits)
-```
-
-**Verificar:**
-- [ ] `repos/facturacion_ec/` existe
-- [ ] Tiene su propio `git init` (separado de erp-nexus)
-- [ ] Archivos copiados correctamente (models, api, services, tests)
-- [ ] `.gitignore` apropiado para módulo
+Actualmente `facturacion_ec/` está en `modules/` como si fuera un plugin aparte.
+Debe moverse a `apps/facturacion/` como essential module integrado.
 
 ---
 
-## Task 0.6.3 — Remove Demo Modules from Core
+## Tasks
 
-**Type:** auto  
-**Estimate:** 30 min
+### **0.6.1 — Plan ✅ DONE**
+- [x] Define hybrid architecture
+- [x] Creates ADR-007
+- [x] Updates docs (PROJECT_DEFINITION, WORK_PLAN, STATE)
 
-```yaml
-action: DELETE_DIRECTORIES
-description: >
-  Eliminar módulos demo del core (no forman parte del framework):
-  
-  rm -rf modules/accounting_basic/
-  rm -rf modules/inventory_basic/
-  rm -rf modules/demo_flow/
-  rm -f config/facturacion_ec_settings_example.py
-```
+---
 
-**NOTA:** Asegurar que no haya imports de estos módulos en core antes de borrar.
+### **0.6.2 — Mover facturacion_ec a apps/facturacion/**
 
+**Estimated:** 2h
+
+**Steps:**
+1. Verificar current state de `modules/facturacion_ec/`
+2. Rename package: `facturacion_ec` → `facturacion`
+   - `facturacion_ec/__init__.py` → `facturacion/__init__.py`
+   - `facturacion_ec/apps.py` → rename class a `FacturacionConfig`
+   - Update `name = "facturacion_ec"` → `name = "facturacion"`
+3. Mover directorio:
+   ```bash
+   mv modules/facturacion_ec/facturacion_ec/ apps/facturacion/
+   ```
+4. Eliminar directorio vacío `modules/facturacion_ec/`
+5. Actualizar imports en core:
+   - Buscar: `from modules.facturacion_ec`
+   - Reemplazar: `from apps.facturacion`
+6. Actualizar `INSTALLED_APPS` en settings (si no está autodiscover)
+7. Commit: `refactor(modules): integrate facturacion_ec as essential module`
+
+**Validation:**
+- [ ] Django finds `facturacion` app
+- [ ] migrate facturacion funciona
+- [ ] No import errors en `manage.py check`
+
+---
+
+### **0.6.3 — Eliminar módulos demo**
+
+**Estimated:** 30min
+
+**Modules a eliminar:**
+- `accounting_basic/`
+- `inventory_basic/`
+- `demo_flow/`
+
+**Steps:**
+1. Eliminar directorios
+2. Eliminar referencias en docs
+3. Commit: `chore: remove demo modules (essential modules replace them)`
+
+**Validation:**
+- [ ] `grep -r "accounting_basic" repos/erp-nexus/` → 0 results
+- [ ] `grep -r "inventory_basic"` → 0 results
+- [ ] `grep -r "demo_flow"` → 0 results
+
+---
+
+### **0.6.4 — Clean core settings**
+
+**Estimated:** 1h
+
+**Steps:**
+1. Eliminar referencias a `modules/` en settings
+2. Asegurar `INSTALLED_APPS` solo contiene `apps.` y `core_` apps
+3. Verificar `PYTHONPATH` no incluye `modules/`
+4. Commit: `refactor(settings): clean modules references for hybrid model`
+
+**Validation:**
+- [ ] `grep -r "modules/" erp_nexus/settings/` → 0 results
+- [ ] `manage.py check` sin warnings
+
+---
+
+### **0.6.5 — Eliminar modules_enabled.py estático**
+
+**Estimated:** 30min
+
+**Contexto:** `erp_nexus/modules_enabled.py` existe y es estático. Con essential modules integrados, este archivo es innecesario (plugins opcionales se manejan via DB).
+
+**Steps:**
+1. Verificar que ningún código importa `modules_enabled`
+2. Eliminar archivo
+3. Remover referencias en settings/urls
+4. Commit: `refactor: remove static modules_enabled.py (use DB + Marketplace)`
+
+**Validation:**
+- [ ] Archivo eliminado
+- [ ] No imports rotos
+
+---
+
+### **0.6.6 — Reorganizar workspace**
+
+**Estimated:** 1h
+
+**Steps:**
+1. Verificar estructura `apps/` (19 apps esperadas)
+2. Mover cualquier essential module restante de `modules/` → `apps/`
+3. Asegurar naming consistente: `facturacion`, `inventory`, `sales`, `purchases`, `notifications`, `permissions`, `dashboard`, `print_manager`
+4. Commit: `chore(workspace): reorganize for hybrid architecture`
+
+**Validation:**
+- [ ] `ls apps/` muestra 19 apps
+- [ ] No hay `modules/` con código (sino plugins futuros)
+
+---
+
+### **0.6.7 — Actualizar documentación**
+
+**Estimated:** 2h
+
+**Documents to update/create:**
+- [x] ARCHITECTURE_HYBRID.md ✅
+- [x] ADR/007-hybrid-architecture.md ✅
+- [x] PROJECT_DEFINITION.md ✅
+- [x] WORK_PLAN.md ✅
+- [ ] DOCS_INDEX.md — reordenar para arquitectura híbrida
+- [ ] README.md — actualizar scope (essential modules in core)
+- [ ] INSTALL.md — simplificar (ya no hay que instalar plugins básicos)
+- [ ] DEVELOPMENT.md — guía para desarrollar essential modules
+- [ ] MODULE_SPEC.md — dos secciones: Essential vs Optional
+- [ ] CONTRIBUTING.md — actualizar git flow
+
+**Commit:** `docs: update for hybrid architecture model`
+
+---
+
+### **0.6.8 — Actualizar PAUL**
+
+**Estimated:** 30min
+
+**Steps:**
+- [x] STATE.md actualizado ✅
+- [ ] Asegurar que futurasPhases (M1, M2, …) reflejan hybrid model
+- [ ] Añadir milestone M0.5 (Essential Modules Integration)
+- [ ] Actualizar acceptance criteria
+
+**Commit:** `chore(paul): update state for hybrid architecture`
+
+---
+
+### **0.6.9 — Validación final**
+
+**Estimated:** 1h
+
+**Checklist:**
+- [ ] `python manage.py check` — sin errors
+- [ ] `pytest apps/` — tests core pasan
+- [ ] `python manage.py migrate` — crea tablas de todos los 8 essential modules
+- [ ] `python manage.py runserver` — arranca sin errores
+- [ ] Graphify rebuild: `graphify update .`
+- [ ] `git status` — limpio, sin archivos huérfanos
+- [ ] Docs index (DOCS_INDEX.md) apunta a ARCHITECTURE_HYBRID.md
+
+---
+
+## Rollback Plan
+
+**Si algo falla:**
 ```bash
-# Verificar imports
-grep -r "accounting_basic" --include="*.py" apps/ erp_nexus/ || echo "OK — no refs"
-grep -r "inventory_basic" --include="*.py" apps/ erp_nexus/ || echo "OK — no refs"
+# En erp-nexus
+git reset --hard HEAD~1  # Revertir commit de move
+# Los facts vuelven a modules/facturacion_ec/
 ```
+
+**Si essential modules no funcionan:**
+- Considerar extraer a plugins (perder hybrid model)
+- Pero esenciales deben vivir en core para MVP
 
 ---
 
-## Task 0.6.4 — Update Core Settings
+## Deliverables
 
-**Type:** auto  
-**Estimate:** 1 hour
-
-```yaml
-file: erp_nexus/settings/base.py
-action: MODIFY
-changes:
-  - Remove modules/ from INSTALLED_APPS si están allí
-  - Asegurar que INSTALLED_APPS solo contiene:
-      'apps.core_*'  # 11 core apps
-      'django.contrib.*'  # Django contrib
-  - Eliminar references a modules_enabled.py si está hardcoded
-  - Configurar dynamic module loading from DB (future)
-```
-
-**Verificar:**
-```bash
-uv run python manage.py check --deploy
-```
+- [x] ADR-007 (hybrid architecture decision)
+- [x] ARCHITECTURE_HYBRID.md
+- [x] Updated PROJECT_DEFINITION.md
+- [x] Updated WORK_PLAN.md
+- [x] Updated PAUL STATE
+- [ ] Phase 0.6.2 completado (facturacion en apps/)
+- [ ] Phase 0.6.3+ completados
+- [ ] All tests passing
 
 ---
 
-## Task 0.6.5 — Remove modules_enabled.py Static File
+## Notes
 
-**Type:** auto  
-**Estimate:** 30 min
+**Diff from original Phase 0.6 (plugin-only):**
+- **Old:** Extract `facturacion_ec/` → separate repo
+- **New:** Move `facturacion_ec/` → `apps/facturacion/` (stay in core)
 
-```yaml
-file: erp_nexus/modules_enabled.py
-action: DELETE_OR_REFACTOR
-description: >
-  modules_enabled.py es estático — eliminar o convertir en función
-  que lee de ModuleRegistry (DB).
-  
-  Si se elimina:
-  1. Buscar imports de modules_enabled en codebase
-  2. Reemplazar con:
-     from apps.core_marketplace.registry import get_enabled_modules
-     enabled = get_enabled_modules()
-  
-  3. Eliminar archivo modules_enabled.py
-```
+**Rationale:** Essential business modules should be in core for out-of-the-box ERP experience.
 
-**Verificar imports:**
-```bash
-grep -r "modules_enabled" --include="*.py" .
-```
-
----
-
-## Task 0.6.6 — Reorganize Workspace Directory
-
-**Type:** auto  
-**Estimate:** 1 hour
-
-```yaml
-action: MOVE_DIRECTORIES
-description: >
-  Mover facturacion_ec a repos/ y reestructurar:
-  
-  mkdir -p repos/facturacion_ec
-  # Mover (ya hecho en Task 0.6.2)
-  
-  # Actualizar estructura:
-  repos/
-  ├── erp-nexus/       (core — ya existe)
-  ├── facturacion_ec/  (módulo extraído)
-  ├── inventory/       (crear luego)
-  └── sales/           (crear luego)
-```
-
-**Actualizar `.gitignore` de erp-nexus:**
-- Ignorar `repos/*/` excepto `repos/erp-nexus/` (el core)
-
----
-
-## Task 0.6.7 — Documentation Updates
-
-**Type:** auto  
-**Estimate:** 2 hours
-
-```yaml
-files:
-  - README.md: Actualizar — solo core scope, sin módulos
-  - INSTALL.md: Separar secciones (Core installation vs Module installation)
-  - WORK_PLAN.md: Roadmap por repo (core roadmap vs module roadmaps)
-  - CONTRIBUTING.md: Cómo contribuir a core vs módulos
-  - DOCS_INDEX.md: Agregar sección "Multi-Repo Structure"
-  - MULTI_REPO_STRUCTURE.md: NUEVO — guía completa de organización
-```
-
-**MULTI_REPO_STRUCTURE.md** debe contener:
-- Por qué multi-repo
-- Cómo agregar nuevo módulo (crear repo, registrar en marketplace)
-- Dependencias entre repos (facturacion_ec → erp-nexus core)
-- CI/CD strategy (cada repo independiente)
-- Versioning (SemVer por módulo)
-
----
-
-## Task 0.6.8 — Update PAUL for Multi-Repo
-
-**Type:** auto  
-**Estimate:** 30 min
-
-```yaml
-files:
-  - .paul/PROJECT.md: Actualizar scope (solo core)
-  - .paul/ROADMAP.md:  Dividir milestones por repo
-    M1-M6 para erp-nexus core
-    M1'-M3' para facturacion_ec (separado)
-  
-  # Nuevo project Context:
-  "ERP Nexus Core": Framework only
-  "facturacion_ec": Independent module (own PAUL soon)
-```
-
-**Nota:** facturacion_ec necesitará su propio `.paul/` una vez sea repo separado.
-
----
-
-## Task 0.6.9 — Validate Everything Works
-
-**Type:** auto  
-**Estimate:** 1 hour
-
-```yaml
-checks:
-  - manage.py check --deploy
-  - manage.py migrate  # migrations core solo
-  - manage.py runserver  # Arranca sin modules/
-  - pytest apps/  # Tests core pasan
-  - pytest modules/  # Debería fallar (modules ya no existe) — esperado
-```
-
-**Éxito criteria:**
-- ✅ ERP Nexus core arranca sin `modules/` directorio
-- ✅ Todas las core apps funcionan
-- ✅ No hay imports de modules.* en core
-- ✅ facturacion_ec代码 en repos/facturacion_ec/ intacto
-- ✅ Git history de erp-nexus core limpio (sin facturacion_ec commits)
-</tasks>
-
-<boundaries>
-# NO HACER
-
-## Explicado
-- ❌ No configurar CI/CD (solo estructura local)
-- ❌ No crear GitHub repos (solo local directories)
-- ❌ No migrar database (datos se pierden, es reestructuración code-only)
-- ❌ No crear SDK/CLI/Marketplace en esta fase (solo facturacion_ec extraction)
-
-## Si surgen problemas
-- Si algo se rompe: rollback con git
-- Hacer commit después de cada task
-- Documentar decisions en ADR-006 (repo structure)
-</boundaries>
-
-<verification>
-## Post-Restructure Verification
-
-1. **Structure check**
-   ```bash
-   ls repos/
-   # Should show: erp-nexus/ facturacion_ec/
-   ls erp-nexus/modules/  # Should NOT exist or be empty
-   ```
-
-2. **Import check**
-   ```bash
-   grep -r "from modules." erp-nexus/ --include="*.py"
-   # Should return nothing
-   ```
-
-3. **Django check**
-   ```bash
-   cd repos/erp-nexus
-   uv run python manage.py check
-   # Should pass (no AppNotRegistered errors)
-   ```
-
-4. **Git status**
-   ```bash
-   cd repos/erp-nexus
-   git log --oneline --graph --all | head -20
-   # Should show clean history without facturacion_ec noise
-   ```
-
-5. **Graphify update**
-   ```bash
-   cd repos/erp-nexus
-   graphify update .
-   # Nodos aislados deberían bajar (facturacion_ec ya no en core)
-   ```
-</verification>
-
-<skills-loaded>
-# Tools activated
-- Git (subtree/split, filter-branch)
-- File operations (mv, cp, rm)
-- Django settings management
-- Documentation writing
-</skills-loaded>
+**Rename:** `facturacion_ec` → `facturacion` (simpler, consistent with inventory/sales).
