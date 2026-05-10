@@ -1,11 +1,14 @@
 # URLs del módulo facturacion_ec
+# Importante: Este módulo se registra en erp_nexus/urls.py vía include()
+# Las rutas del API Ninja se exponen en /api/v1/ a través de core_api
+"""
 from django.urls import path
-from .api.routes import router as api_router
+from django.shortcuts import render
 
 app_name = "facturacion_ec"
 
+# Admin ya está gestionado por Django/admin/ → no necesita ruta aquí
 urlpatterns = [
-    # Admin URLs (manejado por Django admin)
-    # API endpoints
-    path("api/", api_router.urls),
+    # Dashboard del módulo (vista HTML)
+    path("", views.dashboard, name="dashboard"),
 ]

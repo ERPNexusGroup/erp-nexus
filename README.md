@@ -4,432 +4,286 @@
 
 **ERP modular open-source con enfoque en simplicidad extrema**
 
-[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
+[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://python.org)
 [![Django](https://img.shields.io/badge/django-5.0-green.svg)](https://djangoproject.com)
-[![License](https://img.shields.io/badge/license-GPL--3.0-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](CHANGELOG.md)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)](CHANGELOG.md)
 
-[Instalación rápida](#instalación-rápida) • [Arquitectura](#arquitectura) • [Módulos](#gestión-de-módulos) • [API](#api-rest) • [Eventos](#event-bus)
+[Instalación rápida](#instalación-rápida) • [Arquitectura](#arquitectura) • [Documentación](#documentación) • [Módulos](#módulos) • [API](#api-rest)
 
 </div>
 
 ---
 
-## ¿Qué es?
+## 🚀 ¿Qué es?
 
-ERP Nexus es un ERP modular construido en Django. Arranca con un **core mínimo** y crece instalando módulos por el marketplace o manualmente.
+**ERP Nexus** es un framework Django modular para construir ERP desde bloques independientes.
 
-### Principios
+Instala solo los módulos que necesitas, actualízalos por separado, y crea tus propios módulos sin tocar el core.
 
-- **Core mínimo** — Solo lo esencial (users, groups, companies, permissions)
-- **Módulos desacoplados** — Comunicación por eventos, no dependencias directas
-- **CLI integrado** — Management commands como `manage.py install_module`
-- **API moderna** — Django Ninja con OpenAPI auto-generado
-- **Fácil de implementar** — De cero a ERP funcional en minutos
+### 🎯 Principios
 
-## Instalación rápida
+- ✅ **Core mínimo** — Solo lo esencial (users, companies, permissions, marketplace)
+- ✅ **Módulos desacoplados** — Comunicación por Event Bus, no imports directos
+- ✅ **Marketplace integrado** — Descargar/activar módulos desde UI o CLI
+- ✅ **Multi-tenant nativo** — Una instancia, múltiples empresas (data isolation)
+- ✅ **API-first** — Todo exponible vía REST (Django Ninja + OpenAPI)
+- ✅ **Open Source** — MIT License, comunidad abierta
+
+---
+
+## 📦 Instalación Rápida
 
 ```bash
-# Opción A: Con nexus CLI (recomendado)
-pip install nexus
-nexus init mi-erp --with-docker
-cd mi-erp
-
-# Opción B: Manual
-git clone https://github.com/ERPNexusGroup/erp-nexus.git
+# 1. Clonar
+git clone https://github.com/ERPNexus/erp-nexus.git
 cd erp-nexus
-git checkout dev
 
-# Configurar
+# 2. Instalar deps con uv (ultra-rápido)
 uv sync
-cp .env.example .env
+source .venv/bin/activate  # o .venv\Scripts\activate en Windows
 
-# Base de datos
+# 3. Migraciones + superadmin
 uv run python manage.py migrate
-
-# Superadmin
 uv run python manage.py bootstrap_superadmin \
   --username admin \
   --email admin@local \
-  --password changeme
+  --password admin123
 
-# Arrancar
+# 4. Levantar servidor
 uv run python manage.py runserver
 ```
 
-Abrir: `http://localhost:8000/admin`
+**Abrir:** http://localhost:8000/admin
 
-## Arquitectura
+---
 
-```
-erp-nexus/
-├── erp_nexus/                  # Configuración Django
-│   ├── settings/
-│   │   ├── base.py             # Settings compartidas
-│   │   ├── development.py      # Debug, SQLite, eager tasks
-│   │   └── production.py       # PostgreSQL, Redis, Celery
-│   ├── asgi.py                 # ASGI entry point
-│   ├── wsgi.py                 # WSGI entry point
-│   └── urls.py                 # /admin/ + /api/
-│
-├── apps/                       # Core apps (siempre presentes)
-│   ├── core_users/             # Gestión de usuarios
-│   ├── core_groups/            # Grupos y roles
-│   ├── core_companies/         # Multi-empresa
-│   ├── core_permissions/       # Sistema de permisos
-│   ├── core_dashboard/         # Dashboard admin
-│   ├── core_marketplace/       # Catálogo de módulos
-│   ├── core_events/            # 🆕 Event Bus
-│   │   ├── models.py           # EventLog, EventSubscription
-│   │   ├── bus.py              # EventBus.emit/subscribe
-│   │   └── management/         # install_module, etc.
-│   └── core_api/               # 🆕 Django Ninja API
-│       └── v1/                 # Versionada
-│
-├── modules/                    # Módulos instalados (externos)
-│   ├── accounting_basic/       # Ejemplo: contabilidad
-│   ├── invoicing/
-│   └── inventory/
-│
-└── tests/                      # Tests del core
-```
-
-## Management Commands (CLI integrado)
-
-### Gestión de módulos
+## 🐳 Docker Compose (Recomendado)
 
 ```bash
-# Instalar módulo
-manage.py install_module ./mi_modulo                  # Desde directorio
-manage.py install_module --git https://github.com/...  # Desde git
-manage.py install_module --package modulo.npkg         # Desde paquete
+# Levantar todo (PostgreSQL + Redis + ERP Nexus)
+docker-compose up -d
 
-# Desinstalar
-manage.py uninstall_module mi_modulo
+# Migraciones
+docker-compose exec web uv run python manage.py migrate
+docker-compose exec web uv run python manage.py bootstrap_superadmin \
+  --username admin \
+  --email admin@local \
+  --password admin123
 
-# Listar
-manage.py module list
-
-# Info detallada
-manage.py module info mi_modulo
-
-# Sincronizar filesystem ↔ DB
-manage.py module sync
+# Acceder
+open http://localhost:8000/admin
 ```
 
-### Sistema
+---
 
-```bash
-# Superadmin
-manage.py bootstrap_superadmin --username admin --email admin@local --password pass
+## 🏗️ Arquitectura
 
-# Django estándar
-manage.py migrate
-manage.py runserver
-manage.py createsuperuser
-manage.py collectstatic
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    CLIENTE (Empresa)                        │
+│    Usa solo los módulos que necesita: facturación + stock   │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+┌───────────────────────────▼─────────────────────────────────┐
+│              ERP NEXUS CORE (Framework)                      │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │ Django + Multi-tenant + Marketplace + Event Bus       │ │
+│  │  - Core apps: users, companies, permissions, events   │ │
+│  │  - ModuleRegistry: catálogo + instalador              │ │
+│  └────────────────────────────────────────────────────────┘ │
+└───────────────────────────┬─────────────────────────────────┘
+                            │
+         ┌───────────────────┼───────────────────┐
+         │                   │                   │
+┌────────▼────────┐  ┌──────▼──────┐  ┌────────▼────────┐
+│  facturacion_ec │  │  inventory  │  │     sales       │
+│   (repo git)    │  │  (repo git) │  │  (repo git)     │
+└──────────────────┘  └─────────────┘  └─────────────────┘
 ```
 
-## Gestión de módulos
+**Características clave:**
+- Cada módulo es **independiente** (repo separado)
+- **Event Bus** — Comunicación sin acoplamiento
+- **Company-bound** — Todos los datos tienen `company_id`
+- **Marketplace** — Instala/desinstala módulos en caliente
 
-### Instalar un módulo
+---
+
+## 📚 Documentación
+
+| Documento | Descripción |
+|-----------|-------------|
+| [`README.md`](README.md) | Este archivo — introducción |
+| [`INSTALL.md`](INSTALL.md) | Guía de instalación paso a paso |
+| [`DEVELOPMENT.md`](DEVELOPMENT.md) | Cómo desarrollar módulos |
+| [`CODING_STANDARDS.md`](CODING_STANDARDS.md) | Reglas de codificación |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Cómo contribuir |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Diseño técnico profundo |
+| [`MODULE_SPEC.md`](MODULE_SPEC.md) | Cómo construir módulos |
+| [`WORK_PLAN.md`](WORK_PLAN.md) | Roadmap y hitos |
+| [`API_REFERENCE.md`](API_REFERENCE.md) | API REST completa |
+| [`CHANGELOG.md`](CHANGELOG.md) | Historial de releases |
+
+### **Decisiones Arquitectónicas (ADRs)**
+
+- [ADR-001: Modular Architecture](./ADR/001-modular-architecture.md)
+- [ADR-002: Event Bus](./ADR/002-event-bus.md)
+- [ADR-003: Multi-Company Strategy](./ADR/003-multi-company.md)
+- [ADR-004: Marketplace Installation](./ADR/004-marketplace.md)
+- [ADR-005: API Framework (Django Ninja)](./ADR/005-api-framework.md)
+
+---
+
+## 🔧 Management Commands
 
 ```bash
-# 1. Desde directorio local
-manage.py install_module ./accounting_basic
+# Módulos
+uv run python manage.py module list                    # Listar instalados
+uv run python manage.py install_module ./mi_modulo     # Instalar desde dir
+uv run python manage.py install_module --git <url>     # Instalar desde git
+uv run python manage.py uninstall_module facturacion_ec
+uv run python manage.py module enable facturacion_ec
+uv run python manage.py module disable inventory
 
-# 2. Desde repositorio git
-manage.py install_module --git https://github.com/ERPNexusGroup/accounting-ec.git
-
-# 3. Desde paquete .npkg/.zip
-manage.py install_module --package accounting_basic-0.1.0.npkg
+# Sistema
+uv run python manage.py migrate                         # Migraciones
+uv run python manage.py bootstrap_superadmin ...        # Crear admin
+uv run python manage.py loaddata fixtures.json         # Cargar datos
 ```
 
-### Crear un módulo
+---
 
-Usa **SDK Nexus**:
+## 📡 API Endpoints
+
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/api/health` | GET | Health check |
+| `/api/modules/` | GET | Listar módulos instalados |
+| `/api/modules/{name}/` | GET | Detalle de módulo |
+| `/api/events/` | GET | Historial Event Bus |
+| `/api/events/stats` | GET | Estadísticas eventos |
+| `/api/v1/docs/` | GET | Swagger UI (OpenAPI) |
+| `/api/v1/schema/` | GET | OpenAPI JSON |
+
+**Módulo `facturacion_ec`:**
+- `GET /api/v1/facturacion_ec/invoices/`
+- `POST /api/v1/facturacion_ec/invoices/`
+- `GET /api/v1/facturacion_ec/invoices/{id}/`
+- `GET /api/v1/facturacion_ec/invoices/{id}/xml/`
+- `GET /api/v1/facturacion_ec/customers/`
+- `POST /api/v1/facturacion_ec/customers/`
+
+Ver [`API_REFERENCE.md`](API_REFERENCE.md) para detalles.
+
+---
+
+## 🧩 Módulos Oficiales
+
+| Módulo | Estado | Descripción |
+|--------|--------|-------------|
+| **facturacion_ec** | ✅ v0.1.0 | Facturación electrónica SRI Ecuador |
+| **inventory** | 🚧 En desarrollo | Gestión de inventarios y stock |
+| **sales** | 📋 Planeado | Cotizaciones, órdenes, facturación |
+| **accounting** | 💡 Futuro | Contabilidad básica |
+
+---
+
+## 🛠️ Stack Tecnológico
+
+| Capa | Tecnología |
+|------|------------|
+| **Framework** | Django 5.0 + Python 3.12 |
+| **API** | Django Ninja (OpenAPI auto) |
+| **Database** | PostgreSQL 15+ |
+| **Cache** | Redis |
+| **Async Tasks** | Celery + Redis (futuro) |
+| **Auth** | Django JWT (simplejwt) |
+| **Admin UI** | Jazzmin theme |
+| **Package Manager** | `uv` (ultra-rápido) |
+| **Tests** | pytest + pytest-django |
+| **Linting** | Ruff + mypy |
+| **CI/CD** | GitHub Actions (futuro) |
+| **Docker** | Docker + docker-compose |
+
+---
+
+## 🌱 Crear un Módulo Nuevo
+
+### Con SDK (recomendado):
 
 ```bash
-pip install sdk-nexus
+# Instalar SDK
+uv pip install sdk-nexus
+
+# Crear módulo
 sdk-nexus create mi_modulo --type=module --domain=accounting
-cd mi_modulo
-# Desarrollar...
-sdk-nexus validate ./
-sdk-nexus package ./
-manage.py install_module --package ./dist/mi_modulo-0.1.0.npkg
+
+# Validar
+sdk-nexus validate ./mi_modulo
+
+# Empaquetar
+sdk-nexus package ./mi_modulo
+
+# Instalar
+python manage.py install_module --package ./dist/mi_modulo-0.1.0.npkg
 ```
 
-### Estructura de un módulo
-
-```
-mi_modulo/
-├── __meta__.py           # Metadata (validada por SDK)
-├── __init__.py
-├── apps.py               # Django AppConfig
-├── admin.py              # Admin registration
-├── core/
-│   └── models.py         # Modelos Django
-├── events/
-│   └── handlers.py       # Event handlers
-├── api/
-│   └── endpoints.py      # API endpoints (Django Ninja)
-├── tests/
-│   └── test_meta.py
-└── migrations/
-```
-
-### __meta__.py
-
-```python
-technical_name = "mi_modulo"
-display_name = "Mi Módulo"
-component_type = "module"
-package_type = "extension"
-domain = "accounting"
-
-python = ">=3.11"
-erp_version = ">=0.2.0"
-
-version = "0.1.0"
-license = "MIT"
-keywords = ["erp", "nexus", "accounting"]
-description = "Descripción del módulo"
-
-depends = []
-
-registry_flags = {
-    "models": True,
-    "api": True,
-    "workers": False,
-    "tasks": False,
-}
-```
-
-## API REST
-
-Django Ninja con documentación auto-generada.
-
-### Endpoints disponibles
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/api/health` | Health check |
-| GET | `/api/modules/` | Lista módulos instalados |
-| GET | `/api/modules/stats` | Estadísticas de módulos |
-| GET | `/api/modules/{name}` | Detalle de módulo |
-| GET | `/api/events/` | Historial de eventos |
-| GET | `/api/events/stats` | Estadísticas del Event Bus |
-| POST | `/api/events/emit` | Emitir evento (debug) |
-| GET | `/api/docs` | Swagger UI |
-
-### Ejemplo de respuesta
-
-```json
-// GET /api/modules/stats
-{
-  "total": 3,
-  "active": 2,
-  "inactive": 1
-}
-
-// GET /api/events/stats
-{
-  "total": 42,
-  "pending": 0,
-  "failed": 1
-}
-```
-
-### API de módulos
-
-Los módulos pueden exponer sus propios endpoints. Ver `accounting_basic/api/endpoints.py` como ejemplo.
-
-## Event Bus
-
-Comunicación desacoplada entre módulos mediante eventos.
-
-### Emitir evento
-
-```python
-from apps.core_events.bus import EventBus
-
-# Desde un módulo
-EventBus.emit(
-    event_type="invoice.created",
-    source="invoicing",
-    payload={"invoice_id": 42, "total": 1500.00},
-)
-```
-
-### Suscribirse a evento
-
-```python
-from apps.core_events.bus import EventBus
-
-# En el archivo events/handlers.py del módulo
-def on_payment_received(payload: dict):
-    invoice_id = payload["invoice_id"]
-    # Procesar pago...
-
-# Registrar suscripción
-EventBus.subscribe(
-    event_type="payment.received",
-    subscriber_module="accounting",
-    handler_path="accounting.events.handlers.on_payment_received",
-)
-```
-
-### Ver eventos
+### Manual (copiar plantilla):
 
 ```bash
-# Por API
-curl http://localhost:8000/api/events/
-
-# Por admin Django
-# Ir a /admin/core_events/eventlog/
+cp -r _template_module/ mi_nuevo_modulo/
+cd mi_nuevo_modulo
+# Editar __meta__.py, models.py, etc.
 ```
 
-### Estadísticas
+---
 
-```python
-from apps.core_events.bus import EventBus
-
-stats = EventBus.get_stats()
-# {'total_events': 42, 'pending_events': 0, 'failed_events': 1, 'subscriptions': 5}
-```
-
-## Settings
-
-### Desarrollo (default)
+## 🧪 Testing
 
 ```bash
-# settings/__init__.py importa development.py
-uv run python manage.py runserver
+# Todos los tests
+uv run pytest
+
+# Módulo específico
+uv run pytest facturacion_ec/tests/ -v
+
+# Con cobertura
+uv run pytest --cov=facturacion_ec --cov-report=html
+
+# Linting
+ruff check .
+mypy .
 ```
 
-- SQLite
-- DEBUG = True
-- Celery eager (sync)
+---
 
-### Producción
+## 🤝 Contribuir
 
-```bash
-DJANGO_SETTINGS_MODULE=erp_nexus.settings.production
-```
+¡Contribuciones bienvenidas! Por favor lee [`CONTRIBUTING.md`](CONTRIBUTING.md) antes de enviar PR.
 
-- PostgreSQL
-- Redis (cache + Celery)
-- Security headers
-- HSTS, SSL redirect
+1. Fork el repo
+2. Crear branch: `git checkout -b feat/mi-feature`
+3. Commit siguiendo [Conventional Commits](#-commits)
+4. Push y abrir PR a `dev`
 
-### Variables de entorno
+---
 
-```bash
-# Requeridas en producción
-DJANGO_SECRET_KEY=...
-DJANGO_ALLOWED_HOSTS=erp.miempresa.com
+## 📄 License
 
-# Database
-POSTGRES_DB=erp_nexus
-POSTGRES_USER=erp_nexus
-POSTGRES_PASSWORD=changeme
+MIT License — Ver [`LICENSE`](LICENSE)
 
-# Redis
-REDIS_URL=redis://localhost:6379/0
-```
+---
 
-## Stack técnico
+## 📞 Contacto
 
-| Componente | Tecnología |
-|-----------|------------|
-| Framework | Django 5.0 |
-| API | Django Ninja |
-| Admin UI | django-jazzmin |
-| ASGI Server | Uvicorn + Gunicorn |
-| Database | PostgreSQL |
-| Cache | Redis |
-| Tasks | Celery |
-| Testing | pytest + pytest-django |
-| Linting | Ruff |
-| Package Manager | uv |
+- **Issues:** [GitHub Issues](https://github.com/ERPNexus/erp-nexus/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/ERPNexus/erp-nexus/discussions)
+- **Email:** dev@erpnexus.ec
+- **Website:** erpnexus.ec (futuro)
 
-## Producción
+---
 
-### Con nexus CLI
-
-```bash
-nexus server setup --domain erp.miempresa.com
-nexus server start
-```
-
-### Manual
-
-```bash
-# Gunicorn + Uvicorn
-gunicorn erp_nexus.asgi:application \
-  -w 4 \
-  -k uvicorn.workers.UvicornWorker \
-  --bind 127.0.0.1:8000
-
-# Collect static
-python manage.py collectstatic --noinput
-```
-
-### Docker
-
-```yaml
-# docker-compose.yml (generado por nexus init --with-docker)
-services:
-  web:
-    build: .
-    command: gunicorn erp_nexus.asgi:application -w 4 -k uvicorn.workers.UvicornWorker
-    ports: ["8000:8000"]
-  db:
-    image: postgres:16-alpine
-  redis:
-    image: redis:7-alpine
-```
-
-## Ejemplo: accounting_basic
-
-Módulo de ejemplo incluido con el repo. Demuestra el flujo completo:
-
-```bash
-# Ya instalado en modules/
-manage.py module list
-# accounting_basic 0.1.0 ✅ active
-
-# Probar
-python -c "
-from accounting_basic.core.models import Account, JournalEntry
-Account.objects.create(code='1.1.01', name='Caja', account_type='asset')
-"
-```
-
-Ver [modules/accounting_basic/](modules/accounting_basic/) para el código fuente.
-
-## Ecosistema ERP Nexus
-
-```
-┌─────────────────────────────────────────────────┐
-│  sdk-nexus  →  Dev Toolkit                      │
-│  sdk-nexus create/validate/package              │
-├─────────────────────────────────────────────────┤
-│  nexus (CLI)  →  Bootstrap/Deploy               │
-│  nexus init / server / update                   │
-├─────────────────────────────────────────────────┤
-│  erp-nexus  →  ERP Core (este repo)             │
-│  Django + API + Events + Management Commands    │
-├─────────────────────────────────────────────────┤
-│  Módulos  →  accounting, invoicing, inventory...│
-│  Creados con SDK, instalados en ERP             │
-└─────────────────────────────────────────────────┘
-```
-
-## Contribuir
-
-Ver [CONTRIBUTING.md](CONTRIBUTING.md) para guías de contribución, git flow y convenciones.
-
-## Licencia
-
-GPL-3.0-or-later — Ver [LICENSE](LICENSE)
+<div align="center">
+Made with ❤️ by ERP Nexus Team
+</div>

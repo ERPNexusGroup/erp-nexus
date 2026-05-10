@@ -78,3 +78,7 @@ api.add_router("/stats/", stats_router, tags=["stats"])
 # ─── Page Builder (protegido) ───────────────────────────────────────
 from apps.core_api.v1.pages import router as pages_router  # noqa: E402
 api.add_router("/pages/", pages_router, tags=["pages"])
+
+# ─── Facturación Electrónica Ecuador (facturacion_ec) ───────────────────
+from apps.core_api.v1.facturacion_ec import router as facturacion_router  # noqa: E402
+api.add_router("/facturacion_ec/", facturacion_router, tags=["facturacion_ec"])

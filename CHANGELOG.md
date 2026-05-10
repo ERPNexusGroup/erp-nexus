@@ -1,47 +1,127 @@
-# Changelog
+# Changelog — ERP Nexus
 
-All notable changes to ERP Nexus will be documented in this file.
+Todas las changes notables serán documentadas aquí.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/),
-and this project adheres to [Semantic Versioning](https://semver.org/).
+El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.3.0] — 2026-04-01
+---
 
-### Added
-- **GitHub Actions CI**: lint (ruff), test (pytest + PostgreSQL), Docker build
-- **GitHub Actions CD**: build image → GHCR, deploy staging/production
-- **Dockerfile**: multi-stage build, non-root user, health check
-- **docker-compose.yml**: PostgreSQL 16, Redis 7, web, celery, nginx
-- **config/nginx.conf**: reverse proxy, static/media, WebSocket ready
-- **.env.example**: all environment variables documented
-- **Sentry integration template** in production settings
+## [Unreleased]
 
-## [0.2.0] — 2026-04-01
+### 🚧 En Desarrollo (v0.6.0-dev)
 
-### Added
-- **Core Events (Event Bus)**: EventLog, EventSubscription models, EventBus API
-- **Django Ninja API**: /api/health, /api/modules/, /api/events/ with OpenAPI docs
-- **Settings split**: base.py, development.py, production.py
-- **Management commands**: install_module, uninstall_module, module (list/info/sync), catalog
-- Celery tasks for async event processing
-- 14 new tests (events + API)
+#### **Added**
+- Modular architecture con ModuleRegistry ([ADR-001](./ADR/001-modular-architecture.md))
+- EventBus para comunicación desacoplada ([ADR-002](./ADR/002-event-bus.md))
+- Multi-company middleware ([ADR-003](./ADR/003-multi-company.md))
+- Marketplace Module Installation Flow ([ADR-004](./ADR/004-marketplace.md))
+- Django Ninja API framework ([ADR-005](./ADR/005-api-framework.md))
+- Plantilla de módulo `_template_module/` para desarrollo rápido
+- Codificación de reglas en `CODING_STANDARDS.md`
+- Plan de trabajo detallado en `WORK_PLAN.md`
+- Guía de desarrollo `DEVELOPMENT.md`
+- Guía de instalación `INSTALL.md`
+- API Reference completa `API_REFERENCE.md`
+- ADRs (Architecture Decision Records) en `ADR/`
+- Contributing guide `CONTRIBUTING.md`
 
-### Changed
-- Settings: single file → split base/dev/production
-- urls.py: added /api/ routes for Django Ninja
-- pyproject.toml: v0.2.0, added django-ninja, uvicorn, ruff, pytest-django
-- Auth password validators enabled in base settings
+#### **Fixed**
+- Secuencial de facturas duplicado (todos tenían mismo número)
+- `get_next_sequential` ordenaba por `-number` (string) en vez de por `-id`
+- Import relativo mal en `code_unique.py` (`.models` → `..models`)
+- API endpoints requerían `request.active_company` (no disponible sin auth)
 
-## [0.1.0] — 2026-03-12
+#### **Changed**
+- Migración de Gemini (agotado) a Gemma 4 31B en Career-Ops pipeline
+- Refactor `facturacion_ec` para soporte multi-company
+- Estructura de directorios: módulos en `modules/` (dev) y `~/.erp-nexus/modules/` (prod)
 
-### Added
-- Initial Django project structure
-- Core apps: users, groups, companies, permissions, dashboard, marketplace
-- Superadmin bootstrap command
-- sync_modules, enable_module, disable_module management commands
-- ModuleCatalogItem and EnabledModule models
-- Manifest parsing with AST (safe, no code execution)
-- Initial migrations for all core apps
+---
 
-[Unreleased]: https://github.com/ERPNexusGroup/erp-nexus/compare/v0.1.0...dev
-[0.1.0]: https://github.com/ERPNexusGroup/erp-nexus/releases/tag/v0.1.0
+## [0.5.0] — 2026-05-04
+
+### **Added**
+- Sistema Career-Ops completo con OpenRouter Free Tier
+- Dashboard web v3.3 con 5 pestañas y auto-refresh 15s
+- API Flask mejorada con `distribucion_estados`
+- Tracking IDs únicos por postulación
+- Notificaciones Telegram diarias
+- Integración OpenRouter (google/gemma-4-31b-it)
+- Soporte múltiples modelos OpenRouter Free Tier
+
+### **Migration**
+- Gemini → Gemma 4 31B (cuota agotada)
+- Flask → OpenRouter API directa
+
+---
+
+## [0.4.0] — 2026-05-03
+
+### **Added**
+- Dashboard web v3.2 mejorado
+- Filtros por estado en timeline
+- Gráficos de distribución salarial
+- KPI cards animados
+- Sync tabs con timeline filter
+
+---
+
+## [0.3.0] — 2026-05-01
+
+### **Added**
+- Pipeline automatizado de búsqueda de empleo
+- Scoring IA con OpenRouter
+- CV en markdown con perfil personalizado
+- Crontab system (L-V 9AM, 2PM, 5PM)
+- Logs estructurados en `logs/cron_*.log`
+
+---
+
+## [0.2.0] — 2026-04-30
+
+### **Added**
+- Sistema de evaluación de crédito
+- Microservicios Quarkus + REST reactive
+- Frontend React + TypeScript
+- Validación cédula Módulo 10
+- Documentación completa (README, ARCHITECTURE, DEVELOPMENT)
+
+---
+
+## [0.1.0] — 2026-04-15
+
+### **Added**
+- Proyecto inicial ERP Nexus
+- Core Django configurado (11 apps)
+- Multi-company middleware
+- ActiveCompanyMiddleware
+- ModuleRegistry basic
+- Django Ninja API base
+
+---
+
+## Versionando
+
+### **v0.x.y** — Pre-release
+- `0.1.0` — Primera funcional working
+- `0.2.0` — Features nuevas (backward-compatible)
+- `0.2.1` — Bugfix
+
+### **v1.0.0** — Primer estable
+- API estable (no breaking changes)
+- Documentación completa
+- Test coverage >80%
+
+---
+
+## Tipos de Cambio
+
+| Tipo | Ejemplo | Version bump |
+|------|---------|--------------|
+| **Added** | Nueva feature | `0.1.0` → `0.2.0` |
+| **Changed** | Modificación existente (backward-compat) | `0.2.0` → `0.2.1` |
+| **Deprecated** | Feature obsoleto (aún funciona) | `0.2.1` → `0.3.0` |
+| **Removed** | Feature eliminado | `0.3.0` → `0.4.0` |
+| **Fixed** | Bug fix | `0.4.0` → `0.4.1` |
+| **Security** | Vulnerabilidad corregida | `0.4.1` → `0.4.2` |

@@ -102,8 +102,8 @@ def get_next_sequential(company, establishment_code, emission_point, tipo_compro
     """
     Obtiene el siguiente número secuencial para una factura.
 
-    Busca la última factura del mismo tipo, establecimiento, punto emisión
-    y devuelve secuencial + 1.
+    Busca la factura con el mayor ID (más reciente) y extrae su secuencial.
+    Si no hay facturas, retorna 1.
 
     Args:
         company: Instancia Company
@@ -112,21 +112,25 @@ def get_next_sequential(company, establishment_code, emission_point, tipo_compro
         tipo_comprobante: Código SRI (01, 04, 05, 06)
 
     Returns:
-        int: Siguiente secuencial (1 si no hay anteriores)
+        int: Siguiente secuencial
     """
-    from .models import Invoice, SriTipoComprobante
+    from ..models import Invoice, SriTipoComprobante
     try:
         tipo = SriTipoComprobante.objects.get(code=tipo_comprobante)
     except SriTipoComprobante.DoesNotExist:
         tipo = None
 
+    # Buscar la factura más reciente por ID (no por número, que puede repetirse en seed data)
     last = Invoice.objects.filter(
         company=company,
         tipo_comprobante=tipo
-    ).order_by("-number").first()
+    ).order_by("-id").first()
 
-    if last:
-        _, _, last_seq_str = parse_invoice_number(last.number)
-        last_seq = int(last_seq_str)
-        return last_seq + 1
+    if last and last.number:
+        try:
+            _, _, last_seq_str = parse_invoice_number(last.number)
+            last_seq = int(last_seq_str)
+            return last_seq + 1
+        except (ValueError, IndexError):
+            pass
     return 1

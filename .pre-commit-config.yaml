@@ -1,0 +1,64 @@
+# Pre-commit hooks — ERP Nexus
+# Ejecuta formateo y linters automáticamente antes de cada commit
+
+repos:
+  # Black — formateo de código
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+        language_version: python3
+        args: [--line-length=100]
+
+  # isort — ordenamiento de imports
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: isort (python)
+        args: ["--profile", "black", "--line-length", "100"]
+
+  # Ruff — linter rápido (reemplaza flake8 + others)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.7
+    hooks:
+      - id: ruff
+        name: ruff (lint)
+        args: [--fix]
+      - id: ruff-format
+        name: ruff (format check)
+
+  # mypy — type checking (solo warning, no bloquea)
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.9.0
+    hooks:
+      - id: mypy
+        name: mypy (type check)
+        additional_dependencies: [
+          "django-stubs",
+          "djangorestframework-stubs",
+          "ninja-stubs",
+        ]
+        args: [--show-error-codes]
+        exclude: migrations/
+
+  # trailing-whitespace — eliminar espacios al final
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: detect-private-key
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  # Bandit — security linting
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.8
+    hooks:
+      - id: bandit
+        args: ["-r", "."]
+        exclude: migrations/, tests/

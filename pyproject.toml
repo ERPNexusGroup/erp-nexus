@@ -1,55 +1,128 @@
-[project]
-name = "erp-nexus"
-version = "0.2.0"
-description = "ERP modular open-source con enfoque en simplicidad extrema"
-authors = [{name = "ERP Nexus Team", email = "team@erp-nexus.org"}]
-requires-python = ">=3.11"
-license = {text = "GPL-3.0-or-later"}
-readme = "README.md"
-dependencies = [
-    "django>=5.0,<5.1",
-    "django-cors-headers>=4.9.0",
-    "django-jazzmin>=3.0.0",
-    "django-ninja>=1.0.0",
-    "django-ninja-extra>=0.31.4",
-    "pydantic>=2.6.0",
-    "pyjwt>=2.12.1",
-    "semantic-version>=2.10.0",
-    "uvicorn>=0.29.0",
-]
+# Configuración de calidad de código — ERP Nexus
 
-[project.optional-dependencies]
-production = [
-    "gunicorn>=22.0.0",
-    "psycopg[binary]>=3.1.0",
-    "redis>=5.0.0",
-    "celery[redis]>=5.4.0",
-]
-dev = [
-    "pytest>=8.0.0",
-    "pytest-django>=4.8.0",
-    "ruff>=0.4.0",
-]
+[tool.black]
+line-length = 100
+target-version = ['py312']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | migrations
+    | \.archived
+  )/
+)
+'''
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.hatch.metadata]
-allow-direct-references = true
-
-[tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "erp_nexus.settings.development"
-pythonpath = [".", "modules"]
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+skip = ["migrations"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "W"]
+select = [
+    "E",  # pycodestyle errors
+    "F",  # Pyflakes
+    "W",  # pycodestyle warnings
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+    "UP", # pyupgrade
+    "SIM",# flake8-simplify
+    "TCH",# flake8-type-checking
+    "ARG",# flake8-unused-arguments
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # Do not perform function calls in argument defaults
+    "C901",  # Too complex (reduce gradually)
+]
 
-[dependency-groups]
-dev = [
-    "pytest-django>=4.12.0",
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ARG"]
+"*/migrations/*" = ["ALL"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+disallow_incomplete_defs = false
+disallow_untyped_decorators = false
+no_implicit_optional = false
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+show_error_codes = true
+pretty = true
+exclude = [
+    "migrations/",
+    "tests/",
+]
+
+[[tool.mypy.overrides]]
+module = "django.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "ninja.*"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "erp_nexus.settings"
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short --strict-markers"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "*/venv/*",
+    "setup.py",
+    "*/settings.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "pass",
+    "raise ImportError",
 ]

@@ -2,15 +2,19 @@
 from ninja import Router, Schema
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+from datetime import datetime
+from decimal import Decimal
+from django.utils import timezone
+
 from ..models import Invoice, InvoiceLine, Customer, Product, ElectronicDocument
 from ..services import (
     generate_invoice_number,
     generate_access_key,
     send_invoice_to_sri,
-    XMLGenerator,
     get_next_sequential,
 )
-from datetime import datetime
+
+router = Router(tags=["Facturación Electrónica"])
 
 
 # ===================== SCHEMAS =====================
@@ -54,15 +58,27 @@ class InvoiceOut(Schema):
     ambiente: int
 
 
-router = Router(tags=["Facturación Electrónica"])
+# ===================== HELPERS =====================
+
+def get_company_for_request(request):
+    """Obtiene la company activa, con fallback en DEBUG."""
+    from django.conf import settings
+    company = getattr(request, "active_company", None)
+    if not company and settings.DEBUG:
+        from apps.core_companies.models import Company
+        company = Company.objects.first()
+    return company
 
 
 # ===================== ENDPOINTS =====================
+# ORDEN: estáticas primero, dinámicas después
 
 @router.get("/", response=list[InvoiceOut])
 def list_invoices(request, status: str = None):
-    """Lista facturas de la empresa activa"""
-    company = request.active_company
+    """Lista facturas de la empresa activa."""
+    company = get_company_for_request(request)
+    if not company:
+        return []
     qs = Invoice.objects.filter(company=company)
     if status:
         qs = qs.filter(sri_status=status)
@@ -91,7 +107,9 @@ def create_invoice(request, data: InvoiceCreate):
     3. Enviar a SRI (async opcional)
     4. Actualizar estado
     """
-    company = request.active_company
+    company = get_company_for_request(request)
+    if not company:
+        return {"error": "No company configured"}
 
     # 1. Crear/obtener cliente
     customer, _ = Customer.objects.get_or_create(
@@ -111,13 +129,18 @@ def create_invoice(request, data: InvoiceCreate):
     number = generate_invoice_number("001", "001", seq)
 
     # 3. Crear factura
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+    # En desarrollo, usar primer usuario si no hay autenticación
+    creator = request.user if request.user.is_authenticated else User.objects.first()
+
     invoice = Invoice.objects.create(
         company=company,
         number=number,
         date=datetime.strptime(data.date, "%Y-%m-%d").date() if data.date else timezone.now().date(),
         customer=customer,
         ambiente=1,  # default pruebas
-        created_by=request.user,
+        created_by=creator,
     )
 
     # 4. Crear líneas
@@ -179,10 +202,40 @@ def create_invoice(request, data: InvoiceCreate):
     }
 
 
+@router.get("/customers/")
+def list_customers(request, q: str = None):
+    """Busca clientes (para autocomplete)."""
+    company = get_company_for_request(request)
+    if not company:
+        return []
+    qs = Customer.objects.filter(company=company, is_active=True)
+    if q:
+        qs = qs.filter(name__icontains=q) | qs.filter(identification_number__icontains=q)
+    return [{"id": c.id, "name": c.name, "ruc": c.identification_number} for c in qs[:20]]
+
+
+@router.get("/products/")
+def list_products(request, q: str = None):
+    """Busca productos."""
+    company = get_company_for_request(request)
+    if not company:
+        return []
+    qs = Product.objects.filter(company=company, is_active=True)
+    if q:
+        qs = qs.filter(name__icontains=q) | qs.filter(code__icontains=q)
+    return [
+        {"id": p.id, "code": p.code, "name": p.name, "price": float(p.unit_price)}
+        for p in qs[:20]
+    ]
+
+
+# Rutas dinámicas (después de estáticas)
 @router.get("/{invoice_id}/")
 def get_invoice(request, invoice_id: int):
-    """Obtiene detalle de factura"""
-    invoice = get_object_or_404(Invoice, id=invoice_id, company=request.active_company)
+    """Obtiene detalle de factura."""
+    from django.shortcuts import get_object_or_404
+    company = get_company_for_request(request)
+    invoice = get_object_or_404(Invoice, id=invoice_id, company=company)
     return {
         "id": invoice.id,
         "number": invoice.number,
@@ -201,8 +254,10 @@ def get_invoice(request, invoice_id: int):
 
 @router.get("/{invoice_id}/xml")
 def download_xml(request, invoice_id: int):
-    """Descarga XML firmado"""
-    invoice = get_object_or_404(Invoice, id=invoice_id, company=request.active_company)
+    """Descarga XML firmado."""
+    from django.shortcuts import get_object_or_404
+    company = get_company_for_request(request)
+    invoice = get_object_or_404(Invoice, id=invoice_id, company=company)
     if not invoice.xml_content:
         return {"error": "XML no generado aún"}
     return HttpResponse(
@@ -214,8 +269,10 @@ def download_xml(request, invoice_id: int):
 
 @router.post("/{invoice_id}/resend")
 def resend_invoice(request, invoice_id: int):
-    """Reenvía factura rechazada/corrige"""
-    invoice = get_object_or_404(Invoice, id=invoice_id, company=request.active_company)
+    """Reenvía factura rechazada/corrige."""
+    from django.shortcuts import get_object_or_404
+    company = get_company_for_request(request)
+    invoice = get_object_or_404(Invoice, id=invoice_id, company=company)
     if invoice.sri_status not in ('rejected', 'draft'):
         return {"error": "Solo se pueden reenviar facturas rechazadas o en borrador"}
 
@@ -225,26 +282,3 @@ def resend_invoice(request, invoice_id: int):
         invoice.save()
         return {"success": True, "estado": invoice.sri_status}
     return {"success": False, "error": result.get('mensaje')}
-
-
-@router.get("/customers/")
-def list_customers(request, q: str = None):
-    """Busca clientes (para autocomplete)"""
-    company = request.active_company
-    qs = Customer.objects.filter(company=company, is_active=True)
-    if q:
-        qs = qs.filter(name__icontains=q) | qs.filter(identification_number__icontains=q)
-    return [{"id": c.id, "name": c.name, "ruc": c.identification_number} for c in qs[:20]]
-
-
-@router.get("/products/")
-def list_products(request, q: str = None):
-    """Busca productos"""
-    company = request.active_company
-    qs = Product.objects.filter(company=company, is_active=True)
-    if q:
-        qs = qs.filter(name__icontains=q) | qs.filter(code__icontains=q)
-    return [
-        {"id": p.id, "code": p.code, "name": p.name, "price": float(p.unit_price)}
-        for p in qs[:20]
-    ]
