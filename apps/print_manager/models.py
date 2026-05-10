@@ -8,9 +8,9 @@ class PrintTemplate(models.Model):
     """Plantilla HTML para generación de PDFs."""
     name = models.CharField(max_length=100, unique=True)
     template_key = models.CharField(max_length=50, unique=True)  # ej: 'invoice', 'purchase_order'
-    html_template = models.TextField(help_text="HTML template (Django template syntax)")
-    css_styles = models.TextField(blank=True, default="", help_text="CSS inline o enlace a static")
-    default_filename = models.CharField(max_length=200, blank=True, default="")
+    html_template = models.TextField(blank=True, null=True, help_text="HTML template (Django template syntax)")
+    css_styles = models.TextField(blank=True, null=True, help_text="CSS inline o enlace a static")
+    default_filename = models.CharField(max_length=200, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -37,8 +37,8 @@ class PrintJob(models.Model):
     context = models.JSONField(default=dict, blank=True)  # Datos para el template
     output_format = models.CharField(max_length=20, default="pdf")  # pdf, png (futuro)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
-    file_path = models.CharField(max_length=500, blank=True, default="")
-    error_message = models.TextField(blank=True, default="")
+    file_path = models.CharField(max_length=500, blank=True, null=True)
+    error_message = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)
 

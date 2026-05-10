@@ -8,7 +8,7 @@ from django.utils import timezone
 class Supplier(models.Model):
     """Proveedor (extiende Customer de facturación)."""
     customer = models.OneToOneField(
-        "apps.facturacion.Customer",
+        "facturacion.Customer",
         on_delete=models.PROTECT,
         related_name="supplier_profile",
     )
@@ -66,7 +66,7 @@ class PurchaseOrderLine(models.Model):
     """Línea de orden de compra."""
     po = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, related_name="lines")
     product = models.ForeignKey(
-        "apps.inventory.Product",
+        "inventory.Product",
         on_delete=models.PROTECT,
         related_name="po_lines",
     )

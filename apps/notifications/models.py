@@ -30,7 +30,7 @@ class Notification(models.Model):
         verbose_name = "Notificación"
         verbose_name_plural = "Notificaciones"
         ordering = ["-created_at"]
-        indexes = [models.Index(fields=["user", "is_read", "created_at"])]
+        indexes = [models.Index(fields=["user", "is_read", "created_at"], name="notification_user_created_idx")]
 
     def __str__(self):
         return f"{self.notification_type}: {self.title} → {self.user}"
@@ -82,7 +82,7 @@ class NotificationQueue(models.Model):
         verbose_name = "Cola de Notificación"
         verbose_name_plural = "Cola de Notificaciones"
         ordering = ["created_at"]
-        indexes = [models.Index(fields=["status", "created_at"])]
+        indexes = [models.Index(fields=["status", "created_at"], name="notif_q_stats_created_idx")]
 
     def __str__(self):
         return f"{self.notification_type} → {self.recipient} [{self.status}]"

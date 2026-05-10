@@ -140,7 +140,7 @@ ERP Nexus es un framework modular Django para construir sistemas ERP extensibles
 ### **Incluido en MVP:**
 1. Core framework con 6 apps (auth, users, companies, marketplace, config, dashboard)
 2. Sistema de módulos básico (instalar/desinstalar desde catálogo)
-3. Módulo de ejemplo: `facturacion_ec` (facturación Ecuador)
+3. Módulo de ejemplo: `facturacion` (facturación Ecuador)
 4. API REST con 10 endpoints principales
 5. Admin Django personalizado
 6. Docker compose para desarrollo
@@ -160,7 +160,7 @@ ERP Nexus es un framework modular Django para construir sistemas ERP extensibles
 | Métrica | Meta | Fecha Límite |
 |---------|------|--------------|
 | Core funcional | 6 apps instalables | Semana 2 |
-| Módulo de ejemplo | facturacion_ec operativo | Semana 4 |
+| Módulo de ejemplo | facturacion operativo | Semana 4 |
 | API endpoints | 20+ endpoints funcionales | Semana 4 |
 | Cobertura tests | >70% | Semana 6 |
 | Docs completas | README + API docs | Semana 6 |
@@ -170,7 +170,7 @@ ERP Nexus es un framework modular Django para construir sistemas ERP extensibles
 ## 🔄 Evolución
 
 **Versión 0.1.x** — Core + Marketplace básico  
-**Versión 0.2.x** — Módulo facturacion_ec completo  
+**Versión 0.2.x** — Módulo facturacion completo  
 **Versión 0.3.x** — Módulo inventory  
 **Versión 0.4.x** — Módulo sales  
 **Versión 0.5.x** — Docker + despliegue  

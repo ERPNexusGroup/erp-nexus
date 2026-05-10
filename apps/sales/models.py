@@ -17,7 +17,7 @@ class Quote(models.Model):
 
     quote_number = models.CharField(max_length=50, unique=True)
     customer = models.ForeignKey(
-        "apps.facturacion.Customer",
+        "facturacion.Customer",
         on_delete=models.PROTECT,
         related_name="quotes",
     )
@@ -44,7 +44,7 @@ class QuoteLine(models.Model):
     """Línea de cotización."""
     quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name="lines")
     product = models.ForeignKey(
-        "apps.inventory.Product",
+        "inventory.Product",
         on_delete=models.PROTECT,
         related_name="quote_lines",
     )
@@ -72,7 +72,7 @@ class Order(models.Model):
 
     order_number = models.CharField(max_length=50, unique=True)
     customer = models.ForeignKey(
-        "apps.facturacion.Customer",
+        "facturacion.Customer",
         on_delete=models.PROTECT,
         related_name="orders",
     )
@@ -99,7 +99,7 @@ class OrderLine(models.Model):
     """Línea de orden de venta."""
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="lines")
     product = models.ForeignKey(
-        "apps.inventory.Product",
+        "inventory.Product",
         on_delete=models.PROTECT,
         related_name="order_lines",
     )
