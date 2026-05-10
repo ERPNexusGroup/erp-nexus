@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test end-to-end del módulo facturacion_ec SIN enviar a SRI
+Test end-to-end del módulo facturacion (essential) SIN enviar a SRI
 """
 import os
 from datetime import date
@@ -10,14 +10,14 @@ import django; django.setup()
 
 from django.contrib.auth import get_user_model
 from apps.core_companies.models import Company, Membership
-from modules.facturacion_ec.models import Customer, Product, Invoice, InvoiceLine, LicenseType, CompanyLicense, SriTipoComprobante
-from modules.facturacion_ec.services.code_unique import generate_access_key, generate_invoice_number
-from modules.facturacion_ec.services import XMLGenerator
+from apps.facturacion.models import Customer, Product, Invoice, InvoiceLine, LicenseType, CompanyLicense, SriTipoComprobante
+from apps.facturacion.services.code_unique import generate_access_key, generate_invoice_number
+from apps.facturacion.services import XMLGenerator
 
 User = get_user_model()
 
 print("=" * 60)
-print("  TEST FACTURACION_EC — End-to-End (sin SRI)")
+print("  TEST FACTURACION — End-to-End (sin SRI)")
 print("=" * 60); print()
 
 # 1. Company
@@ -111,7 +111,7 @@ print(f"   'claveAcceso' en XML: {'claveAcceso' in xml_str}")
 print()
 
 print("=" * 60)
-print("  ✅ TEST COMPLETO — Módulo facturacion_ec operativo")
+print("  ✅ TEST COMPLETO — Módulo facturacion operativo")
 print("=" * 60); print()
 print("📊 Datos en BD:")
 print(f"   • Company: {company.name} [{company.ruc}]")

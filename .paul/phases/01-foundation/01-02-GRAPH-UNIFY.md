@@ -32,7 +32,7 @@ Unificar el grafo de conocimiento Graphify conectando nodos aislados y validando
 
 ### Nodos Aislados CRÍTICOS
 
-#### 1. `modules/facturacion_ec/services/validator.py` — 5 nodos aislados (TODO)
+#### 1. `apps/facturacion/services/validator.py` — 5 nodos aislados (TODO)
 **Funciones aisladas:**
 - `validate_ruc()` — Valida RUC (módulo 11)
 - `validate_cedula()` — Valida cédula (módulo 10)
@@ -213,7 +213,7 @@ description: >
 **Estimate:** 2 hours
 
 ```yaml
-file: modules/facturacion_ec/api/routes.py
+file: apps/facturacion/api/routes.py
 action: MODIFY
 changes:
   - Import validator functions:
@@ -328,7 +328,7 @@ files:
 ## Checkpost-Integration
 
 1. ¿Validator functions llamadas desde API?
-   - grep -r "validate_" modules/facturacion_ec/api/
+   - grep -r "validate_" apps/facturacion/api/
    - Debería encontrar 4 llamadas
 
 2. ¿Graphify regenerado?

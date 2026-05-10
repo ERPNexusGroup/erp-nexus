@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = "Desinstala/desactiva un módulo (equivalente a 'nexus uninstall')"
 
     def add_arguments(self, parser):
-        parser.add_argument("technical_name", help="Nombre técnico del módulo (ej: facturacion_ec)")
+        parser.add_argument("technical_name", help="Nombre técnico del módulo (ej: facturacion)")
         parser.add_argument(
             "--force",
             action="store_true",

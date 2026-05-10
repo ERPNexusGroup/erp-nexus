@@ -92,7 +92,7 @@ uv run python manage.py migrate
 **Output esperado:**
 ```
 Migrations for 'facturacion_ec':
-  modules/facturacion_ec/migrations/0001_initial.py
+  apps/facturacion/migrations/0001_initial.py
     - Create model LicenseType
     - Create model Customer
     - Create model Product
@@ -387,7 +387,7 @@ erp-nexus/
 
 ## 📚 Documentación adicional
 
-- `modules/facturacion_ec/README.md` — Docs del módulo
+- `apps/facturacion/README.md` — Docs del módulo
 - `ERP_NEXUS_BUSINESS_PLAN.md` — Modelo negocio + proyecciones
 - `ERP_NEXUS_ESTADO_ACTUAL.md` — Estado actual + checklist
 

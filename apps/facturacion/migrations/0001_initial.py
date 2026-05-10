@@ -115,8 +115,8 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='invoices', to='core_companies.company')),
                 ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='facturas_created', to=settings.AUTH_USER_MODEL)),
-                ('customer', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='invoices', to='facturacion_ec.customer')),
-                ('tipo_comprobante', models.ForeignKey(default='01', on_delete=django.db.models.deletion.PROTECT, to='facturacion_ec.sritipocomprobante')),
+                ('customer', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='invoices', to='facturacion.customer')),
+                ('tipo_comprobante', models.ForeignKey(default='01', on_delete=django.db.models.deletion.PROTECT, to='facturacion.sritipocomprobante')),
             ],
             options={
                 'verbose_name': 'Factura Electrónica',
@@ -139,7 +139,7 @@ class Migration(migrations.Migration):
                 ('pdf_path', models.CharField(blank=True, max_length=500)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core_companies.company')),
-                ('created_from_invoice', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='electronic_documents', to='facturacion_ec.invoice')),
+                ('created_from_invoice', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='electronic_documents', to='facturacion.invoice')),
             ],
             options={
                 'verbose_name': 'Documento Electrónico',
@@ -179,8 +179,8 @@ class Migration(migrations.Migration):
                 ('tax_rate', models.DecimalField(decimal_places=2, default=12.0, max_digits=5)),
                 ('tax_amount', models.DecimalField(decimal_places=2, default=0, max_digits=12)),
                 ('total', models.DecimalField(decimal_places=2, max_digits=12)),
-                ('invoice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='lines', to='facturacion_ec.invoice')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='facturacion_ec.product')),
+                ('invoice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='lines', to='facturacion.invoice')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='facturacion.product')),
             ],
             options={
                 'verbose_name': 'Línea de Factura',
@@ -198,7 +198,7 @@ class Migration(migrations.Migration):
                 ('response_code', models.CharField(blank=True, max_length=20)),
                 ('success', models.BooleanField(default=False)),
                 ('error_message', models.TextField(blank=True)),
-                ('invoice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sri_logs', to='facturacion_ec.invoice')),
+                ('invoice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sri_logs', to='facturacion.invoice')),
             ],
             options={
                 'verbose_name': 'Log Envío SRI',
@@ -221,7 +221,7 @@ class Migration(migrations.Migration):
                 ('invoices_this_month', models.IntegerField(default=0)),
                 ('current_month_year', models.CharField(blank=True, max_length=7)),
                 ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='facturacion_licenses', to='core_companies.company')),
-                ('license_type', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='facturacion_ec.licensetype')),
+                ('license_type', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='facturacion.licensetype')),
             ],
             options={
                 'verbose_name': 'Licencia de Empresa',

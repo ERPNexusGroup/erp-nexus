@@ -23,7 +23,7 @@
 
 ---
 
-### **M1 — facturacion_ec Complete** 🔥 current
+### **M1 — facturacion Complete** 🔥 current
 **Target:** Semana 4  
 **Status:** 🔄 In Progress (40%)
 
@@ -51,7 +51,7 @@
 - **Phase 2.3** — License management (free/paid)
 - **Phase 2.4** — Registry externo (catálogo oficial)
 
-**Success:** Instalar `facturacion_ec` desde GitHub oficial, activar/desactivar modules.
+**Success:** Instalar `facturacion` desde GitHub oficial, activar/desactivar modules.
 
 ---
 
@@ -64,7 +64,7 @@
 **Phases:**
 - **Phase 3.1** — Models: Warehouse, Product, StockMovement
 - **Phase 3.2** — API endpoints
-- **Phase 3.3** — Integration with facturacion_ec (stock deduction)
+- **Phase 3.3** — Integration with facturacion (stock deduction)
 - **Phase 3.4** — Dashboard + reports
 
 **Success:** Módulo inventory v0.1.0 funcionando.
@@ -80,7 +80,7 @@
 **Phases:**
 - **Phase 4.1** — Quotation & SalesOrder models
 - **Phase 4.2** — State machine (draft → confirmed → shipped)
-- **Phase 4.3** — Generate invoice from order (integrate facturacion_ec)
+- **Phase 4.3** — Generate invoice from order (integrate facturacion)
 - **Phase 4.4** — Dashboard sales metrics
 
 **Success:** Módulo sales v0.1.0.
@@ -121,7 +121,7 @@
 
 ## 📋 Phase Details
 
-### **Phase 1.1 — Services Layer (facturacion_ec)**
+### **Phase 1.1 — Services Layer (facturacion)**
 
 **Task 1.1.1:** XML Generator con validación XSD
 - Implement `services/xml_generator.py`
@@ -160,12 +160,12 @@
 ### **Phase 1.2 — API Completion**
 
 **Task 1.2.1:** Endpoint send-to-sri
-- `POST /api/v1/facturacion_ec/invoices/{id}/send/`
+- `POST /api/v1/facturacion/invoices/{id}/send/`
 - Trigger XML generation + signature + SRI send
 - Update `sri_status` (pending → sent/accepted/rejected)
 
 **Task 1.2.2:** XML download endpoint
-- `GET /api/v1/facturacion_ec/invoices/{id}/xml/`
+- `GET /api/v1/facturacion/invoices/{id}/xml/`
 - Return XML as attachment
 
 **Task 1.2.3:** Company isolation validation
@@ -199,20 +199,20 @@
 
 **Acceptance Criteria:**
 - `pytest -q` → all PASS
-- Coverage `--cov=facturacion_ec` → >70%
+- Coverage `--cov=facturacion` → >70%
 - No high/critical issues in `bandit`
 
 ---
 
 ### **Phase 1.4 — Extract to Separate Repo**
 
-**Task 1.4.1:** Create `github.com/ERPNexus/facturacion_ec`
+**Task 1.4.1:** Create `github.com/ERPNexus/facturacion`
 - Initialize repo
-- Push code from `modules/facturacion_ec/`
+- Push code from `apps/facturacion/`
 - Add README, LICENSE, .gitignore
 
 **Task 1.4.2:** Update core ERP Nexus
-- Remove `facturacion_ec` from `modules/`
+- Remove `facturacion` from `modules/`
 - Add as git submodule or marketplace install
 - Update documentation
 
@@ -221,7 +221,7 @@
 - Automated release on tag
 
 **Acceptance Criteria:**
-- `facturacion_ec` repo exists on GitHub
+- `facturacion` repo exists on GitHub
 - ERP Nexus core installs it via `manage.py install_module --git`
 - CI passes on PRs
 

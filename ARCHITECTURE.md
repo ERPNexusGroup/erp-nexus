@@ -107,10 +107,10 @@ migrations/ del módulo → aplicadas
 
 **Flujo de instalación:**
 1. Admin registra módulo en `ModuleCatalogItem` (repo URL, versión)
-2. `EnabledModule.objects.create(technical_name='facturacion_ec', ...)`
+2. `EnabledModule.objects.create(technical_name='facturacion', ...)`
 3. `write_modules_enabled()` genera `modules_enabled.py`:
    ```python
-   MODULE_APPS = ["modules.facturacion_ec"]
+   MODULE_APPS = ["apps.facturacion"]
    ```
 4. Al siguiente restart, Django carga el módulo
 

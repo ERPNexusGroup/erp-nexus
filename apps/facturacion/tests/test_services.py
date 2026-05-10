@@ -1,13 +1,13 @@
 # Tests básicos para services
 import pytest
 from decimal import Decimal
-from modules.facturacion_ec.services.code_unique import (
+from apps.facturacion.services.code_unique import (
     generate_access_key,
     generate_invoice_number,
     parse_invoice_number,
     get_next_sequential,
 )
-from modules.facturacion_ec.services.validator import InvoiceValidator, ValidationError
+from apps.facturacion.services.validator import InvoiceValidator, ValidationError
 from datetime import datetime
 
 

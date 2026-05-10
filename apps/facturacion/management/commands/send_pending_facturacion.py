@@ -1,8 +1,8 @@
 # Management command: send_pending_facturacion
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from modules.facturacion_ec.models import Invoice
-from modules.facturacion_ec.services import (
+from apps.facturacion.models import Invoice
+from apps.facturacion.services import (
     send_invoice_to_sri,  # función que implementaremos
     XMLGenerator,
     DigitalSigner,

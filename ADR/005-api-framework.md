@@ -76,7 +76,7 @@ def create_invoice(request, data: InvoiceCreate):
 ## 🏗️ Estructura API
 
 ```
-modules/facturacion_ec/
+apps/facturacion/
 ├── api/
 │   ├── __init__.py
 │   └── routes.py       # Router con endpoints

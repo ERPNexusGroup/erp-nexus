@@ -1,22 +1,22 @@
-# Management command: register_facturacion_ec
+# Management command: register_facturacion
 from django.core.management.base import BaseCommand
 from apps.core_marketplace.models import ModuleCatalogItem
 
 
 class Command(BaseCommand):
-    help = "Registra el módulo facturacion_ec en el catálogo del marketplace"
+    help = "Registra el módulo facturacion en el catálogo del marketplace"
 
     def handle(self, *args, **options):
         data = {
-            "technical_name": "facturacion_ec",
+            "technical_name": "facturacion",
             "version": "0.1.0",
             "source": "local",
-            "installed_path": "modules/facturacion_ec",
-            "django_app": "modules.facturacion_ec",
+            "installed_path": "apps/facturacion",
+            "django_app": "apps.facturacion",
             "status": "active",
             "is_active": True,
             "admin_menu": {
-                "name": "Facturación Electrónica Ecuador",
+                "name": "Facturación Electrónica",
                 "icon": "fas fa-file-invoice-dollar",
                 "order": 100,
             }

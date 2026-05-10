@@ -49,7 +49,7 @@ Un **módulo** es una app Django autocontenida que extiende ERP Nexus. Vive en s
 ## 📋 `__meta__.py` — Metadata (OBLIGATORIO)
 
 ```python
-# modules/facturacion_ec/__meta__.py
+# apps/facturacion/__meta__.py
 
 MODULE_META = {
     # Identificación
@@ -108,7 +108,7 @@ MODULE_META = {
 ## 🎯 `apps.py` — AppConfig
 
 ```python
-# modules/facturacion_ec/apps.py
+# apps/facturacion/apps.py
 
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
@@ -532,7 +532,7 @@ https://github.com/ERPNexus/facturacion_ec/
 ```
 
 **Instalación ERP Nexus:**
-1. Clona repo a `~/.erp-nexus/modules/facturacion_ec/`
+1. Clona repo a `~/.erp-nexus/apps/facturacion/`
 2. Agrega `modules.facturacion_ec` a `INSTALLED_APPS`
 3. Ejecuta `python manage.py migrate facturacion_ec`
 4. Registra en `ModuleCatalogItem`

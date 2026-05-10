@@ -40,26 +40,59 @@ ERP Nexus usa **Hybrid Architecture**:
 
 ---
 
-## 📊 Current State (Before Phase 0.6)
+## 📊 Current State (After Phase 0.6.2 — Task Complete)
 
 ```
 repos/erp-nexus/
-├── apps/                      # Solo 11 core framework apps
+├── apps/                      # ✅ 11 core + facturacion (essential)
+│   ├── core_users/
+│   ├── core_companies/
+│   ├── core_events/
+│   ├── core_api/
+│   ├── core_marketplace/
+│   ├── core_permissions/
+│   ├── core_audit/
+│   ├── core_stats/
+│   ├── core_config/
+│   ├── core_dashboard/
+│   │
+│   ├── facturacion/           ✅ MOVED from modules/facturacion_ec/
+│   │   ├── models.py
+│   │   ├── api/routes.py
+│   │   ├── services/
+│   │   └── ...
+│   │
+│   ├── inventory/             ⏳ Pendiente (ya existe en modules?)
+│   ├── sales/                 ⏳ Pendiente
+│   ├── purchases/             ⏳ Pendiente
+│   ├── notifications/         ⏳ Pendiente
+│   ├── permissions/           ⏳ Pendiente
+│   ├── dashboard/             ⏳ Pendiente
+│   └── print_manager/         ⏳ Pendiente
 │
-├── modules/                   # ❌ Contiene facturacion_ec (como módulo aislado)
-│   ├── facturacion_ec/        # ❌ Debería estar en apps/facturacion/
-│   ├── accounting_basic/      # ❌ Demo module — eliminar
-│   ├── inventory_basic/       # ❌ Demo module — eliminar
-│   └── demo_flow/             # ❌ Demo module — eliminar
+├── modules/                   # ❌ Vacío (a eliminar en 0.6.3)
+│   ├── accounting_basic/      # Demo — eliminar
+│   ├── inventory_basic/       # Demo — eliminar
+│   └── demo_flow/             # Demo — eliminar
 │
-├── erp_nexus/modules_enabled.py  # ❌ Estático
-└── manage.py                  # ✅ Core
+├── erp_nexus/
+│   ├── settings.py           # ✅ Actualizado
+│   ├── modules_enabled.py    # ✅ Actualizado a apps.facturacion
+│   └── ...
+│
+├── docker/
+├── .paul/
+└── README.md
 ```
 
-**Problemas:**
-1. `facturacion_ec` en `modules/` (debería ser `apps/facturacion/`)
-2. Módulos demo ocupan espacio
-3. `modules_enabled.py` estático (debería ser dinámico desde DB)
+**Task 0.6.2 completada:**
+- ✅ `facturacion_ec/` movido a `apps/facturacion/`
+- ✅ Package rename: `facturacion_ec` → `facturacion`
+- ✅ Imports actualizados en core (core_api, tests, management commands)
+- ✅ Settings actualizados (modules_enabled.py, INSTALLED_APPS implícito)
+- ✅ Docsactualizadas (INSTALL.md, DEVELOPMENT.md, CONTRIBUTING.md)
+
+**Próximo:** Task 0.6.3 — Eliminar módulos demo
 
 ---
 
@@ -67,12 +100,14 @@ repos/erp-nexus/
 
 **Objetivo:** Reorganizar core para hybrid architecture (essential modules en `apps/`).
 
-### Tasks (9 tasks):
+**Estado actual:** ✅ Task 0.6.2 COMPLETADA — facturacion movido a `apps/facturacion/`
+
+### Tasks pendientes (8 tasks):
 
 | Task | Descripción | Estado | Estimación |
 |------|-------------|--------|------------|
 | 0.6.1 | Definir arquitectura híbrida | ✅ DONE | PLAN |
-| 0.6.2 | Mover `facturacion_ec/` → `apps/facturacion/` | ⬜ Pending | 2h |
+| 0.6.2 | Mover `facturacion_ec/` → `apps/facturacion/` | ✅ DONE | 2h |
 | 0.6.3 | Eliminar módulos demo | ⬜ Pending | 30min |
 | 0.6.4 | Clean core settings | ⬜ Pending | 1h |
 | 0.6.5 | Eliminar estático modules_enabled.py | ⬜ Pending | 30min |

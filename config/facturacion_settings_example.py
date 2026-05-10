@@ -1,4 +1,4 @@
-# Configuración SRI para facturacion_ec
+# Configuración SRI para facturacion (essential module)
 # Colocar en settings.py o como variables entorno
 
 # Ruta al certificado digital .p12 (o .pfx)

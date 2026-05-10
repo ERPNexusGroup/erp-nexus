@@ -116,8 +116,8 @@ JAZZMIN_SETTINGS = {
     },
 }
 
-# Configuración SRI Ecuador (facturacion_ec)
-FACTURACION_EC = {
+# Configuración SRI Ecuador (facturacion)
+FACTURACION = {
     "CERT_PATH": os.getenv("FACTURACION_CERT_PATH", ""),
     "CERT_PASSWORD": os.getenv("FACTURACION_CERT_PASSWORD", ""),
     "SRI_AMBIENTE": int(os.getenv("SRI_AMBIENTE", "1")),

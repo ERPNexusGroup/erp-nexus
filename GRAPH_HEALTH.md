@@ -29,7 +29,7 @@
 
 ### **1. validator.py — 5 funciones aisladas (sin usar)**
 
-**Archivo:** `modules/facturacion_ec/services/validator.py`
+**Archivo:** `apps/facturacion/services/validator.py`
 
 **Nodos aislados:**
 | Nodo | Descripción | Razón |
@@ -45,7 +45,7 @@
 - ❌ Datos inválidos pueden ingresar a BD
 - ❌ Funcionalidad incompleta (validator creado pero no integrado)
 
-**Solución:** Integrar en `modules/facturacion_ec/api/routes.py` — create_invoice endpoint.
+**Solución:** Integrar en `apps/facturacion/api/routes.py` — create_invoice endpoint.
 
 **Prioridad:** 🔴 **CRÍTICO** — Debe hacerse antes de release v0.1.0
 
@@ -125,7 +125,7 @@ tests/test_audit.py  --uses-->  core_audit.models.Event  (conf=0.50)
 **Entregable:** `GRAPH_HEALTH.md` (este archivo)
 
 ### Task 2 — Integrate Validator (🔴 CRÍTICO)
-**Archivo:** `modules/facturacion_ec/api/routes.py`
+**Archivo:** `apps/facturacion/api/routes.py`
 
 **Cambios requeridos:**
 ```python

@@ -65,7 +65,7 @@ Usuario ejecuta install_module
    └─ version compatibility
    ↓
 3. Installer
-   ├─ Copia a ~/.erp-nexus/modules/facturacion_ec/
+   ├─ Copia a ~/.erp-nexus/apps/facturacion/
    ├─ Crea/actualiza Module record en DB
    ├─ Añade a INSTALLED_APPS (runtime)
    ├─ Ejecuta: manage.py migrate facturacion_ec
@@ -177,7 +177,7 @@ python manage.py uninstall_module facturacion_ec
 1. Desactivar módulo (enable=False)
 2. Eliminar registros en Module table (marcar como uninstalled, no borrar historial)
 3. **NO eliminar** datos en DB (posiblemente necesarios para reportes históricos)
-4. Eliminar archivos de `~/.erp-nexus/modules/facturacion_ec/`
+4. Eliminar archivos de `~/.erp-nexus/apps/facturacion/`
 
 **Nota:** Data remains in DB pero becomes "orphaned". Futuramente: soft-delete cascade.
 
@@ -254,7 +254,7 @@ facturacion_ec-0.1.0.npkg
 GET /api/v1/marketplace/modules/
 # Devuelve catálogo oficial ERPNexus
 
-GET /api/v1/marketplace/modules/facturacion_ec/
+GET /api/v1/marketplace/apps/facturacion/
 # Detalle + download url
 
 POST /api/v1/marketplace/install/

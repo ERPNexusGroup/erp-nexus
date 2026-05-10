@@ -137,7 +137,7 @@ MODULE_META = {
 $ python manage.py install_module --git https://github.com/ERPNexus/facturacion_ec.git
 
 # Internamente:
-1. Clona a ~/.erp-nexus/modules/facturacion_ec/
+1. Clona a ~/.erp-nexus/apps/facturacion/
 2. Valida __meta__.py
 3. Crea Module record en DB
 4. Añade "facturacion_ec" a INSTALLED_APPS (runtime)

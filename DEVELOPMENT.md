@@ -320,7 +320,7 @@ Cuando se instala tu módulo, ERP Nexus:
 uv run python manage.py makemigrations facturacion_ec
 
 # Review
-git diff modules/facturacion_ec/migrations/
+git diff apps/facturacion/migrations/
 
 # Aplicar
 uv run python manage.py migrate

@@ -33,7 +33,7 @@
 
 **Root cause:** El archivo se creó pero nunca se integró en los endpoints de la API.
 
-**Fix requerido:** Modificar `modules/facturacion_ec/api/routes.py`:
+**Fix requerido:** Modificar `apps/facturacion/api/routes.py`:
 ```python
 # En create_invoice:
 from ..services.validator import (

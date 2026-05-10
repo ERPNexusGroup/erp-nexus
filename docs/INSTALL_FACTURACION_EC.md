@@ -87,7 +87,7 @@ print('facturacion_ec cargado?', bool(mods))
 
 ### Opción A — Automática (recomendada)
 
-El módulo ya está en `modules/facturacion_ec/`. Solo falta **activarlo**:
+El módulo ya está en `apps/facturacion/`. Solo falta **activarlo**:
 
 ```bash
 # 1. Registrar en catálogo (ModuleCatalogItem)
@@ -518,7 +518,7 @@ SriTipoComprobante.objects.get_or_create(code='05', defaults={'name':'Nota de D�
 |---------|-----------|
 | `erp_nexus/settings.py` | `FACTURACION_EC` dict con config SRI |
 | `erp_nexus/modules_enabled.py` | **Auto-generado** — lista MODULE_APPS |
-| `modules/facturacion_ec/__meta__.py` | Metadata del módulo (parser AST) |
+| `apps/facturacion/__meta__.py` | Metadata del módulo (parser AST) |
 | `setup_complete.sh` | Instalador todo-en-uno |
 | `test_facturacion_ec.py` | Test end-to-end (sin SRI) |
 | `docs/INSTALL.md` | Guía instalación (este archivo es resumen) |
@@ -555,7 +555,7 @@ SriTipoComprobante.objects.get_or_create(code='05', defaults={'name':'Nota de D�
 
 ## 📚 DOCUMENTACIÓN ADICIONAL
 
-- `modules/facturacion_ec/README.md` — Docs técnicas módulo
+- `apps/facturacion/README.md` — Docs técnicas módulo
 - `ERP_NEXUS_BUSINESS_PLAN.md` — Modelo negocio + pricing
 - `ERP_NEXUS_ESTADO_ACTUAL.md` — Checklist estado actual
 - `docs/ARCHITECTURE_PLAN.md` — Arquitectura general ERP
@@ -592,7 +592,7 @@ uv run python manage.py send_pending_facturacion
 ## 🆘 CONTACTO Y SOPORTE
 
 - **GitHub Issues:** https://github.com/ERPNexusGroup/erp-nexus/issues
-- **Documentación:** `docs/` + `modules/facturacion_ec/README.md`
+- **Documentación:** `docs/` + `apps/facturacion/README.md`
 - **Comunidad:** https://discord.gg/erp-nexus (enlace pendiente)
 
 ---

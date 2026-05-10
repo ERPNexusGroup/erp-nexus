@@ -42,7 +42,7 @@ ERP Nexus nace de la necesidad de un ERP modular, instalable por módulos, que p
 
 **v1.0.0 (12 semanas):**
 - ✅ Core estable (11 apps, 0 bugs críticos)
-- ✅ Módulo facturacion_ec completo (XML, firma, SRI)
+- ✅ Módulo facturacion completo (XML, firma, SRI)
 - ✅ Módulo inventory funcional
 - ✅ Módulo sales básico
 - ✅ Docker stack funcionando
@@ -63,17 +63,17 @@ ERP Nexus nace de la necesidad de un ERP modular, instalable por módulos, que p
 - Core Django configurado (11 apps)
 - Multi-tenant middleware
 - ModuleRegistry básico
-- facturacion_ec models + admin + API básica
+- facturacion models + admin + API básica
 - Documentación exhaustiva (14 documentos)
 - ADRs (5 decisiones arquitectónicas)
 
 **In Progress:**
-- facturacion_ec services (XML, signature, SRI client)
+- facturacion services (XML, signature, SRI client)
 - Multi-company validation en API endpoints
 - Tests unitarios
 
 **Not Started:**
-- Extraer facturacion_ec a repo separado
+- Extraer facturacion a repo separado
 - inventory module
 - sales module
 - Docker production build

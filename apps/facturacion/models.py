@@ -1,4 +1,4 @@
-# Módulo facturacion_ec - Modelos
+# Módulo facturacion - Modelos
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -52,7 +52,7 @@ class SriImpuesto(models.Model):
 
 class LicenseType(models.Model):
     """
-    Tipos de licencia del módulo facturacion_ec.
+    Tipos de licencia del módulo facturacion.
 
     Planes definidos:
     - FREE: 10 facturas/mes (limitado)

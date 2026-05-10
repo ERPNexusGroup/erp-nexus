@@ -524,8 +524,8 @@ def generate_access_key(ruc: str, ambiente: int, establishment_code: str,
 ```bash
 # Formato (Black)
 uv pip install black isort
-black modules/facturacion_ec/
-isort modules/facturacion_ec/
+black apps/facturacion/
+isort apps/facturacion/
 
 # Linting (Ruff) — rápido y moderno
 uv pip install ruff
@@ -533,14 +533,14 @@ ruff check . --fix
 
 # Type checking (mypy)
 uv pip install mypy
-mypy modules/facturacion_ec/
+mypy apps/facturacion/
 
 # Tests
-uv run pytest modules/facturacion_ec/tests/ -v --cov
+uv run pytest apps/facturacion/tests/ -v --cov
 
 # Security
 uv pip install bandit
-bandit -r modules/facturacion_ec/
+bandit -r apps/facturacion/
 ```
 
 **.pre-commit-config.yaml** (opcional):

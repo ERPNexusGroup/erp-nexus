@@ -153,7 +153,7 @@ refactor(models): split Invoice into header/detail tables
 uv run pytest
 
 # Módulo específico
-uv run pytest modules/facturacion_ec/tests/
+uv run pytest apps/facturacion/tests/
 
 # Con cobertura
 uv run pytest --cov=modules.facturacion_ec --cov-report=html
