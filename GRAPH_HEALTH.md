@@ -67,7 +67,7 @@
 apps/core_events/tasks.py:    EventBus._process_sync(event)
 apps/core_api/v1/events.py:   EventBus.emit(...)
 modules/accounting_basic/core/models.py: EventBus.emit(...)
-modules/inventory_basic/core/models.py: EventBus.emit(...)
+modules/inventory/core/models.py: EventBus.emit(...)
 ```
 
 **¿Por qué aislados?**

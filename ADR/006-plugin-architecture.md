@@ -19,7 +19,7 @@ erp-nexus/
 ├── modules/
 │   ├── facturacion_ec/   # ❌ Debería ser externo
 │   ├── accounting_basic/ # ❌ Demo, no debería estar
-│   └── inventory_basic/  # ❌ Demo, no debería estar
+│   └── inventory/  # ❌ Demo, no debería estar
 ```
 
 **Consecuencia:**
@@ -191,7 +191,7 @@ $ python manage.py install_module --git https://github.com/ERPNexus/facturacion_
 
 **Phase 0.6 — Multi-Repo Separation:**
 1. Extraer `facturacion_ec/` a repo separado (`repos/facturacion_ec/`)
-2. Eliminar módulos demo (`accounting_basic`, `inventory_basic`, `demo_flow`)
+2. Eliminar módulos demo (`accounting_basic`, `inventory`, `demo_flow`)
 3. Limpiar core settings (remover references a `modules/`)
 4. Eliminar `modules_enabled.py` estático
 5. Documentar arquitectura plugin

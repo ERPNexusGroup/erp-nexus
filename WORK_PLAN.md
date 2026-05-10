@@ -93,20 +93,20 @@ v1.0.0                                    ████████████
 
 **Fases (9 tasks):**
 - Phase 0.6.1 — Plan ✅ (completado)
-- Phase 0.6.2 — Mover `facturacion_ec/` → `apps/facturacion/` (en lugar de extraer)
-- Phase 0.6.3 — Eliminar módulos demo (`accounting_basic`, `inventory_basic`, `demo_flow`)
-- Phase 0.6.4 — Limpiar core settings (remover references a `modules/`)
-- Phase 0.6.5 — Eliminar estático `modules_enabled.py` (dynamic loader)
-- Phase 0.6.6 — Reorganizar workspace directory
-- Phase 0.6.7 — Actualizar documentación (hybrid model)
-- Phase 0.6.8 — Actualizar PAUL state
-- Phase 0.6.9 — Validar todo (tests + lint + graph)
+- Phase 0.6.2 — Mover `facturacion_ec/` → `apps/facturacion/` ✅
+- Phase 0.6.3 — Eliminar módulos demo (accounting_basic, inventory_basic, demo_flow) ✅
+- Phase 0.6.4 — Clean core settings ✅
+- Phase 0.6.5 — Crear `apps/inventory/` desde `inventory_basic` (recuperado)
+- Phase 0.6.6 — Crear módulos esenciales restantes (sales, purchases, notifications, print_manager)
+- Phase 0.6.7 — Update documentation
+- Phase 0.6.8 — Rebuild graph + finalize state
+- Phase 0.6.9 — Validation
 
 **Deliverables:**
-- Core con 19 Django apps (11 framework + 8 essential)
-- Sin `modules/` directorio
-- Documentación híbrida completa
-- Graphify actualizado (sin nodos aislados de essential modules)
+- Core con 17 Django apps (11 framework + 6 essential)
+- `modules/` vacío (solo para plugins futuros)
+- Documentación híbrida completa (ADR 007, 008)
+- Graphify actualizado
 
 ---
 

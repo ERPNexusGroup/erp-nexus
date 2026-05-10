@@ -675,108 +675,44 @@
     "mtime": 1777961703.821474,
     "hash": "8361186ff6b0c17782176d274d3c18dc"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/demo_flow/__meta__.py": {
-    "mtime": 1777949371.3351598,
-    "hash": "2a0e58c9a2d836ffd1c13e8ae72d9bce"
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/inventory/models.py": {
+    "mtime": 1778443817.1420438,
+    "hash": "403e4e146d57aa3a37e55ed91661ab9d"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/admin.py": {
-    "mtime": 1777961669.3031116,
-    "hash": "163536370aaed017098afe2f8b824a35"
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/inventory/admin.py": {
+    "mtime": 1778443838.6672688,
+    "hash": "9dc4de0963f694307b3c27942920fa73"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/__init__.py": {
-    "mtime": 1777961669.3031116,
-    "hash": "bf05d9dce7e23518602ffa556166bbe5"
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/inventory/__init__.py": {
+    "mtime": 1778443808.3387468,
+    "hash": "a2f68ad44266cfed96ece800334ee366"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/apps.py": {
-    "mtime": 1777961669.3031116,
-    "hash": "998a8f0d80456d3a7ca698971c45e0ad"
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/inventory/apps.py": {
+    "mtime": 1778443802.4851468,
+    "hash": "530e4ca15c64c867cf4f7faeca36a0b4"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/__meta__.py": {
-    "mtime": 1777961669.3031116,
-    "hash": "ffe522043a6d83f47eb97fd20f88ff1f"
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/inventory/__meta__.py": {
+    "mtime": 1778443832.9740553,
+    "hash": "a8d2807d4696f6d207d7640db0c3f962"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/events/handlers.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "27ebd404fc4f6386e3c10995caf13a47"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/events/__init__.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "d41d8cd98f00b204e9800998ecf8427e"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/tests/__init__.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "d41d8cd98f00b204e9800998ecf8427e"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/tests/test_meta.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "ba330988503623139b11b18e9c4170af"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/core/models.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "b3c6eb7380751b3ff5b3b622365f9c08"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/core/__init__.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "d41d8cd98f00b204e9800998ecf8427e"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/migrations/__init__.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "d41d8cd98f00b204e9800998ecf8427e"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/migrations/0001_initial.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "7dd40754ad32a9e6cc07fc6a7c4d3799"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/api/__init__.py": {
-    "mtime": 1777961669.3031116,
-    "hash": "d41d8cd98f00b204e9800998ecf8427e"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/accounting_basic/api/endpoints.py": {
-    "mtime": 1777961669.3031116,
-    "hash": "d38af1786eac63e1af761a7cc58c2009"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/inventory_basic/admin.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "2660daa506112754ece085c41c9de692"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/inventory_basic/__init__.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "c05f6246bb150650667896ff1f7c64e9"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/inventory_basic/apps.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "f7b7c4347476e2c3167465277527a6f5"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/inventory_basic/__meta__.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "d849232658e45bfafe6712fb09421570"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/inventory_basic/events/handlers.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "176f6292d17cc83cd9fa0e9224a14953"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/inventory_basic/tests/test_meta.py": {
-    "mtime": 1777961669.3113909,
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/inventory/tests/test_meta.py": {
+    "mtime": 1778443793.627269,
     "hash": "87721d55ba6ff582dc21bb0331ef9c41"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/inventory_basic/core/models.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "0cab4fd6b94e692478d6bc8649019af0"
-  },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/inventory_basic/migrations/__init__.py": {
-    "mtime": 1777961669.3072512,
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/inventory/migrations/__init__.py": {
+    "mtime": 1778443826.266861,
     "hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/inventory_basic/migrations/0001_initial.py": {
-    "mtime": 1777961669.3072512,
-    "hash": "e4990fd0f65711db53c8f54b7e170134"
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/inventory/migrations/0001_initial.py": {
+    "mtime": 1778443826.266861,
+    "hash": "abd1625957f8995c74532247ff1f731f"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/inventory_basic/api/__init__.py": {
-    "mtime": 1777961669.3072512,
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/inventory/api/__init__.py": {
+    "mtime": 1778443793.627269,
     "hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
-  "/home/wcun/.openclaw/workspace/repos/erp-nexus/modules/inventory_basic/api/endpoints.py": {
-    "mtime": 1777961669.3072512,
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/apps/inventory/api/endpoints.py": {
+    "mtime": 1778443793.627269,
     "hash": "44619c0ab03d9ff167001562e12f6c49"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/scripts/init-db.sql": {
@@ -792,8 +728,8 @@
     "hash": "ae92833cc1f3a6c5695c9f38d5eae5ed"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/erp_nexus/modules_enabled.py": {
-    "mtime": 1778438708.205281,
-    "hash": "b7f8ecf8df13973f0ae4ef567c3d5019"
+    "mtime": 1778438850.413316,
+    "hash": "3253d02a317f65a334c6b260058fdec3"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/erp_nexus/asgi.py": {
     "mtime": 1777949371.3310356,
@@ -816,8 +752,8 @@
     "hash": "714e01cadd87af2a5f773046669b24fa"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/erp_nexus/settings/base.py": {
-    "mtime": 1777961669.2989717,
-    "hash": "b987ee4bde8029bd625279f2b7e11ea1"
+    "mtime": 1778438846.5669827,
+    "hash": "df518e1e43bedf547e9b0077527d7702"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/erp_nexus/settings/development.py": {
     "mtime": 1777961669.2989717,
@@ -876,8 +812,8 @@
     "hash": "f1a54927e4abc2aa7863261c12940582"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/WORK_PLAN.md": {
-    "mtime": 1778438340.4918113,
-    "hash": "e6f3758c333dace509965bffdd408e29"
+    "mtime": 1778443864.4202793,
+    "hash": "ba6229f676e87ef6a35f5979078c49b5"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/REQUIREMENTS.md": {
     "mtime": 1778428263.5215356,
@@ -888,16 +824,16 @@
     "hash": "9eb9014166185e5cb9e9edfb72fdf706"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/GRAPH_HEALTH.md": {
-    "mtime": 1778438693.2626443,
-    "hash": "64e7ab42f61e07f5dfa5929084421e1f"
+    "mtime": 1778443850.1800687,
+    "hash": "f76ab662d9e30add22f38e8ceed6e6ad"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ARCHITECTURE_PLUGIN.md": {
     "mtime": 1778436820.6474977,
     "hash": "74bab75b34d5e27577a5de2f08637fd3"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ARCHITECTURE_HYBRID.md": {
-    "mtime": 1778438287.5790427,
-    "hash": "1104277d1362211bd75e282a9a50a34b"
+    "mtime": 1778443850.1800687,
+    "hash": "2274ecce2246baac89eeb269fb37ae99"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ARCHITECTURE.md": {
     "mtime": 1778438715.5606143,
@@ -932,8 +868,8 @@
     "hash": "6e48782bcb11da2fcd225b1ded0b7a79"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/MODULE_INTEGRATION_STATUS.md": {
-    "mtime": 1778438693.2626443,
-    "hash": "68cf77a9049930c01a97792e4e9ba1af"
+    "mtime": 1778443850.1800687,
+    "hash": "155e8d3e68d628bf2a7f119c7ed45e55"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/INSTALL.md": {
     "mtime": 1778428635.2823741,
@@ -979,6 +915,10 @@
     "mtime": 1778428669.632299,
     "hash": "cd436eb6f196f1b284d7ca8a1ab62bad"
   },
+  "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/008-communication-channels.md": {
+    "mtime": 1778443691.3217654,
+    "hash": "049204e13e3f514fc7e4863c4c3ac428"
+  },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/003-multi-company.md": {
     "mtime": 1778428696.2962956,
     "hash": "494de25c91cbf2be5e54138c8d82277f"
@@ -988,12 +928,12 @@
     "hash": "e80bcb638c8b1b42a051005006fcbf38"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/007-hybrid-architecture.md": {
-    "mtime": 1778438300.5847092,
-    "hash": "2ca18f591eb13a134c85d46d3f253d91"
+    "mtime": 1778443850.1800687,
+    "hash": "ec83d1d7fb629cb97a3ce5237495f3ce"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/006-plugin-architecture.md": {
-    "mtime": 1778438698.0522811,
-    "hash": "c37d7e8aec63dec45893cd42765ac66c"
+    "mtime": 1778443850.1800687,
+    "hash": "b5c1d8227a01012dc890f1babbf5ad6b"
   },
   "/home/wcun/.openclaw/workspace/repos/erp-nexus/ADR/005-api-framework.md": {
     "mtime": 1778438698.0522811,

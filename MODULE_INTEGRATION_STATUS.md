@@ -14,7 +14,7 @@
 | `facturacion_ec` | ~120 | 10 | **8.3%** | 🔴 Crítico | Integrar validator |
 | `core_events` | ~50 | 6 | 12.0% | 🟡 Falso + | Documentar limitation |
 | `accounting_basic` | ~60 | 2 | 3.3% | 🟢 Demo | Ninguna |
-| `inventory_basic` | ~60 | 0 | 0% | ✅ Completo | — |
+| `inventory` | ~60 | 0 | 0% | ✅ Completo | — |
 | `inventory` (future) | — | — | — | ⬜ Planeado | — |
 | `sales` (future) | — | — | — | ⬜ Planeado | — |
 
@@ -67,7 +67,7 @@ EventBus **SÍ se usa** en:
 - `apps/core_events/tasks.py` — `EventBus._process_sync()`
 - `apps/core_api/v1/events.py` — `EventBus.emit()`
 - `modules/accounting_basic/core/models.py` — `EventBus.emit()`
-- `modules/inventory_basic/core/models.py` — `EventBus.emit()`
+- `modules/inventory/core/models.py` — `EventBus.emit()`
 
 **¿Por qué aislados?** Graphify NO detecta:
 1. Llamadas a métodos de clase con nombres dinámicos
@@ -86,7 +86,7 @@ Estos módulos tienen **0 nodos aislados** o solo `__init__.py`:
 
 | Módulo | Estado | Notas |
 |--------|--------|-------|
-| `inventory_basic` | ✅ | Demo funcional |
+| `inventory` | ✅ | Demo funcional |
 | `core_users` | ✅ | Base, bien integrado |
 | `core_companies` | ✅ | Multi-tenant backbone |
 | `core_permissions` | ✅ | Permissions system |

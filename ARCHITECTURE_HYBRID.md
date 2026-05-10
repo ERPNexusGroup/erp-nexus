@@ -346,7 +346,7 @@ erp-nexus/
 1. **Mover** `modules/facturacion_ec/` → `apps/facturacion/` ✅
 2. Rename package: `facturacion_ec` → `facturacion` (o mantener nombre)
 3. Ajustar imports en core (si hay referencias)
-4. Eliminar modules demo (accounting_basic, inventory_basic, demo_flow)
+4. Eliminar modules demo (accounting_basic, inventory, demo_flow)
 5. Limpiar settings
 6. Documentar hybrid architecture
 

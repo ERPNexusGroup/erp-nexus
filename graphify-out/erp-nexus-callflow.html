@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>erp-nexus — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 2149 nodes, 2749 edges, 240 communities. Commit: 43f9ca2</p>
+<p class="subtitle">Generated from graphify knowledge graph: 2204 nodes, 2831 edges, 243 communities. Commit: 911c112</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -71,13 +71,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
     <a href="#serve-api">Serving API</a>
     <a href="#security-global">Security &amp; Global Graph</a>
     <a href="#tests-fixtures">Tests &amp; Fixtures</a>
-    <a href="#facturacion-apps-modelspy">Facturacion Apps Modelspy</a>
     <a href="#requirementsmd-rnf-requisitos">Requirementsmd Rnf Requisitos</a>
     <a href="#readmemd-codebash-erp">Readmemd Codebash Erp</a>
     <a href="#fiscal-year-apps">Fiscal Year Apps</a>
     <a href="#changelogmd-added-2026">Changelogmd Added 2026</a>
     <a href="#docs-indexmd-erp">Docs Indexmd Erp</a>
     <a href="#config-apps-modelspy">Config Apps Modelspy</a>
+    <a href="#stats-apps-modelspy">Stats Apps Modelspy</a>
     <a href="#other">Other</a>
 </div>
 
@@ -88,7 +88,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    EXTRACT_PIPELINE_5F350230("Extraction Pipeline<br/><small>362 nodes</small>")
+    EXTRACT_PIPELINE_5F350230("Extraction Pipeline<br/><small>386 nodes</small>")
     class EXTRACT_PIPELINE_5F350230 module;
     BUILD_GRAPH_321CBB04("Graph Build<br/><small>27 nodes</small>")
     class BUILD_GRAPH_321CBB04 module;
@@ -96,14 +96,12 @@ flowchart LR
     class CLI_SKILLS_9964CBB8 module;
     INGEST_CACHE_UPDATE_FF457338("Ingestion &amp; Updates<br/><small>52 nodes</small>")
     class INGEST_CACHE_UPDATE_FF457338 module;
-    SERVE_API_35EC8E86("Serving API<br/><small>472 nodes</small>")
+    SERVE_API_35EC8E86("Serving API<br/><small>554 nodes</small>")
     class SERVE_API_35EC8E86 module;
     SECURITY_GLOBAL_5B9C6A04("Security &amp; Global Graph<br/><small>52 nodes</small>")
     class SECURITY_GLOBAL_5B9C6A04 module;
-    TESTS_FIXTURES_B84B1DCC("Tests &amp; Fixtures<br/><small>352 nodes</small>")
+    TESTS_FIXTURES_B84B1DCC("Tests &amp; Fixtures<br/><small>374 nodes</small>")
     class TESTS_FIXTURES_B84B1DCC module;
-    FACTURACION_APPS_MODELSPY_6F8FF833("Facturacion Apps Modelspy<br/><small>57 nodes</small>")
-    class FACTURACION_APPS_MODELSPY_6F8FF833 module;
     REQUIREMENTSMD_RNF_REQUISITOS_1E76E92D("Requirementsmd Rnf Requisitos<br/><small>27 nodes</small>")
     class REQUIREMENTSMD_RNF_REQUISITOS_1E76E92D module;
     READMEMD_CODEBASH_ERP_25191EDE("Readmemd Codebash Erp<br/><small>27 nodes</small>")
@@ -116,20 +114,22 @@ flowchart LR
     class DOCS_INDEXMD_ERP_93CBBCB4 module;
     CONFIG_APPS_MODELSPY_D16C8DA4("Config Apps Modelspy<br/><small>20 nodes</small>")
     class CONFIG_APPS_MODELSPY_D16C8DA4 module;
-    OTHER_D0941E68("Other<br/><small>411 nodes</small>")
+    STATS_APPS_MODELSPY_3F16CABB("Stats Apps Modelspy<br/><small>19 nodes</small>")
+    class STATS_APPS_MODELSPY_3F16CABB module;
+    OTHER_D0941E68("Other<br/><small>376 nodes</small>")
     class OTHER_D0941E68 module;
-    SERVE_API_35EC8E86 -->|inherits x16| OTHER_D0941E68
-    SERVE_API_35EC8E86 -->|inherits x8| TESTS_FIXTURES_B84B1DCC
+    SERVE_API_35EC8E86 -->|inherits x10| TESTS_FIXTURES_B84B1DCC
     OTHER_D0941E68 -->|contains x6| EXTRACT_PIPELINE_5F350230
-    TESTS_FIXTURES_B84B1DCC -->|imports x6| OTHER_D0941E68
-    OTHER_D0941E68 -->|contains x5| TESTS_FIXTURES_B84B1DCC
-    OTHER_D0941E68 -->|contains x5| SERVE_API_35EC8E86
+    OTHER_D0941E68 -->|contains x4| TESTS_FIXTURES_B84B1DCC
+    TESTS_FIXTURES_B84B1DCC -->|contains x3| OTHER_D0941E68
+    TESTS_FIXTURES_B84B1DCC -->|calls x3| INGEST_CACHE_UPDATE_FF457338
+    OTHER_D0941E68 -->|inherits x2| SERVE_API_35EC8E86
     EXTRACT_PIPELINE_5F350230 -->|contains x2| OTHER_D0941E68
     CLI_SKILLS_9964CBB8 -->|inherits x2| TESTS_FIXTURES_B84B1DCC
     CLI_SKILLS_9964CBB8 -->|inherits x2| INGEST_CACHE_UPDATE_FF457338
-    FACTURACION_APPS_MODELSPY_6F8FF833 -->|method x2| TESTS_FIXTURES_B84B1DCC
-    TESTS_FIXTURES_B84B1DCC -->|calls x2| INGEST_CACHE_UPDATE_FF457338
+    TESTS_FIXTURES_B84B1DCC -->|contains x2| SERVE_API_35EC8E86
     SERVE_API_35EC8E86 -->|contains x2| CLI_SKILLS_9964CBB8
+    CLI_SKILLS_9964CBB8 -->|inherits| SERVE_API_35EC8E86
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,7 +146,7 @@ flowchart LR
     <h4>Architecture Layers</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>Layer</th><th>Nodes</th><th>Communities</th></tr>
-      <tr><td>Extraction Pipeline</td><td>362</td><td><code>4, 7, 11, 12, 15, 17, 21, 26, 27, 28, 32, 74, 84, 92, 100, 101, 104, 111, 136</code></td></tr><tr><td>Graph Build</td><td>27</td><td><code>18</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>223</td><td><code>3, 33, 39, 42, 46, 47, 57, 60, 66, 76, 82, 83, 90, 98, 103, 120, 128, 135</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>52</td><td><code>36, 48, 53, 106</code></td></tr><tr><td>Serving API</td><td>472</td><td><code>0, 8, 9, 13, 16, 22, 23, 31, 41, 54, 55, 56, 59, 61, 63, 64, 72, 73, 78, 79, 87, 88, 96, 97, 107, 109, 123, 216, 217</code></td></tr><tr><td>Security &amp; Global Graph</td><td>52</td><td><code>10, 34</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>352</td><td><code>2, 5, 6, 14, 25, 37, 40, 45, 49, 62, 68, 69, 75, 80, 85, 86, 94, 105, 115, 116, 117, 119, 132, 188, 190</code></td></tr><tr><td>Facturacion Apps Modelspy</td><td>57</td><td><code>1</code></td></tr><tr><td>Requirementsmd Rnf Requisitos</td><td>27</td><td><code>19</code></td></tr><tr><td>Readmemd Codebash Erp</td><td>27</td><td><code>20</code></td></tr><tr><td>Fiscal Year Apps</td><td>24</td><td><code>24</code></td></tr><tr><td>Changelogmd Added 2026</td><td>22</td><td><code>29</code></td></tr><tr><td>Docs Indexmd Erp</td><td>21</td><td><code>30</code></td></tr><tr><td>Config Apps Modelspy</td><td>20</td><td><code>35</code></td></tr><tr><td>Other</td><td>411</td><td><code>38, 43, 44, 50, 51, 52, 58, 65, 67, 70, 71, 77, 81, 89, 91, 93, 95, 102, 108, 99, 110, 112, 113, 114, 118, 121, 122, 124, 125, 126, 127, 129, 130, 131, 133, 134, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 189, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239</code></td></tr>
+      <tr><td>Extraction Pipeline</td><td>386</td><td><code>6, 9, 13, 14, 18, 19, 23, 25, 28, 29, 30, 35, 71, 80, 89, 100, 102, 98, 111, 138</code></td></tr><tr><td>Graph Build</td><td>27</td><td><code>20</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>223</td><td><code>5, 36, 43, 49, 50, 59, 62, 63, 65, 72, 78, 79, 87, 95, 101, 117, 118, 127, 135</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>52</td><td><code>39, 51, 56, 104</code></td></tr><tr><td>Serving API</td><td>554</td><td><code>0, 1, 2, 4, 10, 11, 16, 24, 26, 34, 42, 52, 55, 57, 58, 67, 70, 74, 75, 84, 85, 93, 94, 105, 108, 125, 132, 149, 174, 219, 220</code></td></tr><tr><td>Security &amp; Global Graph</td><td>52</td><td><code>12, 37</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>374</td><td><code>3, 7, 8, 15, 17, 31, 41, 44, 45, 47, 48, 60, 76, 81, 82, 83, 91, 103, 97, 115, 126, 131, 191, 193</code></td></tr><tr><td>Requirementsmd Rnf Requisitos</td><td>27</td><td><code>21</code></td></tr><tr><td>Readmemd Codebash Erp</td><td>27</td><td><code>22</code></td></tr><tr><td>Fiscal Year Apps</td><td>24</td><td><code>27</code></td></tr><tr><td>Changelogmd Added 2026</td><td>22</td><td><code>32</code></td></tr><tr><td>Docs Indexmd Erp</td><td>21</td><td><code>33</code></td></tr><tr><td>Config Apps Modelspy</td><td>20</td><td><code>38</code></td></tr><tr><td>Stats Apps Modelspy</td><td>19</td><td><code>40</code></td></tr><tr><td>Other</td><td>376</td><td><code>46, 53, 54, 61, 64, 66, 68, 69, 73, 77, 86, 88, 90, 92, 106, 107, 96, 99, 109, 110, 112, 113, 114, 116, 119, 120, 121, 122, 123, 124, 128, 129, 130, 133, 134, 136, 137, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 192, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242</code></td></tr>
     </table>
   </div>
   <div class="card">
@@ -158,8 +158,8 @@ flowchart LR
   <div class="card">
     <h4>Graph Report Highlights</h4>
     <ul>
-      <li>2149 nodes · 2749 edges · 240 communities (174 shown, 66 thin omitted)</li>
-      <li>Extraction: 79% EXTRACTED · 21% INFERRED · 0% AMBIGUOUS · INFERRED: 582 edges (avg confidence: 0.52)</li>
+      <li>2204 nodes · 2831 edges · 243 communities (175 shown, 68 thin omitted)</li>
+      <li>Extraction: 79% EXTRACTED · 21% INFERRED · 0% AMBIGUOUS · INFERRED: 606 edges (avg confidence: 0.52)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `JWTAuth` - 27 edges</li>
       <li>2. `Product` - 27 edges</li>
@@ -170,28 +170,27 @@ flowchart LR
 <hr>
 <!-- ====== 2. Extraction Pipeline ====== -->
 <h2 id="extract-pipeline">2. Extraction Pipeline</h2>
-<p>Extraction Pipeline groups implementation around adr, facturacion, codepython, module, mostly in CODING_STANDARDS.md, MODULE_SPEC.md, PROJECT_DEFINITION.md. This section covers 362 nodes and 344 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Extraction Pipeline groups implementation around adr, facturacion, codepython, module, mostly in CODING_STANDARDS.md, MODULE_SPEC.md, PROJECT_DEFINITION.md. This section covers 386 nodes and 367 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Extraction Pipeline (362 nodes, 344 edges)
+    %% Section: Extraction Pipeline (386 nodes, 367 edges)
     subgraph extract_pipeline_ADR_001_modular_architecture_md_40f83adb["ADR/001-modular-architecture.md"]
         adr_001_modular_architecture_adr_001_arquitectur_41502db3("ADR-001: Arquitectura Modular Basada en...<br/><small>ADR/001-modular-architecture.md</small>")
         adr_001_modular_architecture_arquitectura_4f82db0a("📐 Arquitectura<br/><small>ADR/001-modular-architecture.md</small>")
-        adr_001_modular_architecture_alternativas_consid_70c14e76("🔍 Alternativas Consideradas<br/><small>ADR/001-modular-architecture.md</small>")
     end
     subgraph extract_pipeline_ADR_003_multi_company_md_56fc2ed2["ADR/003-multi-company.md"]
         adr_003_multi_company_adr_003_multi_company_mult_5254df66("ADR-003: Multi-Company (Multi-Tenant) S...<br/><small>ADR/003-multi-company.md</small>")
         adr_003_multi_company_implementaci_n_b41a875b("🏗️ Implementación<br/><small>ADR/003-multi-company.md</small>")
     end
+    subgraph extract_pipeline_ADR_008_communication_channels_25f644c8["ADR/008-communication-channels.md"]
+        adr_008_communication_channels_adr_008_comunicac_8f213317("ADR 008 — Comunicación: REST vs Event B...<br/><small>ADR/008-communication-channels.md</small>")
+        adr_008_communication_channels_decisi_n_f4626180("**Decisión**<br/><small>ADR/008-communication-channels.md</small>")
+    end
     subgraph extract_pipeline_MODULE_SPEC_md_5af3caf4["MODULE_SPEC.md"]
         erp_nexus_module_spec_especificaci_n_de_m_dulos_2263a95b("📝 Especificación de Módulos — ERP Nexus<br/><small>MODULE_SPEC.md</small>")
         erp_nexus_module_spec_settings_py_o_env_a4d562e0("settings.py o .env<br/><small>MODULE_SPEC.md</small>")
-    end
-    subgraph extract_pipeline_PROJECT_DEFINITION_md_092cde23["PROJECT_DEFINITION.md"]
-        erp_nexus_project_definition_definici_n_del_proy_d0bd07a9("📋 Definición del Proyecto — ERP Nexus<br/><small>PROJECT_DEFINITION.md</small>")
-        erp_nexus_project_definition_c_mo_funciona_un_pl_86c46194("🔌 Cómo Funciona un Plugin<br/><small>PROJECT_DEFINITION.md</small>")
     end
     adr_002_event_bus_adr_002_event_bus_como_medio_d_74ffe01d("ADR-002: Event Bus como Medio de Comuni...<br/><small>ADR/002-event-bus.md</small>")
     adr_004_marketplace_adr_004_marketplace_module_i_e5a0b580("ADR-004: Marketplace Module Installatio...<br/><small>ADR/004-marketplace.md</small>")
@@ -200,22 +199,21 @@ flowchart LR
     erp_nexus_coding_standards_reglas_de_codificaci_cf04e84c("📐 Reglas de Codificación — ERP Nexus<br/><small>CODING_STANDARDS.md</small>")
     erp_nexus_development_settings_py_e3f2237a("settings.py<br/><small>DEVELOPMENT.md</small>")
     erp_nexus_module_integration_status_estado_de_in_25bc7f54("📦 Estado de Integración de Módulos — ER...<br/><small>MODULE_INTEGRATION_STATUS.md</small>")
+    erp_nexus_project_definition_definici_n_del_proy_d0bd07a9("📋 Definición del Proyecto — ERP Nexus<br/><small>PROJECT_DEFINITION.md</small>")
     facturacion_readme_m_dulo_facturaci_n_electr_nic_c612f563("Módulo Facturación Electrónica Ecuador<br/><small>apps/facturacion/README.md</small>")
     facturacion_ec_readme_m_dulo_facturaci_n_electr_9d7e08a4("Módulo Facturación Electrónica Ecuador<br/><small>modules/facturacion_ec/README.md</small>")
-    erp_nexus_project_definition_definici_n_del_proy_d0bd07a9 -->|contains| erp_nexus_project_definition_c_mo_funciona_un_pl_86c46194
+    adr_008_communication_channels_adr_008_comunicac_8f213317 -->|contains| adr_008_communication_channels_decisi_n_f4626180
     adr_001_modular_architecture_adr_001_arquitectur_41502db3 -->|contains| adr_001_modular_architecture_arquitectura_4f82db0a
-    adr_001_modular_architecture_adr_001_arquitectur_41502db3 -->|contains| adr_001_modular_architecture_alternativas_consid_70c14e76
     adr_003_multi_company_adr_003_multi_company_mult_5254df66 -->|contains| adr_003_multi_company_implementaci_n_b41a875b
-    %% Omitted for readability: 344 nodes, 0 edges
+    %% Omitted for readability: 368 nodes, 0 edges
     class adr_001_modular_architecture_adr_001_arquitectur_41502db3 concept;
     class adr_001_modular_architecture_arquitectura_4f82db0a concept;
-    class adr_001_modular_architecture_alternativas_consid_70c14e76 concept;
     class adr_003_multi_company_adr_003_multi_company_mult_5254df66 concept;
     class adr_003_multi_company_implementaci_n_b41a875b concept;
+    class adr_008_communication_channels_adr_008_comunicac_8f213317 concept;
+    class adr_008_communication_channels_decisi_n_f4626180 concept;
     class erp_nexus_module_spec_especificaci_n_de_m_dulos_2263a95b concept;
     class erp_nexus_module_spec_settings_py_o_env_a4d562e0 concept;
-    class erp_nexus_project_definition_definici_n_del_proy_d0bd07a9 concept;
-    class erp_nexus_project_definition_c_mo_funciona_un_pl_86c46194 concept;
     class adr_002_event_bus_adr_002_event_bus_como_medio_d_74ffe01d concept;
     class adr_004_marketplace_adr_004_marketplace_module_i_e5a0b580 concept;
     class adr_006_plugin_architecture_adr_006_plugin_archi_4694ae20 concept;
@@ -223,6 +221,7 @@ flowchart LR
     class erp_nexus_coding_standards_reglas_de_codificaci_cf04e84c concept;
     class erp_nexus_development_settings_py_e3f2237a concept;
     class erp_nexus_module_integration_status_estado_de_in_25bc7f54 concept;
+    class erp_nexus_project_definition_definici_n_del_proy_d0bd07a9 concept;
     class facturacion_readme_m_dulo_facturaci_n_electr_nic_c612f563 concept;
     class facturacion_ec_readme_m_dulo_facturaci_n_electr_9d7e08a4 concept;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
@@ -505,7 +504,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x344. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x367. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -1340,7 +1339,7 @@ flowchart LR
   <td><code>ManifestError</code><br><small style="color:var(--muted)">apps/core_marketplace/manifest.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>_ast_node_to_safe_value()</code><br><small style="color:var(--muted)">apps/core_marketplace/manifest.py</small><br><code>Command</code><br><small style="color:var(--muted)">management/commands/sync_modules.py</small><br><code>Command</code><br><small style="color:var(--muted)">management/commands/module_install.py</small><br>+2 more</td>
+  <td><code>_ast_node_to_safe_value()</code><br><small style="color:var(--muted)">apps/core_marketplace/manifest.py</small><br><code>Command</code><br><small style="color:var(--muted)">management/commands/module_install.py</small><br><code>Command</code><br><small style="color:var(--muted)">management/commands/sync_modules.py</small><br>+2 more</td>
   <td>ManifestError node in apps/core_marketplace/manifest.py.</td>
 </tr>
 <tr>
@@ -1348,7 +1347,7 @@ flowchart LR
   <td><code>parse_meta_file()</code><br><small style="color:var(--muted)">apps/core_marketplace/manifest.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>ManifestError</code><br><small style="color:var(--muted)">apps/core_marketplace/manifest.py</small></td>
-  <td><code>_ast_node_to_safe_value()</code><br><small style="color:var(--muted)">apps/core_marketplace/manifest.py</small><br><code>handle()</code><br><small style="color:var(--muted)">management/commands/sync_modules.py</small><br><code>handle()</code><br><small style="color:var(--muted)">management/commands/module_install.py</small><br>+1 more</td>
+  <td><code>_ast_node_to_safe_value()</code><br><small style="color:var(--muted)">apps/core_marketplace/manifest.py</small><br><code>handle()</code><br><small style="color:var(--muted)">management/commands/module_install.py</small><br><code>handle()</code><br><small style="color:var(--muted)">management/commands/sync_modules.py</small><br>+1 more</td>
   <td>parse_meta_file() node in apps/core_marketplace/manifest.py.</td>
 </tr>
 <tr>
@@ -1535,65 +1534,60 @@ flowchart LR
 
 <!-- ====== 6. Serving API ====== -->
 <h2 id="serve-api">6. Serving API</h2>
-<p>Serving API groups implementation around api, apps, modules, facturacion, mostly in API_REFERENCE.md, modules/facturacion_ec/models.py, ARCHITECTURE.md. This section covers 472 nodes and 796 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Serving API groups implementation around api, apps, modelspy, facturacion, mostly in API_REFERENCE.md, apps/facturacion/models.py, modules/facturacion_ec/models.py. This section covers 554 nodes and 1056 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Serving API (472 nodes, 796 edges)
-    subgraph serve_api_facturacion_api_routes_py_118ffbfa["facturacion/api/routes.py"]
-        api_routes_get_company_for_request_5b15b214("get_company_for_request()<br/><small>facturacion/api/routes.py</small>")
-        api_routes_list_invoices_96af8e35("list_invoices()<br/><small>facturacion/api/routes.py</small>")
-        api_routes_create_invoice_83cf60d9("create_invoice()<br/><small>facturacion/api/routes.py</small>")
-        api_routes_list_customers_fc2e1cec("list_customers()<br/><small>facturacion/api/routes.py</small>")
-        api_routes_list_products_699652ce("list_products()<br/><small>facturacion/api/routes.py</small>")
-        api_routes_get_invoice_e60c3572("get_invoice()<br/><small>facturacion/api/routes.py</small>")
-        api_routes_download_xml_f53866ec("download_xml()<br/><small>facturacion/api/routes.py</small>")
-        api_routes_resend_invoice_587aed97("resend_invoice()<br/><small>facturacion/api/routes.py</small>")
+    %% Section: Serving API (554 nodes, 1056 edges)
+    subgraph serve_api_api_endpoints_py_19eb7217["api/endpoints.py"]
+        api_endpoints_categoryout_529d3452("CategoryOut<br/><small>api/endpoints.py</small>")
+        api_endpoints_list_categories_36bd6a09("list_categories()<br/><small>api/endpoints.py</small>")
+        api_endpoints_productout_094cb844("ProductOut<br/><small>api/endpoints.py</small>")
+        api_endpoints_list_products_7dcabc0e("list_products()<br/><small>api/endpoints.py</small>")
+        api_endpoints_stockmovementout_d04e4ab9("StockMovementOut<br/><small>api/endpoints.py</small>")
+        api_endpoints_create_movement_65de48e7("create_movement()<br/><small>api/endpoints.py</small>")
+        api_endpoints_stocksummary_eecfdd29("StockSummary<br/><small>api/endpoints.py</small>")
+        api_endpoints_stock_summary_3cf0a597("stock_summary()<br/><small>api/endpoints.py</small>")
     end
-    subgraph serve_api_apps_core_marketplace_registry_py_e92933e1["apps/core_marketplace/registry.py"]
-        core_marketplace_registry_moduledownload_d80e0fc3("ModuleDownload<br/><small>apps/core_marketplace/registry.py</small>")
-        core_marketplace_registry_moduledownload_str_dd43adbc("__str__()<br/><small>apps/core_marketplace/registry.py</small>")
-    end
-    subgraph serve_api_apps_core_users_models_py_a6783e3c["apps/core_users/models.py"]
-        core_users_models_userprofile_483c4a1c("UserProfile<br/><small>apps/core_users/models.py</small>")
-        core_users_models_userprofile_str_66690bd1("__str__()<br/><small>apps/core_users/models.py</small>")
+    subgraph serve_api_models_py_8e3e093d["models.py"]
+        inventory_models_category_c3e2ad87("Category<br/><small>models.py</small>")
+        inventory_models_category_str_34af1739("__str__()<br/><small>models.py</small>")
+        inventory_models_product_d4bd9a18("Product<br/><small>models.py</small>")
+        inventory_models_product_str_7fc5715a("__str__()<br/><small>models.py</small>")
     end
     subgraph serve_api_modules_facturacion_ec_models_py_4a3c56f9["modules/facturacion_ec/models.py"]
         facturacion_ec_models_companylicense_bc5f0bf4("CompanyLicense<br/><small>modules/facturacion_ec/models.py</small>")
         modules_facturacion_ec_models_py_19804a6f("models.py")
     end
-    core_companies_models_company_17e78739("Company<br/><small>apps/core_companies/models.py</small>")
     core_pagebuilder_models_page_e6cd5b8f("Page<br/><small>apps/core_pagebuilder/models.py</small>")
-    v1_pages_pagedetail_e7ad1dc6("PageDetail<br/><small>core_api/v1/pages.py</small>")
+    facturacion_models_companylicense_37dcdfaf("CompanyLicense<br/><small>apps/facturacion/models.py</small>")
+    api_routes_get_company_for_request_5b15b214("get_company_for_request()<br/><small>facturacion/api/routes.py</small>")
     commands_catalog_command_6a412a85("Command<br/><small>management/commands/catalog.py</small>")
-    api_routes_get_company_for_request_5b15b214 -->|calls| api_routes_list_invoices_96af8e35
-    api_routes_get_company_for_request_5b15b214 -->|calls| api_routes_create_invoice_83cf60d9
-    api_routes_get_company_for_request_5b15b214 -->|calls| api_routes_list_customers_fc2e1cec
-    api_routes_get_company_for_request_5b15b214 -->|calls| api_routes_list_products_699652ce
-    api_routes_get_company_for_request_5b15b214 -->|calls| api_routes_get_invoice_e60c3572
-    api_routes_get_company_for_request_5b15b214 -->|calls| api_routes_download_xml_f53866ec
-    api_routes_get_company_for_request_5b15b214 -->|calls| api_routes_resend_invoice_587aed97
-    core_users_models_userprofile_483c4a1c -->|method| core_users_models_userprofile_str_66690bd1
-    core_marketplace_registry_moduledownload_d80e0fc3 -->|method| core_marketplace_registry_moduledownload_str_dd43adbc
-    %% Omitted for readability: 454 nodes, 0 edges
-    class api_routes_get_company_for_request_5b15b214 function;
-    class api_routes_list_invoices_96af8e35 function;
-    class api_routes_create_invoice_83cf60d9 function;
-    class api_routes_list_customers_fc2e1cec function;
-    class api_routes_list_products_699652ce function;
-    class api_routes_get_invoice_e60c3572 function;
-    class api_routes_download_xml_f53866ec function;
-    class api_routes_resend_invoice_587aed97 function;
-    class core_marketplace_registry_moduledownload_d80e0fc3 klass;
-    class core_marketplace_registry_moduledownload_str_dd43adbc function;
-    class core_users_models_userprofile_483c4a1c klass;
-    class core_users_models_userprofile_str_66690bd1 function;
+    api_endpoints_categoryout_529d3452 -->|calls| api_endpoints_list_categories_36bd6a09
+    api_endpoints_productout_094cb844 -->|calls| api_endpoints_list_products_7dcabc0e
+    api_endpoints_stockmovementout_d04e4ab9 -->|calls| api_endpoints_create_movement_65de48e7
+    api_endpoints_stocksummary_eecfdd29 -->|calls| api_endpoints_stock_summary_3cf0a597
+    inventory_models_category_c3e2ad87 -->|method| inventory_models_category_str_34af1739
+    inventory_models_product_d4bd9a18 -->|method| inventory_models_product_str_7fc5715a
+    %% Omitted for readability: 536 nodes, 0 edges
+    class api_endpoints_categoryout_529d3452 klass;
+    class api_endpoints_list_categories_36bd6a09 function;
+    class api_endpoints_productout_094cb844 klass;
+    class api_endpoints_list_products_7dcabc0e function;
+    class api_endpoints_stockmovementout_d04e4ab9 klass;
+    class api_endpoints_create_movement_65de48e7 function;
+    class api_endpoints_stocksummary_eecfdd29 klass;
+    class api_endpoints_stock_summary_3cf0a597 function;
+    class inventory_models_category_c3e2ad87 klass;
+    class inventory_models_category_str_34af1739 function;
+    class inventory_models_product_d4bd9a18 klass;
+    class inventory_models_product_str_7fc5715a function;
     class facturacion_ec_models_companylicense_bc5f0bf4 klass;
     class modules_facturacion_ec_models_py_19804a6f module;
-    class core_companies_models_company_17e78739 klass;
     class core_pagebuilder_models_page_e6cd5b8f klass;
-    class v1_pages_pagedetail_e7ad1dc6 klass;
+    class facturacion_models_companylicense_37dcdfaf klass;
+    class api_routes_get_company_for_request_5b15b214 function;
     class commands_catalog_command_6a412a85 entry;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -1618,243 +1612,243 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>routes.py</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-endpoint">API</span></td>
+  <td><code>admin.py</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Module file in facturacion/api/routes.py.</td>
+  <td><code>models.py</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td>Module file in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>CustomerIn</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
+  <td><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>Company</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br>+3 more</td>
-  <td>CustomerIn node in facturacion/api/routes.py.</td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
+  <td>CustomerAdmin node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>ProductIn</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
+  <td><code>ProductAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>Company</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br>+3 more</td>
-  <td>ProductIn node in facturacion/api/routes.py.</td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
+  <td>ProductAdmin node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>InvoiceLineIn</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
+  <td><code>InvoiceLineInline</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>Company</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br>+3 more</td>
-  <td>InvoiceLineIn node in facturacion/api/routes.py.</td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
+  <td>InvoiceLineInline node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>InvoiceCreate</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
+  <td><code>InvoiceAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>Company</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br>+3 more</td>
-  <td>InvoiceCreate node in facturacion/api/routes.py.</td>
+  <td><code>ambiente_display()</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+9 more</td>
+  <td>InvoiceAdmin node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>InvoiceOut</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>Company</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br>+3 more</td>
-  <td>InvoiceOut node in facturacion/api/routes.py.</td>
+  <td><code>.ambiente_display()</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>InvoiceAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.ambiente_display() node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>get_company_for_request()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>SRISendLogAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>create_invoice()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small><br><code>download_xml()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small><br><code>get_invoice()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small><br>+4 more</td>
-  <td>get_company_for_request() node in facturacion/api/routes.py.</td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
+  <td>SRISendLogAdmin node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>list_invoices()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>get_company_for_request()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>list_invoices() node in facturacion/api/routes.py.</td>
+  <td><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
+  <td>ElectronicDocumentAdmin node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>9</td>
-  <td><code>create_invoice()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>get_company_for_request()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>create_invoice() node in facturacion/api/routes.py.</td>
+  <td><code>LicenseTypeAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
+  <td>LicenseTypeAdmin node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>10</td>
-  <td><code>list_customers()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>get_company_for_request()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>list_customers() node in facturacion/api/routes.py.</td>
+  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+9 more</td>
+  <td>CompanyLicenseAdmin node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>list_products()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
+  <td><code>.invoices_this_month_display()</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td><code>get_company_for_request()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
+  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
   <td>No direct outbound edge</td>
-  <td>list_products() node in facturacion/api/routes.py.</td>
+  <td>.invoices_this_month_display() node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>get_invoice()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>get_company_for_request()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>get_invoice() node in facturacion/api/routes.py.</td>
+  <td><code>SriAmbienteAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
+  <td>SriAmbienteAdmin node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>download_xml()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>get_company_for_request()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>download_xml() node in facturacion/api/routes.py.</td>
+  <td><code>SriTipoComprobanteAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
+  <td>SriTipoComprobanteAdmin node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>resend_invoice()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>get_company_for_request()</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>resend_invoice() node in facturacion/api/routes.py.</td>
+  <td><code>SriImpuestoAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
+  <td>SriImpuestoAdmin node in apps/facturacion/admin.py.</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>Obtiene la company activa, con fallback en DEBUG.</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>InvoiceLineIn</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Obtiene la company activa, con fallback en DEBUG..</td>
+  <td><code>Customer</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+7 more</td>
+  <td>InvoiceLineIn node in facturacion/api/routes.py.</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>Lista facturas de la empresa activa.</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>InvoiceCreate</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Lista facturas de la empresa activa..</td>
+  <td><code>Customer</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+7 more</td>
+  <td>InvoiceCreate node in facturacion/api/routes.py.</td>
 </tr>
 <tr>
   <td>17</td>
-  <td><code>Crea factura electrónica y la envía a SRI automaticamente.      Flujo:     1. Cr</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>InvoiceOut</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Crea factura electrónica y la envía a SRI automaticamente.      Flujo:     1. Cr.</td>
+  <td><code>Customer</code><br><small style="color:var(--muted)">modules/facturacion_ec/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+7 more</td>
+  <td>InvoiceOut node in facturacion/api/routes.py.</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>Busca clientes (para autocomplete).</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Busca clientes (para autocomplete)..</td>
+  <td><code>models.py</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>admin.py</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>routes.py</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
+  <td><code>signals.py</code><br><small style="color:var(--muted)">apps/facturacion/signals.py</small></td>
+  <td>Module file in apps/facturacion/models.py.</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>Obtiene detalle de factura.</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Obtiene detalle de factura..</td>
+  <td><code>SriAmbiente</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br>+8 more</td>
+  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td>SriAmbiente node in apps/facturacion/models.py.</td>
 </tr>
 <tr>
   <td>20</td>
-  <td><code>Descarga XML firmado.</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>Meta</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Descarga XML firmado..</td>
+  <td>Meta node in apps/facturacion/models.py.</td>
 </tr>
 <tr>
   <td>21</td>
-  <td><code>Reenvía factura rechazada/corrige.</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>SriAmbiente</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
   <td>No direct outbound edge</td>
-  <td>Design note for Reenvía factura rechazada/corrige..</td>
+  <td>.__str__() node in apps/facturacion/models.py.</td>
 </tr>
 <tr>
   <td>22</td>
-  <td><code>models.py</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>admin.py</code><br><small style="color:var(--muted)">apps/core_companies/admin.py</small><br><code>middleware.py</code><br><small style="color:var(--muted)">apps/core_companies/middleware.py</small></td>
-  <td>Module file in apps/core_companies/models.py.</td>
+  <td><code>SriTipoComprobante</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br>+8 more</td>
+  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td>SriTipoComprobante node in apps/facturacion/models.py.</td>
 </tr>
 <tr>
   <td>23</td>
-  <td><code>Company</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>CustomerIn</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small><br><code>InvoiceCreate</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small><br><code>InvoiceLineIn</code><br><small style="color:var(--muted)">facturacion/api/routes.py</small><br>+2 more</td>
-  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small><br><code>ActiveCompanyMiddleware</code><br><small style="color:var(--muted)">apps/core_companies/middleware.py</small><br><code>CompanyAdmin</code><br><small style="color:var(--muted)">apps/core_companies/admin.py</small><br>+4 more</td>
-  <td>Company node in apps/core_companies/models.py.</td>
+  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>SriTipoComprobante</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.__str__() node in apps/facturacion/models.py.</td>
 </tr>
 <tr>
   <td>24</td>
-  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>Company</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.__str__() node in apps/core_companies/models.py.</td>
+  <td><code>SriImpuesto</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br>+8 more</td>
+  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td>SriImpuesto node in apps/facturacion/models.py.</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>Membership</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small><br><code>ActiveCompanyMiddleware</code><br><small style="color:var(--muted)">apps/core_companies/middleware.py</small><br><code>CompanyAdmin</code><br><small style="color:var(--muted)">apps/core_companies/admin.py</small><br>+2 more</td>
-  <td>Membership node in apps/core_companies/models.py.</td>
+  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>SriImpuesto</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.__str__() node in apps/facturacion/models.py.</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>Meta</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small></td>
+  <td><code>LicenseType</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Meta node in apps/core_companies/models.py.</td>
+  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br>+8 more</td>
+  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td>LicenseType node in apps/facturacion/models.py.</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small></td>
+  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td><code>Membership</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small></td>
+  <td><code>LicenseType</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
   <td>No direct outbound edge</td>
-  <td>.__str__() node in apps/core_companies/models.py.</td>
+  <td>.__str__() node in apps/facturacion/models.py.</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>admin.py</code><br><small style="color:var(--muted)">apps/core_companies/admin.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>models.py</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>Module file in apps/core_companies/admin.py.</td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br>+8 more</td>
+  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>can_create_invoice()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>increment_invoice_count()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+1 more</td>
+  <td>CompanyLicense node in apps/facturacion/models.py.</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>MembershipInline</code><br><small style="color:var(--muted)">apps/core_companies/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>Company</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small><br><code>Membership</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small></td>
+  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
   <td>No direct outbound edge</td>
-  <td>MembershipInline node in apps/core_companies/admin.py.</td>
+  <td>.__str__() node in apps/facturacion/models.py.</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>CompanyAdmin</code><br><small style="color:var(--muted)">apps/core_companies/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>Company</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small><br><code>Membership</code><br><small style="color:var(--muted)">apps/core_companies/models.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>CompanyAdmin node in apps/core_companies/admin.py.</td>
+  <td><code>.is_valid()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td><code>can_create_invoice()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
+  <td>.is_valid() node in apps/facturacion/models.py.</td>
 </tr>
 </table>
 
@@ -1864,18 +1858,18 @@ flowchart LR
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
       <tr><td><code>API_REFERENCE.md</code></td><td>76 nodes</td></tr>
+<tr><td><code>apps/facturacion/models.py</code></td><td>40 nodes</td></tr>
 <tr><td><code>modules/facturacion_ec/models.py</code></td><td>40 nodes</td></tr>
 <tr><td><code>ARCHITECTURE.md</code></td><td>32 nodes</td></tr>
 <tr><td><code>ADR/005-api-framework.md</code></td><td>24 nodes</td></tr>
 <tr><td><code>core_api/v1/auth.py</code></td><td>24 nodes</td></tr>
 <tr><td><code>facturacion/api/routes.py</code></td><td>21 nodes</td></tr>
 <tr><td><code>core_api/v1/pages.py</code></td><td>18 nodes</td></tr>
-<tr><td><code>apps/core_stats/models.py</code></td><td>15 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x301, explains x97, inherits x48, method x39. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x347, explains x124, method x63, inherits x42. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -2226,23 +2220,22 @@ flowchart LR
 
 <!-- ====== 8. Tests & Fixtures ====== -->
 <h2 id="tests-fixtures">8. Tests &amp; Fixtures</h2>
-<p>Tests &amp; Fixtures groups implementation around test, tests, apps, modelspy, mostly in CONTRIBUTING.md, modules/README.md, tests/test_auth.py. This section covers 352 nodes and 415 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Tests &amp; Fixtures groups implementation around test, tests, apps, facturacion, mostly in CONTRIBUTING.md, modules/README.md, tests/test_auth.py. This section covers 374 nodes and 461 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Tests &amp; Fixtures (352 nodes, 415 edges)
+    %% Section: Tests &amp; Fixtures (374 nodes, 461 edges)
     subgraph tests_fixtures_facturacion_services_code_unique_8eac5f37["facturacion/services/code_unique.py"]
         services_code_unique_generate_access_key_fdf7f5cf("generate_access_key()<br/><small>facturacion/services/code_unique.py</small>")
         services_code_unique_generate_invoice_number_869461e3("generate_invoice_number()<br/><small>facturacion/services/code_unique.py</small>")
         services_code_unique_parse_invoice_number_6310abb1("parse_invoice_number()<br/><small>facturacion/services/code_unique.py</small>")
         services_code_unique_get_next_sequential_ec279551("get_next_sequential()<br/><small>facturacion/services/code_unique.py</small>")
     end
-    subgraph tests_fixtures_facturacion_tests_test_services_p_5cb92996["facturacion/tests/test_services.py"]
-        tests_test_services_testcodeunique_8f6b231b("TestCodeUnique<br/><small>facturacion/tests/test_services.py</small>")
-        tests_test_services_testcodeunique_test_generate_39d686dd("test_generate_access_key_format()<br/><small>facturacion/tests/test_services.py</small>")
-        tests_test_services_testcodeunique_test_generate_887110c4("test_generate_invoice_number()<br/><small>facturacion/tests/test_services.py</small>")
-        tests_test_services_testcodeunique_test_parse_in_63ba983d("test_parse_invoice_number()<br/><small>facturacion/tests/test_services.py</small>")
+    subgraph tests_fixtures_facturacion_services_validator_py_99fc2093["facturacion/services/validator.py"]
+        services_validator_validationerror_c3039be6("ValidationError<br/><small>facturacion/services/validator.py</small>")
+        services_validator_validationerror_init_489bdb05("__init__()<br/><small>facturacion/services/validator.py</small>")
+        services_validator_validate_invoice_lines_b3ac62eb("validate_invoice_lines()<br/><small>facturacion/services/validator.py</small>")
     end
     subgraph tests_fixtures_management_commands_send_pending_7bd7ce54["management/commands/send_pending_facturacion.py"]
         commands_send_pending_facturacion_command_98db557b("Command<br/><small>management/commands/send_pending_facturacion.py</small>")
@@ -2255,6 +2248,7 @@ flowchart LR
     end
     apps_facturacion_services_init_py_d8682971("__init__.py")
     services_facturation_integration_send_invoice_to_80d48475("send_invoice_to_sri()<br/><small>facturacion/services/facturation_integration.py</small>")
+    services_xml_generator_validate_xml_against_xsd_84f6d94b("validate_xml_against_xsd()<br/><small>facturacion/services/xml_generator.py</small>")
     tests_test_api_testeventsapi_e7121e3f("TestEventsAPI<br/><small>tests/test_api.py</small>")
     tests_test_auth_testprotectedendpoints_c4080096("TestProtectedEndpoints<br/><small>tests/test_auth.py</small>")
     tests_test_events_testeventbus_d9f2072e("TestEventBus<br/><small>tests/test_events.py</small>")
@@ -2264,18 +2258,16 @@ flowchart LR
     services_code_unique_generate_invoice_number_869461e3 -->|calls| services_facturation_integration_send_invoice_to_80d48475
     services_code_unique_parse_invoice_number_6310abb1 -->|calls| services_code_unique_get_next_sequential_ec279551
     services_code_unique_get_next_sequential_ec279551 -->|calls| services_facturation_integration_send_invoice_to_80d48475
-    tests_test_services_testcodeunique_8f6b231b -->|method| tests_test_services_testcodeunique_test_generate_39d686dd
-    tests_test_services_testcodeunique_8f6b231b -->|method| tests_test_services_testcodeunique_test_generate_887110c4
-    tests_test_services_testcodeunique_8f6b231b -->|method| tests_test_services_testcodeunique_test_parse_in_63ba983d
-    %% Omitted for readability: 334 nodes, 0 edges
+    services_validator_validationerror_c3039be6 -->|method| services_validator_validationerror_init_489bdb05
+    services_validator_validationerror_c3039be6 -->|calls| services_validator_validate_invoice_lines_b3ac62eb
+    %% Omitted for readability: 356 nodes, 0 edges
     class services_code_unique_generate_access_key_fdf7f5cf function;
     class services_code_unique_generate_invoice_number_869461e3 function;
     class services_code_unique_parse_invoice_number_6310abb1 function;
     class services_code_unique_get_next_sequential_ec279551 function;
-    class tests_test_services_testcodeunique_8f6b231b test;
-    class tests_test_services_testcodeunique_test_generate_39d686dd test;
-    class tests_test_services_testcodeunique_test_generate_887110c4 test;
-    class tests_test_services_testcodeunique_test_parse_in_63ba983d test;
+    class services_validator_validationerror_c3039be6 klass;
+    class services_validator_validationerror_init_489bdb05 function;
+    class services_validator_validate_invoice_lines_b3ac62eb function;
     class commands_send_pending_facturacion_command_98db557b entry;
     class commands_send_pending_facturacion_command_add_ar_a5bbe469 function;
     class commands_send_pending_facturacion_command_handle_ced754ba function;
@@ -2283,6 +2275,7 @@ flowchart LR
     class tests_test_users_testuserprofile_81c6edbd test;
     class apps_facturacion_services_init_py_d8682971 module;
     class services_facturation_integration_send_invoice_to_80d48475 function;
+    class services_xml_generator_validate_xml_against_xsd_84f6d94b function;
     class tests_test_api_testeventsapi_e7121e3f test;
     class tests_test_auth_testprotectedendpoints_c4080096 test;
     class tests_test_events_testeventbus_d9f2072e test;
@@ -2561,355 +2554,18 @@ flowchart LR
 <tr><td><code>tests/test_api.py</code></td><td>15 nodes</td></tr>
 <tr><td><code>tests/test_events.py</code></td><td>15 nodes</td></tr>
 <tr><td><code>facturacion/tests/test_services.py</code></td><td>14 nodes</td></tr>
-<tr><td><code>tests/test_audit.py</code></td><td>14 nodes</td></tr>
+<tr><td><code>core_api/v1/events.py</code></td><td>13 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x163, method x88, explains x61, imports x23. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x184, method x89, explains x66, imports x29. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
-<!-- ====== 9. Facturacion Apps Modelspy ====== -->
-<h2 id="facturacion-apps-modelspy">9. Facturacion Apps Modelspy</h2>
-<p>Facturacion Apps Modelspy groups implementation around facturacion, apps, modelspy, adminpy, mostly in apps/facturacion/models.py, apps/facturacion/admin.py, apps/facturacion/signals.py. This section covers 57 nodes and 178 internal edges; the diagram shows only representative relationships to stay readable.</p>
-
-<div class="mermaid">
-%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
-flowchart LR
-    %% Section: Facturacion Apps Modelspy (57 nodes, 178 edges)
-    subgraph facturacion_apps_modelspy_apps_facturacion_model_ba5a4357["apps/facturacion/models.py"]
-        facturacion_models_companylicense_37dcdfaf("CompanyLicense<br/><small>apps/facturacion/models.py</small>")
-        facturacion_models_customer_6ed3af7f("Customer<br/><small>apps/facturacion/models.py</small>")
-        facturacion_models_electronicdocument_10062c34("ElectronicDocument<br/><small>apps/facturacion/models.py</small>")
-        facturacion_models_sriambiente_52ec0df2("SriAmbiente<br/><small>apps/facturacion/models.py</small>")
-        facturacion_models_sriambiente_str_b2d15f43("__str__()<br/><small>apps/facturacion/models.py</small>")
-        facturacion_models_sritipocomprobante_e2baea3f("SriTipoComprobante<br/><small>apps/facturacion/models.py</small>")
-        facturacion_models_sritipocomprobante_str_45ed4c8b("__str__()<br/><small>apps/facturacion/models.py</small>")
-        facturacion_models_sriimpuesto_f76a4ddf("SriImpuesto<br/><small>apps/facturacion/models.py</small>")
-        facturacion_models_sriimpuesto_str_62d67456("__str__()<br/><small>apps/facturacion/models.py</small>")
-        facturacion_models_licensetype_bb006114("LicenseType<br/><small>apps/facturacion/models.py</small>")
-        facturacion_models_licensetype_str_5cdce24c("__str__()<br/><small>apps/facturacion/models.py</small>")
-        facturacion_models_companylicense_str_d5f80d24("__str__()<br/><small>apps/facturacion/models.py</small>")
-        facturacion_models_companylicense_is_valid_1ca284af("is_valid()<br/><small>apps/facturacion/models.py</small>")
-    end
-    subgraph facturacion_apps_modelspy_apps_facturacion_admin_9079ac0f["apps/facturacion/admin.py"]
-        apps_facturacion_admin_py_6f97dfaa("admin.py")
-        facturacion_admin_companylicenseadmin_a4e5292a("CompanyLicenseAdmin<br/><small>apps/facturacion/admin.py</small>")
-        facturacion_admin_invoiceadmin_efe2b3ff("InvoiceAdmin<br/><small>apps/facturacion/admin.py</small>")
-        facturacion_admin_invoiceadmin_ambiente_display_162d8fdc("ambiente_display()<br/><small>apps/facturacion/admin.py</small>")
-        facturacion_admin_companylicenseadmin_invoices_t_067ffbd4("invoices_this_month_display()<br/><small>apps/facturacion/admin.py</small>")
-    end
-    facturacion_admin_invoiceadmin_efe2b3ff -->|method| facturacion_admin_invoiceadmin_ambiente_display_162d8fdc
-    facturacion_admin_companylicenseadmin_a4e5292a -->|method| facturacion_admin_companylicenseadmin_invoices_t_067ffbd4
-    facturacion_models_sriambiente_52ec0df2 -->|method| facturacion_models_sriambiente_str_b2d15f43
-    facturacion_models_sritipocomprobante_e2baea3f -->|method| facturacion_models_sritipocomprobante_str_45ed4c8b
-    facturacion_models_sriimpuesto_f76a4ddf -->|method| facturacion_models_sriimpuesto_str_62d67456
-    facturacion_models_licensetype_bb006114 -->|method| facturacion_models_licensetype_str_5cdce24c
-    facturacion_models_companylicense_37dcdfaf -->|method| facturacion_models_companylicense_str_d5f80d24
-    facturacion_models_companylicense_37dcdfaf -->|method| facturacion_models_companylicense_is_valid_1ca284af
-    %% Omitted for readability: 39 nodes, 0 edges
-    class facturacion_models_companylicense_37dcdfaf klass;
-    class facturacion_models_customer_6ed3af7f klass;
-    class facturacion_models_electronicdocument_10062c34 klass;
-    class facturacion_models_sriambiente_52ec0df2 klass;
-    class facturacion_models_sriambiente_str_b2d15f43 function;
-    class facturacion_models_sritipocomprobante_e2baea3f klass;
-    class facturacion_models_sritipocomprobante_str_45ed4c8b function;
-    class facturacion_models_sriimpuesto_f76a4ddf klass;
-    class facturacion_models_sriimpuesto_str_62d67456 function;
-    class facturacion_models_licensetype_bb006114 klass;
-    class facturacion_models_licensetype_str_5cdce24c function;
-    class facturacion_models_companylicense_str_d5f80d24 function;
-    class facturacion_models_companylicense_is_valid_1ca284af function;
-    class apps_facturacion_admin_py_6f97dfaa module;
-    class facturacion_admin_companylicenseadmin_a4e5292a klass;
-    class facturacion_admin_invoiceadmin_efe2b3ff klass;
-    class facturacion_admin_invoiceadmin_ambiente_display_162d8fdc function;
-    class facturacion_admin_companylicenseadmin_invoices_t_067ffbd4 function;
-    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
-    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
-    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
-    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
-    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
-    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
-    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
-    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
-    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
-</div>
-
-<h3>Call Details</h3>
-<table class="call-table">
-<tr>
-  <th style="width:5%">#</th>
-  <th style="width:28%">Node</th>
-  <th style="width:10%">Type</th>
-  <th style="width:17%">Caller</th>
-  <th style="width:20%">Callees</th>
-  <th style="width:20%">Description</th>
-</tr>
-<tr>
-  <td>1</td>
-  <td><code>admin.py</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>models.py</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>Module file in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
-  <td>CustomerAdmin node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>ProductAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
-  <td>ProductAdmin node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>InvoiceLineInline</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
-  <td>InvoiceLineInline node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>InvoiceAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>ambiente_display()</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+9 more</td>
-  <td>InvoiceAdmin node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>.ambiente_display()</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>InvoiceAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.ambiente_display() node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>SRISendLogAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
-  <td>SRISendLogAdmin node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
-  <td>ElectronicDocumentAdmin node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>LicenseTypeAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
-  <td>LicenseTypeAdmin node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+9 more</td>
-  <td>CompanyLicenseAdmin node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>.invoices_this_month_display()</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.invoices_this_month_display() node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>SriAmbienteAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
-  <td>SriAmbienteAdmin node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>SriTipoComprobanteAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
-  <td>SriTipoComprobanteAdmin node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>SriImpuestoAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>ElectronicDocument</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+8 more</td>
-  <td>SriImpuestoAdmin node in apps/facturacion/admin.py.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>models.py</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>admin.py</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small></td>
-  <td><code>signals.py</code><br><small style="color:var(--muted)">apps/facturacion/signals.py</small></td>
-  <td>Module file in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>SriAmbiente</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br>+8 more</td>
-  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>SriAmbiente node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>Meta</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Meta node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>SriAmbiente</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.__str__() node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>SriTipoComprobante</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br>+8 more</td>
-  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>SriTipoComprobante node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>SriTipoComprobante</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.__str__() node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>SriImpuesto</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br>+8 more</td>
-  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>SriImpuesto node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>SriImpuesto</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.__str__() node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>LicenseType</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br>+8 more</td>
-  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>LicenseType node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>LicenseType</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.__str__() node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br>+8 more</td>
-  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>can_create_invoice()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>increment_invoice_count()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br>+1 more</td>
-  <td>CompanyLicense node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>26</td>
-  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.__str__() node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>27</td>
-  <td><code>.is_valid()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><code>can_create_invoice()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>.is_valid() node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>28</td>
-  <td><code>.can_create_invoice()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small><br><code>is_valid()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.can_create_invoice() node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>29</td>
-  <td><code>.increment_invoice_count()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>CompanyLicense</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.increment_invoice_count() node in apps/facturacion/models.py.</td>
-</tr>
-<tr>
-  <td>30</td>
-  <td><code>Customer</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>CompanyLicenseAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>CustomerAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br><code>ElectronicDocumentAdmin</code><br><small style="color:var(--muted)">apps/facturacion/admin.py</small><br>+8 more</td>
-  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/facturacion/models.py</small></td>
-  <td>Customer node in apps/facturacion/models.py.</td>
-</tr>
-</table>
-
-<div class="grid">
-  <div class="card">
-    <h4>Key Files</h4>
-    <table style="width:100%;font-size:0.85rem;">
-      <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>apps/facturacion/models.py</code></td><td>40 nodes</td></tr>
-<tr><td><code>apps/facturacion/admin.py</code></td><td>14 nodes</td></tr>
-<tr><td><code>apps/facturacion/signals.py</code></td><td>3 nodes</td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x24, method x16, explains x14, imports x2. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
-  </div>
-</div>
-<hr>
-
-<!-- ====== 10. Requirementsmd Rnf Requisitos ====== -->
-<h2 id="requirementsmd-rnf-requisitos">10. Requirementsmd Rnf Requisitos</h2>
+<!-- ====== 9. Requirementsmd Rnf Requisitos ====== -->
+<h2 id="requirementsmd-rnf-requisitos">9. Requirementsmd Rnf Requisitos</h2>
 <p>Requirementsmd Rnf Requisitos groups implementation around requirementsmd, rnf, requisitos, sistema, mostly in REQUIREMENTS.md. This section covers 27 nodes and 26 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -3224,8 +2880,8 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 11. Readmemd Codebash Erp ====== -->
-<h2 id="readmemd-codebash-erp">11. Readmemd Codebash Erp</h2>
+<!-- ====== 10. Readmemd Codebash Erp ====== -->
+<h2 id="readmemd-codebash-erp">10. Readmemd Codebash Erp</h2>
 <p>Readmemd Codebash Erp groups implementation around readmemd, codebash, erp, nexus, mostly in README.md. This section covers 27 nodes and 26 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -3540,8 +3196,8 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 12. Fiscal Year Apps ====== -->
-<h2 id="fiscal-year-apps">12. Fiscal Year Apps</h2>
+<!-- ====== 11. Fiscal Year Apps ====== -->
+<h2 id="fiscal-year-apps">11. Fiscal Year Apps</h2>
 <p>Fiscal Year Apps groups implementation around fiscal, year, apps, modelspy, mostly in apps/core_fiscal_year/models.py, apps/core_fiscal_year/admin.py. This section covers 24 nodes and 29 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -3827,8 +3483,8 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 13. Changelogmd Added 2026 ====== -->
-<h2 id="changelogmd-added-2026">13. Changelogmd Added 2026</h2>
+<!-- ====== 12. Changelogmd Added 2026 ====== -->
+<h2 id="changelogmd-added-2026">12. Changelogmd Added 2026</h2>
 <p>Changelogmd Added 2026 groups implementation around changelogmd, added, 2026, changelog, mostly in CHANGELOG.md. This section covers 22 nodes and 21 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -4103,8 +3759,8 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 14. Docs Indexmd Erp ====== -->
-<h2 id="docs-indexmd-erp">14. Docs Indexmd Erp</h2>
+<!-- ====== 13. Docs Indexmd Erp ====== -->
+<h2 id="docs-indexmd-erp">13. Docs Indexmd Erp</h2>
 <p>Docs Indexmd Erp groups implementation around docs, indexmd, erp, nexus, mostly in DOCS_INDEX.md. This section covers 21 nodes and 20 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -4371,8 +4027,8 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 15. Config Apps Modelspy ====== -->
-<h2 id="config-apps-modelspy">15. Config Apps Modelspy</h2>
+<!-- ====== 14. Config Apps Modelspy ====== -->
+<h2 id="config-apps-modelspy">14. Config Apps Modelspy</h2>
 <p>Config Apps Modelspy groups implementation around config, apps, modelspy, adminpy, mostly in apps/core_config/models.py, apps/core_config/admin.py. This section covers 20 nodes and 25 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -4627,14 +4283,267 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 16. Other ====== -->
-<h2 id="other">16. Other</h2>
-<p>Other groups implementation around apps, facturacion, modules, basic, mostly in ARCHITECTURE_PLUGIN.md, DEVELOPMENT.md, accounting_basic/core/models.py. This section covers 411 nodes and 342 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 15. Stats Apps Modelspy ====== -->
+<h2 id="stats-apps-modelspy">15. Stats Apps Modelspy</h2>
+<p>Stats Apps Modelspy groups implementation around stats, apps, modelspy, adminpy, mostly in apps/core_stats/models.py, apps/core_stats/admin.py. This section covers 19 nodes and 27 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Other (411 nodes, 342 edges)
+    %% Section: Stats Apps Modelspy (19 nodes, 27 edges)
+    subgraph stats_apps_modelspy_apps_core_stats_models_py_643d3e22["apps/core_stats/models.py"]
+        core_stats_models_installation_b2e12d21("Installation<br/><small>apps/core_stats/models.py</small>")
+        apps_core_stats_models_py_afd381b6("models.py")
+        core_stats_models_systemhealth_7c7a3699("SystemHealth<br/><small>apps/core_stats/models.py</small>")
+        core_stats_models_usagemetric_91489c17("UsageMetric<br/><small>apps/core_stats/models.py</small>")
+        core_stats_models_installation_str_85c0691d("__str__()<br/><small>apps/core_stats/models.py</small>")
+        core_stats_models_installation_touch_cc2bff84("touch()<br/><small>apps/core_stats/models.py</small>")
+        core_stats_models_usagemetric_str_99d80d0a("__str__()<br/><small>apps/core_stats/models.py</small>")
+        core_stats_models_systemhealth_str_737c1ee9("__str__()<br/><small>apps/core_stats/models.py</small>")
+        core_stats_models_meta_cb86c372("Meta<br/><small>apps/core_stats/models.py</small>")
+        core_stats_models_get_daily_stats_b308eb17("get_daily_stats()<br/><small>apps/core_stats/models.py</small>")
+        core_stats_models_increment_8042a2fc("increment()<br/><small>apps/core_stats/models.py</small>")
+        core_stats_models_rationale_1_93ab88ac("InstallationStats — Métricas de instala...<br/><small>apps/core_stats/models.py</small>")
+        core_stats_models_rationale_43_cecbb424("Métrica de uso (contadores diarios).<br/><small>apps/core_stats/models.py</small>")
+        core_stats_models_rationale_10_e352ca7d("Registro de instalación del ERP (una po...<br/><small>apps/core_stats/models.py</small>")
+    end
+    subgraph stats_apps_modelspy_apps_core_stats_admin_py_90ad977b["apps/core_stats/admin.py"]
+        apps_core_stats_admin_py_7db046df("admin.py")
+        core_stats_admin_installationadmin_4471d6bf("InstallationAdmin<br/><small>apps/core_stats/admin.py</small>")
+        core_stats_admin_systemhealthadmin_04c925fc("SystemHealthAdmin<br/><small>apps/core_stats/admin.py</small>")
+        core_stats_admin_usagemetricadmin_19c4d7ea("UsageMetricAdmin<br/><small>apps/core_stats/admin.py</small>")
+    end
+    core_stats_models_installation_b2e12d21 -->|method| core_stats_models_installation_str_85c0691d
+    core_stats_models_installation_b2e12d21 -->|method| core_stats_models_installation_touch_cc2bff84
+    core_stats_models_usagemetric_91489c17 -->|method| core_stats_models_usagemetric_str_99d80d0a
+    core_stats_models_systemhealth_7c7a3699 -->|method| core_stats_models_systemhealth_str_737c1ee9
+    apps_core_stats_models_py_afd381b6 -->|imports| apps_core_stats_admin_py_7db046df
+    %% Omitted for readability: 1 nodes, 0 edges
+    class core_stats_models_installation_b2e12d21 klass;
+    class apps_core_stats_models_py_afd381b6 module;
+    class core_stats_models_systemhealth_7c7a3699 klass;
+    class core_stats_models_usagemetric_91489c17 klass;
+    class core_stats_models_installation_str_85c0691d function;
+    class core_stats_models_installation_touch_cc2bff84 function;
+    class core_stats_models_usagemetric_str_99d80d0a function;
+    class core_stats_models_systemhealth_str_737c1ee9 function;
+    class core_stats_models_meta_cb86c372 klass;
+    class core_stats_models_get_daily_stats_b308eb17 function;
+    class core_stats_models_increment_8042a2fc function;
+    class core_stats_models_rationale_1_93ab88ac concept;
+    class core_stats_models_rationale_43_cecbb424 concept;
+    class core_stats_models_rationale_10_e352ca7d concept;
+    class apps_core_stats_admin_py_7db046df module;
+    class core_stats_admin_installationadmin_4471d6bf klass;
+    class core_stats_admin_systemhealthadmin_04c925fc klass;
+    class core_stats_admin_usagemetricadmin_19c4d7ea klass;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>models.py</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>admin.py</code><br><small style="color:var(--muted)">apps/core_stats/admin.py</small></td>
+  <td>Module file in apps/core_stats/models.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>Installation</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small><br><code>InstallationAdmin</code><br><small style="color:var(--muted)">apps/core_stats/admin.py</small><br><code>SystemHealthAdmin</code><br><small style="color:var(--muted)">apps/core_stats/admin.py</small><br>+2 more</td>
+  <td>Installation node in apps/core_stats/models.py.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>Meta</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Meta node in apps/core_stats/models.py.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Installation</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.__str__() node in apps/core_stats/models.py.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>.touch()</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Installation</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.touch() node in apps/core_stats/models.py.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>UsageMetric</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small><br><code>InstallationAdmin</code><br><small style="color:var(--muted)">apps/core_stats/admin.py</small><br><code>SystemHealthAdmin</code><br><small style="color:var(--muted)">apps/core_stats/admin.py</small><br>+1 more</td>
+  <td>UsageMetric node in apps/core_stats/models.py.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>UsageMetric</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.__str__() node in apps/core_stats/models.py.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>increment()</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>increment() node in apps/core_stats/models.py.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>get_daily_stats()</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>get_daily_stats() node in apps/core_stats/models.py.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>SystemHealth</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small><br><code>InstallationAdmin</code><br><small style="color:var(--muted)">apps/core_stats/admin.py</small><br><code>SystemHealthAdmin</code><br><small style="color:var(--muted)">apps/core_stats/admin.py</small><br>+1 more</td>
+  <td>SystemHealth node in apps/core_stats/models.py.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>SystemHealth</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.__str__() node in apps/core_stats/models.py.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>InstallationStats — Métricas de instalación y uso del ERP.</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for InstallationStats — Métricas de instalación y uso del ERP..</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>Registro de instalación del ERP (una por instancia).</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Registro de instalación del ERP (una por instancia)..</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>Métrica de uso (contadores diarios).</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Métrica de uso (contadores diarios)..</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>Snapshot de salud del sistema.</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Snapshot de salud del sistema..</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>admin.py</code><br><small style="color:var(--muted)">apps/core_stats/admin.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>models.py</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>Module file in apps/core_stats/admin.py.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>InstallationAdmin</code><br><small style="color:var(--muted)">apps/core_stats/admin.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>Installation</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small><br><code>SystemHealth</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small><br><code>UsageMetric</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>InstallationAdmin node in apps/core_stats/admin.py.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>UsageMetricAdmin</code><br><small style="color:var(--muted)">apps/core_stats/admin.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>Installation</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small><br><code>SystemHealth</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small><br><code>UsageMetric</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>UsageMetricAdmin node in apps/core_stats/admin.py.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>SystemHealthAdmin</code><br><small style="color:var(--muted)">apps/core_stats/admin.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>Installation</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small><br><code>SystemHealth</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small><br><code>UsageMetric</code><br><small style="color:var(--muted)">apps/core_stats/models.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>SystemHealthAdmin node in apps/core_stats/admin.py.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>apps/core_stats/models.py</code></td><td>15 nodes</td></tr>
+<tr><td><code>apps/core_stats/admin.py</code></td><td>4 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x9, explains x4, method x4, imports x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 16. Other ====== -->
+<h2 id="other">16. Other</h2>
+<p>Other groups implementation around apps, appspy, facturacion, migrations, mostly in ARCHITECTURE_PLUGIN.md, DEVELOPMENT.md, facturacion/services/xml_generator.py. This section covers 376 nodes and 283 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Other (376 nodes, 283 edges)
+    subgraph other_facturacion_services_xml_generator_py_d14c9a8c["facturacion/services/xml_generator.py"]
+        services_xml_generator_xmlgenerator_c8516ed6("XMLGenerator<br/><small>facturacion/services/xml_generator.py</small>")
+        services_xml_generator_xmlgenerator_generate_59f05279("generate()<br/><small>facturacion/services/xml_generator.py</small>")
+        services_xml_generator_xmlgenerator_init_f03d038a("__init__()<br/><small>facturacion/services/xml_generator.py</small>")
+        services_xml_generator_xmlgenerator_extract_sequ_7b573385("_extract_sequential()<br/><small>facturacion/services/xml_generator.py</small>")
+        services_xml_generator_xmlgenerator_group_taxes_ec14b5eb("_group_taxes()<br/><small>facturacion/services/xml_generator.py</small>")
+        services_xml_generator_xmlgenerator_get_extra_fi_b4c18557("_get_extra_fields()<br/><small>facturacion/services/xml_generator.py</small>")
+    end
     subgraph other_facturacion_services_digital_signature_py_4b327351["facturacion/services/digital_signature.py"]
         services_digital_signature_digitalsigner_b71d6d1f("DigitalSigner<br/><small>facturacion/services/digital_signature.py</small>")
         services_digital_signature_digitalsigner_init_1c58f14b("__init__()<br/><small>facturacion/services/digital_signature.py</small>")
@@ -4642,17 +4551,9 @@ flowchart LR
         services_digital_signature_digitalsigner_sign_xm_f6439f29("sign_xml()<br/><small>facturacion/services/digital_signature.py</small>")
         services_digital_signature_digitalsigner_verify_b8abbf12("verify_signature()<br/><small>facturacion/services/digital_signature.py</small>")
     end
-    subgraph other_facturacion_services_xml_generator_py_d14c9a8c["facturacion/services/xml_generator.py"]
-        services_xml_generator_xmlgenerator_c8516ed6("XMLGenerator<br/><small>facturacion/services/xml_generator.py</small>")
-        services_xml_generator_xmlgenerator_generate_59f05279("generate()<br/><small>facturacion/services/xml_generator.py</small>")
-        services_xml_generator_xmlgenerator_init_f03d038a("__init__()<br/><small>facturacion/services/xml_generator.py</small>")
-        services_xml_generator_xmlgenerator_extract_sequ_7b573385("_extract_sequential()<br/><small>facturacion/services/xml_generator.py</small>")
-        services_xml_generator_xmlgenerator_group_taxes_ec14b5eb("_group_taxes()<br/><small>facturacion/services/xml_generator.py</small>")
-    end
-    subgraph other_facturacion_services_validator_py_4cfd206a["facturacion/services/validator.py"]
-        services_validator_validationerror_c3039be6("ValidationError<br/><small>facturacion/services/validator.py</small>")
-        services_validator_validationerror_init_489bdb05("__init__()<br/><small>facturacion/services/validator.py</small>")
-        services_validator_validate_invoice_lines_b3ac62eb("validate_invoice_lines()<br/><small>facturacion/services/validator.py</small>")
+    subgraph other_apps_core_users_models_py_10e1c02a["apps/core_users/models.py"]
+        core_users_models_userprofile_483c4a1c("UserProfile<br/><small>apps/core_users/models.py</small>")
+        core_users_models_userprofile_str_66690bd1("__str__()<br/><small>apps/core_users/models.py</small>")
     end
     subgraph other_apps_facturacion_apps_py_4d97c56d["apps/facturacion/apps.py"]
         facturacion_apps_facturacionecconfig_1af818c9("FacturacionEcConfig<br/><small>apps/facturacion/apps.py</small>")
@@ -4669,29 +4570,30 @@ flowchart LR
     services_digital_signature_digitalsigner_b71d6d1f -->|method| services_digital_signature_digitalsigner_sign_xm_f6439f29
     services_digital_signature_digitalsigner_b71d6d1f -->|method| services_digital_signature_digitalsigner_verify_b8abbf12
     services_digital_signature_digitalsigner_init_1c58f14b -->|calls| services_digital_signature_digitalsigner_load_ce_26e8c1cc
-    services_validator_validationerror_c3039be6 -->|method| services_validator_validationerror_init_489bdb05
-    services_validator_validationerror_c3039be6 -->|calls| services_validator_validate_invoice_lines_b3ac62eb
     services_xml_generator_xmlgenerator_c8516ed6 -->|method| services_xml_generator_xmlgenerator_init_f03d038a
     services_xml_generator_xmlgenerator_c8516ed6 -->|method| services_xml_generator_xmlgenerator_generate_59f05279
     services_xml_generator_xmlgenerator_c8516ed6 -->|method| services_xml_generator_xmlgenerator_extract_sequ_7b573385
     services_xml_generator_xmlgenerator_c8516ed6 -->|method| services_xml_generator_xmlgenerator_group_taxes_ec14b5eb
+    services_xml_generator_xmlgenerator_c8516ed6 -->|method| services_xml_generator_xmlgenerator_get_extra_fi_b4c18557
     services_xml_generator_xmlgenerator_generate_59f05279 -->|calls| services_xml_generator_xmlgenerator_group_taxes_ec14b5eb
     services_xml_generator_xmlgenerator_generate_59f05279 -->|calls| services_xml_generator_xmlgenerator_extract_sequ_7b573385
+    services_xml_generator_xmlgenerator_generate_59f05279 -->|calls| services_xml_generator_xmlgenerator_get_extra_fi_b4c18557
+    core_users_models_userprofile_483c4a1c -->|method| core_users_models_userprofile_str_66690bd1
     commands_module_command_1408095a -->|method| commands_module_command_handle_d9336bc2
-    %% Omitted for readability: 393 nodes, 0 edges
-    class services_digital_signature_digitalsigner_b71d6d1f klass;
-    class services_digital_signature_digitalsigner_init_1c58f14b function;
-    class services_digital_signature_digitalsigner_load_ce_26e8c1cc function;
-    class services_digital_signature_digitalsigner_sign_xm_f6439f29 function;
-    class services_digital_signature_digitalsigner_verify_b8abbf12 function;
+    %% Omitted for readability: 358 nodes, 0 edges
     class services_xml_generator_xmlgenerator_c8516ed6 klass;
     class services_xml_generator_xmlgenerator_generate_59f05279 function;
     class services_xml_generator_xmlgenerator_init_f03d038a function;
     class services_xml_generator_xmlgenerator_extract_sequ_7b573385 function;
     class services_xml_generator_xmlgenerator_group_taxes_ec14b5eb function;
-    class services_validator_validationerror_c3039be6 klass;
-    class services_validator_validationerror_init_489bdb05 function;
-    class services_validator_validate_invoice_lines_b3ac62eb function;
+    class services_xml_generator_xmlgenerator_get_extra_fi_b4c18557 function;
+    class services_digital_signature_digitalsigner_b71d6d1f klass;
+    class services_digital_signature_digitalsigner_init_1c58f14b function;
+    class services_digital_signature_digitalsigner_load_ce_26e8c1cc function;
+    class services_digital_signature_digitalsigner_sign_xm_f6439f29 function;
+    class services_digital_signature_digitalsigner_verify_b8abbf12 function;
+    class core_users_models_userprofile_483c4a1c klass;
+    class core_users_models_userprofile_str_66690bd1 function;
     class facturacion_apps_facturacionecconfig_1af818c9 klass;
     class facturacion_apps_facturacionecconfig_ready_e702492b function;
     class commands_module_command_1408095a entry;
@@ -4720,243 +4622,243 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>xml_generator.py</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">migrations/0001_initial.py</small></td>
   <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Module file in facturacion/services/xml_generator.py.</td>
+  <td>Module file in migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>XMLGenerator</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
+  <td><code>Migration</code><br><small style="color:var(--muted)">migrations/0001_initial.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>__init__()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small><br><code>_extract_sequential()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small><br><code>_get_extra_fields()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small><br>+2 more</td>
-  <td>XMLGenerator node in facturacion/services/xml_generator.py.</td>
+  <td>No direct outbound edge</td>
+  <td>Migration node in migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>.__init__()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>XMLGenerator</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">facturacion/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>.__init__() node in facturacion/services/xml_generator.py.</td>
+  <td>Module file in facturacion/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>.generate()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>XMLGenerator</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><code>_extract_sequential()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small><br><code>_get_extra_fields()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small><br><code>_group_taxes()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td>.generate() node in facturacion/services/xml_generator.py.</td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">core_users/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in core_users/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>._extract_sequential()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>generate()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small><br><code>XMLGenerator</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">core_groups/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>._extract_sequential() node in facturacion/services/xml_generator.py.</td>
+  <td>Module file in core_groups/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>._group_taxes()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>generate()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small><br><code>XMLGenerator</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">core_marketplace/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>._group_taxes() node in facturacion/services/xml_generator.py.</td>
+  <td>Module file in core_marketplace/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>._get_extra_fields()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>generate()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small><br><code>XMLGenerator</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">core_companies/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>._get_extra_fields() node in facturacion/services/xml_generator.py.</td>
+  <td>Module file in core_companies/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>validate_xml_against_xsd()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">core_auth/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>_get_minimal_xsd()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td>validate_xml_against_xsd() node in facturacion/services/xml_generator.py.</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in core_auth/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>9</td>
-  <td><code>_get_minimal_xsd()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>validate_xml_against_xsd()</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">core_pagebuilder/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>_get_minimal_xsd() node in facturacion/services/xml_generator.py.</td>
+  <td>Module file in core_pagebuilder/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>10</td>
-  <td><code>Generador de XML para facturas electrónicas SRI Ecuador</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">core_permissions/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Generador de XML para facturas electrónicas SRI Ecuador.</td>
+  <td>Module file in core_permissions/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>Genera XML completo de factura.          Args:             invoice: Instancia In</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">core_stats/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Genera XML completo de factura.          Args:             invoice: Instancia In.</td>
+  <td>Module file in core_stats/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>Extrae el secuencial de 9 dígitos del número 001-001-000000001</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">core_events/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Extrae el secuencial de 9 dígitos del número 001-001-000000001.</td>
+  <td>Module file in core_events/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>Agrupa impuestos por código/porcentaje para elemento &lt;totalConImpuestos&gt;.</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">core_audit/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Agrupa impuestos por código/porcentaje para elemento &lt;totalConImpuestos&gt;..</td>
+  <td>Module file in core_audit/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>Campos adicionales opcionales (por ejemplo: Guía remisión)</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">accounting_basic/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Campos adicionales opcionales (por ejemplo: Guía remisión).</td>
+  <td>Module file in accounting_basic/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>Valida XML generado contra XSD oficial del SRI.      Args:         xml_string: S</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">inventory_basic/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Valida XML generado contra XSD oficial del SRI.      Args:         xml_string: S.</td>
+  <td>Module file in inventory_basic/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>XSD mínimo embebido para validaciones en desarrollo.     En producción usar XSD</code><br><small style="color:var(--muted)">facturacion/services/xml_generator.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>0001_initial.py</code><br><small style="color:var(--muted)">facturacion_ec/migrations/0001_initial.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for XSD mínimo embebido para validaciones en desarrollo.     En producción usar XSD.</td>
+  <td>Module file in facturacion_ec/migrations/0001_initial.py.</td>
 </tr>
 <tr>
   <td>17</td>
-  <td><code>xml_generator.py</code><br><small style="color:var(--muted)">facturacion_ec/services/xml_generator.py</small></td>
+  <td><code>apps.py</code><br><small style="color:var(--muted)">apps.py</small></td>
   <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Module file in facturacion_ec/services/xml_generator.py.</td>
+  <td>Module file in apps.py.</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>models.py</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
+  <td><code>InventoryConfig</code><br><small style="color:var(--muted)">apps.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>admin.py</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/admin.py</small></td>
-  <td>Module file in apps/core_chart_of_accounts/models.py.</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>AccountType</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
+  <td><code>AppConfig</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small><br><code>AccountAdmin</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/admin.py</small><br><code>AccountTypeAdmin</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/admin.py</small><br>+3 more</td>
-  <td>AccountType node in apps/core_chart_of_accounts/models.py.</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
 </tr>
 <tr>
   <td>20</td>
-  <td><code>Meta</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
+  <td><code>apps.py</code><br><small style="color:var(--muted)">apps/core_users/apps.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Meta node in apps/core_chart_of_accounts/models.py.</td>
+  <td>Module file in apps/core_users/apps.py.</td>
 </tr>
 <tr>
   <td>21</td>
-  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>AccountType</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
+  <td><code>CoreUsersConfig</code><br><small style="color:var(--muted)">apps/core_users/apps.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>.__str__() node in apps/core_chart_of_accounts/models.py.</td>
+  <td>Reads, resolves, or persists project configuration.</td>
 </tr>
 <tr>
   <td>22</td>
-  <td><code>JournalEntryLine</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
+  <td><code>apps.py</code><br><small style="color:var(--muted)">apps/core_groups/apps.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>__str__()</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small><br><code>AccountAdmin</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/admin.py</small><br><code>AccountTypeAdmin</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/admin.py</small><br>+3 more</td>
-  <td>JournalEntryLine node in apps/core_chart_of_accounts/models.py.</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in apps/core_groups/apps.py.</td>
 </tr>
 <tr>
   <td>23</td>
-  <td><code>.__str__()</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>JournalEntryLine</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
+  <td><code>CoreGroupsConfig</code><br><small style="color:var(--muted)">apps/core_groups/apps.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>.__str__() node in apps/core_chart_of_accounts/models.py.</td>
+  <td>Reads, resolves, or persists project configuration.</td>
 </tr>
 <tr>
   <td>24</td>
-  <td><code>Tipo de cuenta contable (Activo, Pasivo, Patrimonio, Ingreso, Gasto)</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>apps.py</code><br><small style="color:var(--muted)">apps/core_fiscal_year/apps.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Tipo de cuenta contable (Activo, Pasivo, Patrimonio, Ingreso, Gasto).</td>
+  <td>Module file in apps/core_fiscal_year/apps.py.</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>Línea de asiento contable (débito/crédito)</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>CoreFiscalYearConfig</code><br><small style="color:var(--muted)">apps/core_fiscal_year/apps.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Línea de asiento contable (débito/crédito).</td>
+  <td>Reads, resolves, or persists project configuration.</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>admin.py</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/admin.py</small></td>
+  <td><code>apps.py</code><br><small style="color:var(--muted)">apps/core_stats/apps.py</small></td>
   <td><span class="tag tag-class">Module</span></td>
-  <td><code>models.py</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Module file in apps/core_chart_of_accounts/admin.py.</td>
+  <td>Module file in apps/core_stats/apps.py.</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>AccountTypeAdmin</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/admin.py</small></td>
+  <td><code>CoreStatsConfig</code><br><small style="color:var(--muted)">apps/core_stats/apps.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
-  <td><code>AccountType</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small><br><code>JournalEntryLine</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
-  <td><code>Account</code><br><small style="color:var(--muted)">accounting_basic/core/models.py</small><br><code>JournalEntry</code><br><small style="color:var(--muted)">accounting_basic/core/models.py</small></td>
-  <td>AccountTypeAdmin node in apps/core_chart_of_accounts/admin.py.</td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>AccountAdmin</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>AccountType</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small><br><code>JournalEntryLine</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
-  <td><code>Account</code><br><small style="color:var(--muted)">accounting_basic/core/models.py</small><br><code>JournalEntry</code><br><small style="color:var(--muted)">accounting_basic/core/models.py</small></td>
-  <td>AccountAdmin node in apps/core_chart_of_accounts/admin.py.</td>
+  <td><code>apps.py</code><br><small style="color:var(--muted)">modules/accounting_basic/apps.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in modules/accounting_basic/apps.py.</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>JournalEntryLineInline</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/admin.py</small></td>
+  <td><code>AccountingBasicConfig</code><br><small style="color:var(--muted)">modules/accounting_basic/apps.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
-  <td><code>AccountType</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small><br><code>JournalEntryLine</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
-  <td><code>Account</code><br><small style="color:var(--muted)">accounting_basic/core/models.py</small><br><code>JournalEntry</code><br><small style="color:var(--muted)">accounting_basic/core/models.py</small></td>
-  <td>JournalEntryLineInline node in apps/core_chart_of_accounts/admin.py.</td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>JournalEntryAdmin</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/admin.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>AccountType</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small><br><code>JournalEntryLine</code><br><small style="color:var(--muted)">apps/core_chart_of_accounts/models.py</small></td>
-  <td><code>Account</code><br><small style="color:var(--muted)">accounting_basic/core/models.py</small><br><code>JournalEntry</code><br><small style="color:var(--muted)">accounting_basic/core/models.py</small></td>
-  <td>JournalEntryAdmin node in apps/core_chart_of_accounts/admin.py.</td>
+  <td><code>ARCHITECTURE_PLUGIN.md</code><br><small style="color:var(--muted)">ARCHITECTURE_PLUGIN.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing ARCHITECTURE_PLUGIN.md.</td>
 </tr>
 </table>
 
@@ -4967,17 +4869,17 @@ flowchart LR
       <tr><th>File</th><th>Coverage</th></tr>
       <tr><td><code>ARCHITECTURE_PLUGIN.md</code></td><td>43 nodes</td></tr>
 <tr><td><code>DEVELOPMENT.md</code></td><td>32 nodes</td></tr>
-<tr><td><code>accounting_basic/core/models.py</code></td><td>17 nodes</td></tr>
-<tr><td><code>apps/core_chart_of_accounts/models.py</code></td><td>16 nodes</td></tr>
-<tr><td><code>facturacion/services/validator.py</code></td><td>16 nodes</td></tr>
-<tr><td><code>facturacion/services/xml_generator.py</code></td><td>16 nodes</td></tr>
+<tr><td><code>facturacion/services/xml_generator.py</code></td><td>11 nodes</td></tr>
 <tr><td><code>facturacion/services/digital_signature.py</code></td><td>10 nodes</td></tr>
 <tr><td><code>management/commands/module.py</code></td><td>9 nodes</td></tr>
+<tr><td><code>apps/core_currency/models.py</code></td><td>8 nodes</td></tr>
+<tr><td><code>apps/core_audit/models.py</code></td><td>7 nodes</td></tr>
+<tr><td><code>_template_module/apps.py</code></td><td>6 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x180, explains x76, method x34, calls x10. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x148, explains x63, method x26, inherits x21. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -4988,18 +4890,18 @@ flowchart LR
   <div class="card">
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>Nodes</td><td>2149</td></tr>
-      <tr><td>Edges</td><td>2749</td></tr>
+      <tr><td>Nodes</td><td>2204</td></tr>
+      <tr><td>Edges</td><td>2831</td></tr>
       <tr><td>Hyperedges</td><td>0</td></tr>
-      <tr><td>Communities</td><td>240</td></tr>
+      <tr><td>Communities</td><td>243</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>EXTRACTED</td><td>2167</td></tr>
-      <tr><td>INFERRED</td><td>582</td></tr>
+      <tr><td>EXTRACTED</td><td>2225</td></tr>
+      <tr><td>INFERRED</td><td>606</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
   </div>
@@ -5007,7 +4909,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>erp-nexus — Architecture Documentation</p>
-  <p>Generated: 2026-05-10 18:46 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-05-10 20:11 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

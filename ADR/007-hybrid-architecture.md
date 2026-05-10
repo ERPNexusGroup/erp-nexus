@@ -165,7 +165,7 @@ python manage.py install_module --git https://github.com/ERPNexus/crm.git
 - Mover `modules/facturacion_ec/` → `apps/facturacion/` (dentro del core)
 - Rename package: `facturacion_ec` → `facturacion` (o mantener)
 - Mismo para inventory, sales, purchases, notifications, permissions, dashboard, print_manager
-- Eliminar solo módulos demo (accounting_basic, inventory_basic, demo_flow)
+- Eliminar solo módulos demo (accounting_basic, inventory, demo_flow)
 - NO extraer facturacion a repo separado
 - NO crear plugin marketplace para essential modules
 
