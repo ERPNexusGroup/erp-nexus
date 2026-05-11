@@ -1,0 +1,109 @@
+{# Override de admin/base.html (Jazzmin) — inyecta sección Marketplace en sidebar #}
+{% extends "admin/base.html" %}
+{% load i18n static jazzmin %}
+
+{% block sidebar %}
+  {% if jazzmin_settings.show_sidebar %}
+    {% get_side_menu as side_menu_list %}
+
+    <aside class="app-sidebar bg-body-secondary shadow {{ jazzmin_ui.sidebar_classes }}" id="jazzy-sidebar" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <a href="{% url 'admin:index' %}" class="brand-link {{ jazzmin_ui.brand_classes }}" id="jazzy-logo">
+          <img src="{% static jazzmin_settings.site_logo %}" alt="{{ jazzmin_settings.site_header }} Logo" class="{{ jazzmin_settings.site_logo_classes }} brand-image opacity-75 shadow">
+          <span class="brand-text fw-light">{{ jazzmin_settings.site_brand }}</span>
+        </a>
+      </div>
+
+      <div class="sidebar-wrapper">
+        {# User info #}
+        <div class="user-panel d-flex">
+          <div class="image">
+            <i class="fas fa-inverse fa-user-circle"></i>
+          </div>
+          <div class="info">
+            <span class="d-block opacity-75">{{ request.user.username }}</span>
+          </div>
+        </div>
+
+        {# Navigation #}
+        <nav class="mt-2">
+          <ul class="nav sidebar-menu flex-column {{ jazzmin_ui.sidebar_list_classes }}" data-lte-toggle="treeview" role="navigation" aria-label="Main navigation" data-accordion="false" id="jazzy-navigation">
+
+            {# Dashboard link #}
+            <li class="nav-item">
+              <a href="{% url 'admin:index' %}" class="nav-link">
+                <i class="nav-icon fas fa-th-large"></i>
+                <p>{% trans 'Dashboard' %}</p>
+              </a>
+            </li>
+
+            {# Menú original Jazzmin #}
+            {% if jazzmin_settings.navigation_expanded %}
+              {% for app in side_menu_list %}
+                <li class="nav-header">{{ app.name }}</li>
+                {% for model in app.models %}
+                  <li class="nav-item">
+                    {% if model.url %}
+                      <a href="{{ model.url }}" class="nav-link">
+                        <i class="nav-icon {{ model.icon }}"></i> <p>{{ model.name }}</p>
+                      </a>
+                    {% else %}
+                      <span class="nav-link disabled">
+                        <i class="nav-icon {{ model.icon }}"></i> <p>{{ model.name }}</p>
+                      </span>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              {% endfor %}
+            {% else %}
+              {% for app in side_menu_list %}
+                <li class="nav-item has-treeview">
+                  <a href="#" class="nav-link">
+                    <i class="nav-icon {{ app.icon }}"></i>
+                    <p>{{ app.name|truncatechars:21 }} <i class="nav-arrow fas fa-chevron-right" aria-hidden="true"></i></p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                    {% for model in app.models %}
+                      <li class="nav-item">
+                        <a href="{% if model.url %}{{ model.url }}{% else %}javascript:void(0){% endif %}" class="nav-link">
+                          <i class="nav-icon {{ model.icon }}"></i>
+                          <p>{{ model.name }}</p>
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endfor %}
+            {% endif %}
+
+            {# ═══════════════════════════════════════════════════════════════ #}
+            {# Sección Marketplace — Aplicaciones instaladas (dinámico)      #}
+            {# ═══════════════════════════════════════════════════════════════ #}
+            {% if jazzmin_apps %}
+              <li class="nav-header">Marketplace — Aplicaciones</li>
+              {% for app in jazzmin_apps %}
+                <li class="nav-item has-treeview">
+                  <a href="#" class="nav-link">
+                    <i class="nav-icon {{ app.icon }}"></i>
+                    <p>{{ app.label|truncatechars:21 }} <i class="nav-arrow fas fa-chevron-right" aria-hidden="true"></i></p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                    {% for model in app.models %}
+                      <li class="nav-item">
+                        <a href="{{ model.admin_url }}" class="nav-link">
+                          <i class="nav-icon fas fa-puzzle-piece"></i>
+                          <p>{{ model.name }}</p>
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endfor %}
+            {% endif %}
+
+          </ul>
+        </nav>
+      </div>
+    </aside>
+  {% endif %}
+{% endblock %}

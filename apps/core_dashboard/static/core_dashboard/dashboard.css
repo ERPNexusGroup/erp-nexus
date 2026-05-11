@@ -10,6 +10,12 @@
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-card h3 {
@@ -26,6 +32,20 @@
   color: #111827;
 }
 
+/* Jazzmin color accents */
+.jazzmin-bg-blue {
+  border-left: 4px solid #17a2b8;
+}
+.jazzmin-bg-green {
+  border-left: 4px solid #28a745;
+}
+.jazzmin-bg-yellow {
+  border-left: 4px solid #ffc107;
+}
+.jazzmin-bg-red {
+  border-left: 4px solid #dc3545;
+}
+
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -37,4 +57,75 @@
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Installed Modules Grid */
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.module-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.module-card:hover {
+  background: #e9ecef;
+}
+
+.module-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #79aec8, #5a9bc2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+}
+
+.module-info {
+  flex: 1;
+}
+
+.module-info strong {
+  display: block;
+  font-size: 14px;
+  color: #333;
+}
+
+.module-meta {
+  font-size: 11px;
+  color: #666;
+}
+
+.module-status .badge {
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.badge-success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-warning {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge-danger {
+  background: #f8d7da;
+  color: #721c24;
 }

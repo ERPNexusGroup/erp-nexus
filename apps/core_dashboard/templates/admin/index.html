@@ -13,6 +13,7 @@
 
 {% block content %}
   <div class="dashboard-grid">
+    <!-- Core Metrics -->
     <div class="dashboard-card">
       <h3>Usuarios Totales</h3>
       <div class="value">{{ dashboard_cards.total_users }}</div>
@@ -26,11 +27,30 @@
       <div class="value">{{ dashboard_cards.total_companies }}</div>
     </div>
     <div class="dashboard-card">
-      <h3>Módulos Activos</h3>
+      <h3>Módulos en Catálogo</h3>
       <div class="value">{{ dashboard_cards.active_modules }}</div>
+    </div>
+
+    <!-- Marketplace Metrics -->
+    <div class="dashboard-card jazzmin-bg-blue">
+      <h3>Módulos Instalados</h3>
+      <div class="value">{{ dashboard_cards.installed_modules }}</div>
+    </div>
+    <div class="dashboard-card jazzmin-bg-green">
+      <h3>Licencias Activas</h3>
+      <div class="value">{{ dashboard_cards.total_licenses }}</div>
+    </div>
+    <div class="dashboard-card jazzmin-bg-yellow">
+      <h3>Próximas aExpirar (7d)</h3>
+      <div class="value">{{ dashboard_cards.licenses_expiring }}</div>
+    </div>
+    <div class="dashboard-card jazzmin-bg-red">
+      <h3>Licencias Expiradas</h3>
+      <div class="value">{{ dashboard_cards.expired_licenses }}</div>
     </div>
   </div>
 
+  <!-- Charts -->
   <div class="charts-grid">
     <div class="chart-panel">
       <h3>Estado de Módulos</h3>
@@ -42,29 +62,33 @@
     </div>
   </div>
 
-  <script>
-    (function () {
-      var data = {{ dashboard_charts_json|safe }};
-      var ctx1 = document.getElementById("modulesChart").getContext("2d");
-      var ctx2 = document.getElementById("usersCompanyChart").getContext("2d");
-
-      new Chart(ctx1, {
-        type: "doughnut",
-        data: {
-          labels: data.modules.labels,
-          datasets: [{ data: data.modules.values }]
-        }
-      });
-
-      new Chart(ctx2, {
-        type: "bar",
-        data: {
-          labels: data.users_per_company.labels,
-          datasets: [{ data: data.users_per_company.values }]
-        }
-      });
-    })();
-  </script>
+  <!-- Sección: Módulos Instalados Recientes -->
+  {% if recent_installs %}
+    <div class="recent-modules-section">
+      <h3 style="margin-top: 30px; color: #333;">
+        <i class="fas fa-puzzle-piece" style="color: #79aec8;"></i>
+        Módulos Instalados Recientes
+      </h3>
+      <div class="modules-grid">
+        {% for module in recent_installs %}
+          <div class="module-card">
+            <div class="module-icon">
+              <i class="fas fa-cube"></i>
+            </div>
+            <div class="module-info">
+              <strong>{{ module.technical_name|capfirst }}</strong>
+              <div class="module-meta">
+                <code>{{ module.django_app }}</code>
+              </div>
+            </div>
+            <div class="module-status">
+              <span class="badge badge-success">Activo</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
 
   {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
 {% endblock %}

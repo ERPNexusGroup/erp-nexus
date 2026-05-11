@@ -1,0 +1,25 @@
+.facturacion-dashboard {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.facturacion-dashboard h2 {
+    margin-top: 0;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+    padding-bottom: 10px;
+}
+
+.stat-card {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: bold;
+}
