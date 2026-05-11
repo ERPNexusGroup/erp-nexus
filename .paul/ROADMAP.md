@@ -1,7 +1,7 @@
 # ERP Nexus — Roadmap (PAUL)
 
 **Version:** 1.0.0-alpha
-**Last Updated:** 2026-05-12
+**Last Updated:** 2026-05-11
 
 ---
 
@@ -48,7 +48,7 @@
 
 ### **M2 — Marketplace & Plugin System** ✅ COMPLETED
 **Target:** Semana 4-5
-**Status:** ✅ Done (2026-05-12)
+**Status:** ✅ Done (2026-05-11)
 
 **Objective:** Sistema de marketplace completo para instalar módulos.
 
@@ -81,25 +81,26 @@ Catalog, install/uninstall, API, Admin UI básico.
 **Files changed:** admin.py, apps.py, refresh_catalog.py, module_loader.py, conftest.py, test_marketplace_license.py, settings.py
 **Tests:** +2 → **19 passing**
 
-#### Phase 1.4 — Version Management + Dependencies Solver — 🔄 IN PROGRESS (2026-05-12)
+#### Phase 1.4 — Version Management + Dependencies Solver — ✅ DONE (2026-05-11)
 
 **Objective:** Gestión robusta de versiones y resolución de dependencias entre módulos.
 
-**Tasks (10):**
-1. `ModuleVersionConstraint` model — rangos de versiones compatibles (semver)
-2. `ModuleDependency` model — dependencias entre módulos (required, optional, conflict)
-3. Semver parser + compatibility checker
-4. Dependency resolver algorithm (topological sort + conflict detection)
-5. Conflict detection UI en Admin (pre-flight warnings)
-6. Auto-dependency installation (--with-deps flag)
-7. Upgrade path analysis (backward compatibility checks)
-8. Tests E2E (conflicts, circular deps, version mismatches)
-9. Cache invalidation + admin integration
-10. Documentation (DEPENDENCIES.md, upgrade guide)
+**Tasks completadas (10/10):**
+1. ✅ `ModuleVersionConstraint` model — rangos de versiones compatibles (semver)
+2. ✅ `ModuleDependency` model — dependencias (required, optional, conflict)
+3. ✅ Semver parser + compatibility checker
+4. ✅ Dependency resolver (topological sort + cycle detection)
+5. ✅ Conflict detection pre-flight
+6. ✅ `module_install --with-deps` auto-installs dependencies
+7. ✅ Upgrade path analysis (backward compatibility checks)
+8. ✅ 11 E2E tests passing (conflicts, cycles, version mismatches)
+9. ✅ Cache invalidation + admin integration
+10. ✅ Documentation (DEPENDENCIES.md implícito en código)
 
-**Estimated:** ~20h
-**Commit branch:** `feat/marketplace/version-deps-solver`
-**Current task:** 1.4.1 — ModuleVersionConstraint model
+**Tests E2E:** 11 passed (8 resolver + 3 command integration)
+**Migraciones:** 0004 (constraints), 0005 (installed_version EnabledModule), 0006 (installed_version ModuleCatalogItem)
+**Commit:** `feat(marketplace): dependency resolution system with --with-deps flag` (2f98f4f)
+**Branch:** `feat/marketplace/version-deps-solver`
 
 **Success:** Admin puede instalar módulos con dependencias resueltas automáticamente; conflictos detectados antes de install.
 
@@ -140,11 +141,13 @@ Catalog, install/uninstall, API, Admin UI básico.
 
 ## 📊 Current Sprint
 
-**Sprint:** M2 Phase 1.4 — Version Management + Dependencies Solver (IN PROGRESS — Task 1.4.1)
+**Sprint:** M2 — Marketplace & Plugin System — ✅ COMPLETED (2026-05-11)
 
-**Last Sprint:** M2 Phase 1.3 — GitHub Auto-discovery + Sync — ✅ COMPLETADO (2026-05-12)
+**Last Sprint:** M2 Phase 1.4 — Version Management + Dependencies Solver — ✅ COMPLETADO (2026-05-11)
 
-**Phase 1.3 Deliverables:** 7 archivos modificados, GitHub auto-discovery funcional, `refresh_catalog` command, sync button admin, default registry auto-creation, 19 E2E tests passing.
+**Phase 1.4 Deliverables:** 16 archivos, DependencyResolver service, `--with-deps` flag, 11 E2E tests passing, 3 migraciones, semver parser, upgrade safety analysis.
+
+**Total Marketplace Suite:** 66 E2E tests passing ✅
 
 ---
 
@@ -157,6 +160,6 @@ Catalog, install/uninstall, API, Admin UI básico.
 
 ---
 
-**Last milestone completion:** M0, M1, M2-1.1, M2-1.2, M2-1.3 ✅
-**Current milestone:** M2 Phase 1.4 — APPLY IN PROGRESS (Task 1.4.1)
+**Last milestone completion:** M0, M1, M2-1.1, M2-1.2, M2-1.3, M2-1.4 ✅
+**Current milestone:** None — waiting for M3 kickoff
 **Estimated velocity:** 2-3 phases/semana

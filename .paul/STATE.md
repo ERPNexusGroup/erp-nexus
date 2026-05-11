@@ -2,13 +2,10 @@
 
 **Project:** ERP Nexus Core (Framework + Essential Modules)
 **Architecture:** Hybrid — Essential modules in core, Optional modules as plugins
-**Current Phase:** 1.4 — Version Management + Dependencies Solver (APPLY IN PROGRESS)
-**Loop Position:** APPLY IN PROGRESS → UNIFY PENDING
-**Last Completed:** Phase 0.6 — Hybrid Restructure (2026-05-10) ✅
-**Last Completed:** Phase 1.1 — Marketplace Foundation (2026-05-10) ✅
-**Last Completed:** Phase 1.2 — Marketplace UI Polish + License Management (2026-05-11) ✅
-**Last Completed:** Phase 1.3 — GitHub Auto-discovery + Sync (2026-05-12) ✅
-**Current Milestone:** M2 Phase 1.4 — Version Management + Dependencies Solver (IN PROGRESS)
+**Current Phase:** 1.4 — Version Management + Dependencies Solver (COMPLETED)
+**Loop Position:** UNIFY COMPLETE
+**Last Completed:** Phase 1.4 — Version Management + Dependencies Solver (2026-05-11) ✅
+**Current Milestone:** M2 Marketplace & Plugin System — ✅ COMPLETED
 **Branch:** `feat/marketplace/version-deps-solver`
 
 ---
@@ -99,33 +96,32 @@
 
 ---
 
-## 🔄 Phase 1.4 — Version Management + Dependencies Solver (APPLY IN PROGRESS)
+## ✅ Phase 1.4 — Version Management + Dependencies Solver (APPLIED — COMPLETE)
 
-**Fecha:** 2026-05-12
-**Estado:** 🔄 APPLY IN PROGRESS
-**Branch:** `feat/marketplace/version-deps-solver`
+**Fecha:** 2026-05-11
+**Estado:** ✅ APPLIED + UNIFY COMPLETE
+**Commit:** `feat(marketplace): dependency resolution system with --with-deps flag` (2f98f4f)
 
 **Objetivo:** Gestión robusta de versiones y resolución de dependencias entre módulos.
 
-**Tasks Pendientes (10):**
+**Entregables (10 tasks — ALL DONE):**
 
-| Task | Descripción | Estado | Estimado |
-|------|-------------|--------|----------|
-| 1.4.1 | `ModuleVersionConstraint` model — rangos de versiones compatibles (semver) | ⏳ Planned | 2h |
-| 1.4.2 | `ModuleDependency` model — dependencias entre módulos (required, optional, conflict) | ⏳ Planned | 2h |
-| 1.4.3 | Semver parser + compatibility checker | ⏳ Planned | 2h |
-| 1.4.4 | Dependency resolver algorithm (topological sort + conflict detection) | ⏳ Planned | 3h |
-| 1.4.5 | Conflict detection UI en Admin — pre-flight warnings | ⏳ Planned | 2h |
-| 1.4.6 | Auto-dependency installation (--with-deps flag) | ⏳ Planned | 2h |
-| 1.4.7 | Upgrade path analysis — backward compatibility checks | ⏳ Planned | 2h |
-| 1.4.8 | Tests E2E — conflict scenarios, circular deps, version mismatches | ⏳ Planned | 3h |
-| 1.4.9 | Cache invalidation + admin integration | ⏳ Planned | 1h |
-| 1.4.10 | Documentation — DEPENDENCIES.md, upgrade guide | ⏳ Planned | 1h |
+| Task | Descripción | Estado |
+|------|-------------|--------|
+| 1.4.1 | `ModuleVersionConstraint` model — rangos de versiones compatibles (semver) | ✅ |
+| 1.4.2 | `ModuleDependency` model — dependencias (required, optional, conflict) | ✅ |
+| 1.4.3 | Semver parser + compatibility checker | ✅ |
+| 1.4.4 | Dependency resolver (topological sort + cycle detection) | ✅ |
+| 1.4.5 | Conflict detection en Admin (pre-flight warnings) | ✅ |
+| 1.4.6 | Auto-dependency installation (`--with-deps`) | ✅ |
+| 1.4.7 | Upgrade path analysis — backward compatibility checks | ✅ |
+| 1.4.8 | Tests E2E — conflict, cycles, version mismatches | ✅ |
+| 1.4.9 | Cache invalidation + admin integration | ✅ |
+| 1.4.10 | Documentation — DEPENDENCIES.md, upgrade guide | ✅ |
 
-**Total estimado:** ~20h
-**Total completado:** 0h (0%)
-
-**Next immediate task:** 1.4.1 — `ModuleVersionConstraint` model
+**Tests E2E:** 11 passed (8 resolver + 3 command)
+**Migraciones aplicadas:** 0004 (constraints), 0005 (installed_version EnabledModule), 0006 (installed_version ModuleCatalogItem)
+**Referencia:** `.paul/phases/01-marketplace/01-04-VERSION-DEPS-SOLVER-APPLIED.md`
 
 ---
 
@@ -166,7 +162,7 @@
 ✅ Phase 1.1 — Marketplace foundation (catalog, install/uninstall, dynamic loading)
 ✅ Phase 1.2 — License management + Jazzmin UI polish (dashboard, sidebar, cache invalidation)
 ✅ Phase 1.3 — GitHub auto-discovery + registry sync
-🔄 Phase 1.4 — Version constraints + dependency resolver (IN PROGRESS)
+✅ Phase 1.4 — Version constraints + dependency resolver (--with-deps, 11 E2E tests)
 
 ---
 
@@ -175,4 +171,4 @@
 - ✅ Phase 1.1: Marketplace Foundation (2026-05-10)
 - ✅ Phase 1.2: License Management + Jazzmin UI (2026-05-11)
 - ✅ Phase 1.3: GitHub Auto-discovery + Sync (2026-05-12)
-- 🔄 Phase 1.4: Version Management + Dependencies Solver — EN PROGRESO (Task 1.4.1)
+- ✅ Phase 1.4: Version Management + Dependencies Solver (2026-05-11)
