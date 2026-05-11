@@ -19,7 +19,7 @@ Sistema completo de gestión de licencias **+ integración Jazzmin** (dashboard 
 - Página pública de catálogo `/marketplace/` con filtros, badges, precios, botones staff
 - Management command `refresh_catalog` (GitHub org scan + catalog sync)
 - **Cache invalidation automática:** `module_install`/`module_uninstall` eliminan cache para que modules aparezcan inmediatamente
-- **15 tests E2E** cubriendo todos los flujos
+- **17 E2E tests passing** (catalog, install flow, license flow, public page, sidebar integration)
 
 ---
 

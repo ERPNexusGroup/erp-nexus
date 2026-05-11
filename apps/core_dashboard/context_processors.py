@@ -92,7 +92,7 @@ def admin_metrics(request):
     from apps.core_marketplace.models import ModuleCatalogItem, ModuleLicense
 
     User = get_user_model()
-    now = settings.timezone.now()
+    now = timezone.now()
     week_ago = now - timedelta(days=7)
 
     # Core metrics
@@ -112,19 +112,19 @@ def admin_metrics(request):
     expired = ModuleLicense.objects.filter(is_active=True, valid_until__lt=now).count()
 
     dashboard_cards = {
-        "total_users": total_users,
-        "new_users": new_users,
-        "total_companies": total_companies,
-        "active_modules": active_catalog,
-        "installed_modules": installed_count,
-        "total_licenses": total_licenses,
-        "licenses_expiring": licenses_expiring,
-        "licenses_expired": expired,
+        'total_users': total_users,
+        'new_users': new_users,
+        'total_companies': total_companies,
+        'active_modules': active_catalog,
+        'installed_modules': installed_count,
+        'total_licenses': total_licenses,
+        'licenses_expiring': licenses_expiring,
+        'licenses_expired': expired,
     }
 
     recent_installs = list(
         EnabledModule.objects.filter(status='active')
-        .order_by("-id")[:5]
+        .order_by('-id')[:5]
     )
 
     result = {
@@ -138,5 +138,5 @@ def admin_metrics(request):
 
 def invalidate_dashboard_cache():
     """Invalidar cache (llamar después de instalar/desinstalar módulos)."""
-    cache.delete("admin_dashboard_metrics")
-    cache.delete("jazzmin_side_menu_apps")
+    cache.delete('admin_dashboard_metrics')
+    cache.delete('jazzmin_side_menu_apps')

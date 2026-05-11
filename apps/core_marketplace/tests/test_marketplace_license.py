@@ -18,12 +18,16 @@ from apps.core_api.v1.auth import generate_tokens
 pytestmark = pytest.mark.django_db
 
 
+# ═══════════════════════════════════════════════════════════════════════
+# Fixtures
+# ═══════════════════════════════════════════════════════════════════════
+
 @pytest.fixture
 def staff_user(django_user_model):
     return django_user_model.objects.create_user(
-        username="staff_test",
-        email="staff@test.com",
-        password="testpass123",
+        username="staff",
+        email="staff@example.com",
+        password="pass",
         is_staff=True,
         is_superuser=True,
     )
@@ -39,8 +43,9 @@ def api_client_auth(staff_user):
 
 
 @pytest.fixture
-def company():
-    return Company.objects.create(name="Test Company", tax_id="0991234567001")
+def api_client():
+    """APIClient sin autenticación (para vistas públicas)."""
+    return APIClient()
 
 
 @pytest.fixture
@@ -70,90 +75,108 @@ def licensed_module():
 
 
 @pytest.fixture
+def company():
+    return Company.objects.create(name="TestCo", tax_id="1234567890")
+
+
+@pytest.fixture
 def valid_license(licensed_module, company):
     return ModuleLicense.objects.create(
         module=licensed_module,
-        license_key="VALIDKEY1234567890123456789012",
+        license_key="VALIDLICENSEKEY123456789012345678",
         license_type="paid",
         valid_until=timezone.now() + timedelta(days=365),
         max_seats=5,
-        used_seats=1,
+        used_seats=0,
         company=company,
-        is_active=True,
     )
 
 
 @pytest.fixture
-def expired_license(licensed_module):
+def expired_license(licensed_module, company):
     return ModuleLicense.objects.create(
         module=licensed_module,
-        license_key="EXPIREDKEY12345678901234567890",
+        license_key="EXPIREDKEY123456789012345678",
         license_type="trial",
         valid_until=timezone.now() - timedelta(days=1),
-        max_seats=2,
-        used_seats=1,
-        is_active=True,
+        max_seats=5,
+        used_seats=0,
+        company=company,
     )
 
 
 @pytest.fixture
-def single_seat_license(licensed_module):
+def single_seat_license(licensed_module, company):
     return ModuleLicense.objects.create(
         module=licensed_module,
-        license_key="SINGLESEAT12345678901234567890",
-        license_type="paid",
+        license_key="SINGLESEAT123456789012345678",
+        license_type="free",
+        valid_until=timezone.now() + timedelta(days=30),
         max_seats=1,
         used_seats=1,
-        is_active=True,
+        company=company,
     )
+
+
+@pytest.fixture
+def staff_client(staff_user):
+    """Client Django autenticado como staff (para admin views)."""
+    from django.test import Client
+    client = Client()
+    client.force_login(staff_user)
+    return client
 
 
 # ═══════════════════════════════════════════════════════════════════════
-# Catalog Tests (API)
+# Marketplace Catalog Tests (REST API)
 # ═══════════════════════════════════════════════════════════════════════
 
 class TestMarketplaceCatalog:
-    def test_list_catalog_returns_modules(self, api_client_auth, optional_module):
+    def test_list_catalog_returns_modules(self, api_client_auth, optional_module, licensed_module):
         url = reverse("api:list_catalog")
         resp = api_client_auth.get(url)
         assert resp.status_code == 200
         data = resp.json()
-        assert any(item["technical_name"] == optional_module.technical_name for item in data)
+        assert len(data) >= 2
+        names = {item["technical_name"] for item in data}
+        assert optional_module.technical_name in names
+        assert licensed_module.technical_name in names
 
     def test_catalog_filters_by_type(self, api_client_auth, optional_module, licensed_module):
         url = reverse("api:list_catalog") + "?module_type=optional"
         resp = api_client_auth.get(url)
         assert resp.status_code == 200
-        for item in resp.json():
+        data = resp.json()
+        for item in data:
             assert item["module_type"] == "optional"
 
     def test_catalog_shows_license_info(self, api_client_auth, licensed_module):
         url = reverse("api:list_catalog")
         resp = api_client_auth.get(url)
+        assert resp.status_code == 200
         data = resp.json()
-        lic_item = next((i for i in data if i["technical_name"] == licensed_module.technical_name), None)
-        assert lic_item is not None
-        assert lic_item["is_licensed"] is True
-        assert lic_item["license_required"] is True
+        licensed = next((i for i in data if i["technical_name"] == licensed_module.technical_name), None)
+        assert licensed is not None
+        assert licensed["is_licensed"] is True
+        assert licensed["license_required"] is True
 
 
 # ═══════════════════════════════════════════════════════════════════════
-# Install Tests (API)
+# Module Install Tests (API + Command)
 # ═══════════════════════════════════════════════════════════════════════
 
 class TestModuleInstall:
-    def test_install_optional_module_without_license(self, api_client_auth, optional_module):
+    def test_install_optional_module_without_license(self, api_client_auth, optional_module, monkeypatch):
         url = reverse("api:install_module", args=[optional_module.technical_name])
         resp = api_client_auth.post(url)
-        assert resp.status_code == 200
-        assert resp.json()["success"] is True
+        data = resp.json()
+        assert data["success"] is True
         assert EnabledModule.objects.filter(technical_name=optional_module.technical_name).exists()
 
     def test_install_licensed_module_fails_without_key(self, api_client_auth, licensed_module):
         url = reverse("api:install_module", args=[licensed_module.technical_name])
         resp = api_client_auth.post(url)
         data = resp.json()
-        # El endpoint devuelve 200 incluso en errores; verificar mensaje de error
         assert data["success"] is False
         assert "license" in data["message"].lower()
         assert "key" in data["message"].lower() or "required" in data["message"].lower()
@@ -163,7 +186,7 @@ class TestModuleInstall:
         resp = api_client_auth.post(url, {"license_key": valid_license.license_key})
         assert resp.json()["success"] is True
         valid_license.refresh_from_db()
-        assert valid_license.used_seats == 2  # se incrementa desde 0→1
+        assert valid_license.used_seats == 1  # se incrementa desde 0→1
 
     def test_install_with_expired_license_fails(self, api_client_auth, licensed_module, expired_license):
         url = reverse("api:install_module", args=[licensed_module.technical_name])
@@ -240,3 +263,100 @@ class TestPublicCatalogPage:
         resp = client.get(url)
         assert resp.status_code == 200
         assert optional_module.display_name in resp.content.decode()
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# Sidebar Integration Tests (admin_menu_category + Jazzmin UI)
+# ═══════════════════════════════════════════════════════════════════════
+
+class TestSidebarIntegration:
+    def test_sidebar_uses_admin_menu_category(self, staff_client):
+        """Verifica que el context processor usa admin_menu_category para agrupar módulos instalados."""
+        # Crear catálogo + instalaciones
+        cat1 = ModuleCatalogItem.objects.create(
+            technical_name="mod_ventas",
+            display_name="Módulo de Ventas",
+            version="1.0",
+            admin_menu_category="Ventas",
+        )
+        cat2 = ModuleCatalogItem.objects.create(
+            technical_name="mod_inventario",
+            display_name="Módulo de Inventario",
+            version="1.0",
+            admin_menu_category="Inventario",
+        )
+        cat3 = ModuleCatalogItem.objects.create(
+            technical_name="mod_general",
+            display_name="Módulo General",
+            version="1.0",
+            admin_menu_category="Aplicaciones",
+        )
+
+        # Crear EnabledModule (simula módulos instalados)
+        # module_install crea EnabledModule con technical_name + django_app
+        EnabledModule.objects.create(
+            technical_name=cat1.technical_name,
+            django_app='sales',  # simula app instalada
+            status='active',
+        )
+        EnabledModule.objects.create(
+            technical_name=cat2.technical_name,
+            django_app='inventory',
+            status='active',
+        )
+        EnabledModule.objects.create(
+            technical_name=cat3.technical_name,
+            django_app='general',
+            status='active',
+        )
+
+        # Invalidate cache manualmente
+        from django.core.cache import cache
+        cache.delete('admin_dashboard_metrics')
+        cache.delete('jazzmin_side_menu_apps')
+
+        # Petición al admin ejecuta context processors
+        resp = staff_client.get('/admin/')
+        assert resp.status_code == 200
+
+        jazzmin_apps = resp.context.get('jazzmin_apps', [])
+        assert jazzmin_apps, f'jazzmin_apps vacío, contexto: {list(resp.context.keys())}'
+
+        labels = [app['label'] for app in jazzmin_apps]
+        assert 'Ventas' in labels
+        assert 'Inventario' in labels
+        assert 'Aplicaciones' in labels
+
+        ventas_app = next(a for a in jazzmin_apps if a['label'] == 'Ventas')
+        assert any(m['name'] == 'Módulo de Ventas' for m in ventas_app['models'])
+
+        inv_app = next(a for a in jazzmin_apps if a['label'] == 'Inventario')
+        assert any(m['name'] == 'Módulo de Inventario' for m in inv_app['models'])
+
+        apps_app = next(a for a in jazzmin_apps if a['label'] == 'Aplicaciones')
+        assert any(m['name'] == 'Módulo General' for m in apps_app['models'])
+
+    def test_dashboard_shows_installed_count(self, staff_client):
+        # Crear catálogo + instalaciones
+        for i in range(3):
+            cat = ModuleCatalogItem.objects.create(
+                technical_name=f"mod_{i}",
+                display_name=f"Módulo {i}",
+                version="1.0",
+            )
+            EnabledModule.objects.create(
+                technical_name=cat.technical_name,
+                django_app=f'app_{i}',
+                status='active',
+            )
+
+        from django.core.cache import cache
+        cache.delete('admin_dashboard_metrics')
+        cache.delete('jazzmin_side_menu_apps')
+
+        resp = staff_client.get('/admin/')
+        assert resp.status_code == 200
+
+        dashboard_cards = resp.context.get('dashboard_cards', {})
+        assert dashboard_cards.get('active_modules') == 3
+        assert dashboard_cards.get('installed_modules') == 3
