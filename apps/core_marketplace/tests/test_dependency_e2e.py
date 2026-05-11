@@ -359,7 +359,7 @@ class TestModuleInstallWithDepsCommand:
 
 
 # Total E2E Marketplace expected: 32
-# - test_semver.py:       ~5
+# - test_semver.py:       ~28
 # - test_dependency_models.py: ~16
 # - test_dependency_e2e.py (this file): 11
 #   • 8 resolver tests (TestDependencyResolverE2E)
