@@ -141,9 +141,9 @@ Catalog, install/uninstall, API, Admin UI básico.
 
 ## 📊 Current Sprint
 
-**Sprint:** M2 — Marketplace & Plugin System — ✅ COMPLETED (2026-05-11)
+**Sprint:** None — awaiting M3 kickoff
 
-**Last Sprint:** M2 Phase 1.4 — Version Management + Dependencies Solver — ✅ COMPLETADO (2026-05-11)
+**Last Sprint:** M2 — Marketplace & Plugin System — ✅ COMPLETED (2026-05-11)
 
 **Phase 1.4 Deliverables:** 16 archivos, DependencyResolver service, `--with-deps` flag, 11 E2E tests passing, 3 migraciones, semver parser, upgrade safety analysis.
 
