@@ -10,8 +10,9 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from apps.core_marketplace.models import EnabledModule, ModuleCatalogItem, ModuleDownload
+from apps.core_marketplace.models import EnabledModule, ModuleCatalogItem, ModuleDownload, ModuleLicense
 from apps.core_marketplace.utils.module_loader import remove_from_modules_enabled
+from apps.core_marketplace.utils.license import release_license
 
 
 class Command(BaseCommand):
@@ -72,12 +73,24 @@ class Command(BaseCommand):
 
         # 4. Remove from modules_enabled.py and unregister
         django_app = enabled.django_app
+        license_obj = None
         with transaction.atomic():
+            # Find associated license (if any)
+            try:
+                catalog_item = ModuleCatalogItem.objects.get(technical_name=tech_name)
+                license_obj = ModuleLicense.objects.filter(module=catalog_item, is_active=True).first()
+            except ModuleCatalogItem.DoesNotExist:
+                catalog_item = None
+
             enabled.delete()
             self.stdout.write(f"   ✅ Removed from enabled modules")
 
             remove_from_modules_enabled(django_app)
             self.stdout.write(f"   ✅ Removed from modules_enabled.py")
+
+            if license_obj:
+                release_license(license_obj)
+                self.stdout.write(f"   ✅ Released license seat ({license_obj.used_seats}/{license_obj.max_seats})")
 
             if catalog_item:
                 catalog_item.mark_inactive()
@@ -85,13 +98,13 @@ class Command(BaseCommand):
                 catalog_item.save(update_fields=["installed_path"])
                 self.stdout.write(f"   ✅ Marked catalog item as inactive")
 
-        # 5. Log uninstall
-        ModuleDownload.objects.create(
-            module_name=tech_name,
-            version=catalog_item.version if catalog_item else "unknown",
-            source=catalog_item.repo_url if catalog_item else "",
-            status="failed",  # repurposed to track uninstalls
-        )
+            # 5. Log uninstall
+            ModuleDownload.objects.create(
+                module_name=tech_name,
+                version=catalog_item.version if catalog_item else "unknown",
+                source=catalog_item.repo_url if catalog_item else "",
+                status="failed",  # repurposed to track uninstalls
+            )
 
         self.stdout.write(self.style.SUCCESS(f"\n✅ Module '{tech_name}' uninstalled successfully!"))
         self.stdout.write(f"   🔄 Restart Django to unload module")

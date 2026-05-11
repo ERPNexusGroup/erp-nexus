@@ -120,3 +120,6 @@ notifications.log
 tmp/
 temp/
 *.tmp
+
+# Graphify generated artifacts
+graphify-out/

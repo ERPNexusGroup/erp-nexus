@@ -1,7 +1,7 @@
 """
 Management command: module_install
 
-Installs a module from the catalog (GitHub clone + register) with full validation.
+Installs a module from the catalog with full validation and license checks.
 """
 import hashlib
 import os
@@ -16,10 +16,11 @@ from django.db import transaction
 
 from apps.core_marketplace.models import ModuleCatalogItem, EnabledModule, ModuleDownload
 from apps.core_marketplace.utils.module_loader import add_to_modules_enabled
+from apps.core_marketplace.utils.license import validate_license_for_module, consume_license
 
 
 class Command(BaseCommand):
-    help = "Install a module from the marketplace with validation"
+    help = "Install a module from the marketplace with validation and license checks"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -31,6 +32,11 @@ class Command(BaseCommand):
             "--tag",
             type=str,
             help="Specific git tag/version to install (default: latest from catalog)",
+        )
+        parser.add_argument(
+            "--license-key",
+            type=str,
+            help="License key for licensed modules (required if module needs license)",
         )
         parser.add_argument(
             "--force",
@@ -51,6 +57,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         tech_name = options["technical_name"]
         tag = options.get("tag")
+        license_key = options.get("license_key")
         force = options["force"]
         keep_data = options["keep_data"]
         skip_validation = options["skip_validation"]
@@ -80,7 +87,32 @@ class Command(BaseCommand):
             enabled = None
 
         # ═══════════════════════════════════════════════════════════════
-        # STEP 3 — Clone/update repo
+        # STEP 3 — License validation (before network operations)
+        # ═══════════════════════════════════════════════════════════════
+        license_obj = None
+        if catalog_item.license_required:
+            self.stdout.write(f"   🔐 Module requires a license key")
+            if not license_key:
+                raise CommandError(
+                    f"Module '{tech_name}' requires --license-key. "
+                    f"Get a key from the module vendor or admin."
+                )
+            try:
+                license_obj = validate_license_for_module(catalog_item, license_key)
+                self.stdout.write(self.style.SUCCESS(f"   ✅ License validated: {license_obj.license_key[:12]}..."))
+            except ValueError as exc:
+                raise CommandError(f"License error: {exc}")
+        elif catalog_item.is_licensed and license_key:
+            # Optional license provided even if not required
+            try:
+                license_obj = validate_license_for_module(catalog_item, license_key)
+                self.stdout.write(self.style.SUCCESS(f"   ✅ License accepted (premium features)"))
+            except ValueError as exc:
+                self.stdout.write(self.style.WARNING(f"   ⚠️  Invalid license key ignored: {exc}"))
+                license_obj = None
+
+        # ═══════════════════════════════════════════════════════════════
+        # STEP 4 — Clone/update repo
         # ═══════════════════════════════════════════════════════════════
         modules_dir = Path(settings.BASE_DIR) / "modules"
         modules_dir.mkdir(parents=True, exist_ok=True)
@@ -89,14 +121,14 @@ class Command(BaseCommand):
         self._clone_or_update_repo(catalog_item.repo_url, target_path, tag)
 
         # ═══════════════════════════════════════════════════════════════
-        # STEP 4 — Security & validation checks
+        # STEP 5 — Security & validation checks
         # ═══════════════════════════════════════════════════════════════
         if not skip_validation:
             self._validate_module_safety(target_path, tech_name)
             self._validate_meta_file(target_path, tech_name)
 
         # ═══════════════════════════════════════════════════════════════
-        # STEP 5 — Parse __meta__.py
+        # STEP 6 — Parse __meta__.py
         # ═══════════════════════════════════════════════════════════════
         meta_path = target_path / "__meta__.py"
         meta = self._parse_meta_file(meta_path)
@@ -107,14 +139,14 @@ class Command(BaseCommand):
         django_app = meta.get("django_app", tech_name)
 
         # ═══════════════════════════════════════════════════════════════
-        # STEP 6 — Check Python dependencies
+        # STEP 7 — Check Python dependencies
         # ═══════════════════════════════════════════════════════════════
         python_deps = meta.get("python_dependencies", {})
         if python_deps:
             self.stdout.write(f"   📋 Python dependencies: {python_deps}")
 
         # ═══════════════════════════════════════════════════════════════
-        # STEP 7 — Verify Django app structure exists
+        # STEP 8 — Verify Django app structure exists
         # ═══════════════════════════════════════════════════════════════
         app_dir = target_path / django_app
         if not app_dir.exists():
@@ -123,7 +155,7 @@ class Command(BaseCommand):
                 raise CommandError(f"Module structure invalid: neither '{django_app}' nor '{tech_name}' directory found")
 
         # ═══════════════════════════════════════════════════════════════
-        # STEP 8 — Register and update modules_enabled.py
+        # STEP 9 — Register and update modules_enabled.py
         # ═══════════════════════════════════════════════════════════════
         with transaction.atomic():
             if enabled and not keep_data:
@@ -137,12 +169,17 @@ class Command(BaseCommand):
 
             add_to_modules_enabled(django_app)
 
+            # Consume license seat AFTER successful DB prep
+            if license_obj:
+                consume_license(license_obj)
+                self.stdout.write(f"   🎟️  License seat consumed ({license_obj.used_seats}/{license_obj.max_seats})")
+
             catalog_item.touch_installed()
             catalog_item.installed_path = str(target_path)
             catalog_item.save(update_fields=["installed_path"])
 
         # ═══════════════════════════════════════════════════════════════
-        # STEP 9 — Log installation
+        # STEP 10 — Log installation
         # ═══════════════════════════════════════════════════════════════
         ModuleDownload.objects.create(
             module_name=tech_name,
@@ -204,7 +241,6 @@ class Command(BaseCommand):
         return meta
 
     def _validate_meta_file(self, target_path: Path, tech_name: str) -> None:
-        """Validate __meta__.py required fields and formats."""
         meta_path = target_path / "__meta__.py"
         if not meta_path.exists():
             raise CommandError("Validation failed: __meta__.py not found")
@@ -221,12 +257,11 @@ class Command(BaseCommand):
 
         version = meta["version"]
         if not self._is_valid_version(version):
-            self.stdout.write(self.style.WARNING(f"   ⚠️  Version '{version}' doesn't look like semver (expected X.Y.Z)"))
+            self.stdout.write(self.style.WARNING(f"   ⚠️  Version '{version}' doesn't look like semver"))
 
         self.stdout.write("   ✅ __meta__.py validation passed")
 
     def _validate_module_safety(self, target_path: Path, tech_name: str) -> None:
-        """Security check: module cannot write outside modules/ directory."""
         suspicious = ["../erp_nexus/", "../../erp_nexus/", "~erp_nexus"]
         for pattern in suspicious:
             if pattern in str(target_path):
@@ -234,6 +269,5 @@ class Command(BaseCommand):
         self.stdout.write("   ✅ Security checks passed")
 
     def _is_valid_version(self, version: str) -> bool:
-        """Basic semver-like check: X.Y or X.Y.Z."""
         import re
         return bool(re.match(r'^\d+\.\d+(\.\d+)?$', version))

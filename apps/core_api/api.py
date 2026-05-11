@@ -11,6 +11,7 @@ api = NinjaAPI(
     version="0.5.0",
     description="API REST para el ecosistema ERP Nexus",
     docs_url="/docs",
+    urls_namespace="api",
 )
 
 # ─── Health check (público) ─────────────────────────────────────────
