@@ -2,9 +2,19 @@
 Settings base — compartidas entre todos los entornos.
 """
 import os
+import sys
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+# ─── Añadir modules/core al path para importar el paquete 'core' ──────
+# modules/core contiene el paquete 'core' (con __init__.py y apps.py)
+CORE_PKG_DIR = BASE_DIR / "modules" / "core"
+if str(CORE_PKG_DIR) not in sys.path:
+    sys.path.insert(0, str(CORE_PKG_DIR))
+# También BASE_DIR para imports de 'apps.*'
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
 
 # ─── Seguridad ───────────────────────────────────────────────────────
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-secret-key-change-me")
@@ -42,9 +52,15 @@ INSTALLED_APPS = [
 ]
 
 # Módulos externos cargados dinámicamente
-try:
-    from erp_nexus.modules_enabled import MODULE_APPS
-except ImportError:
+# En entornos de pytest ignoramos MODULE_APPS para evitar colisiones
+# de etiquetas entre apps estáticas y dinámicas.
+IN_PYTEST = bool(os.environ.get('PYTEST_VERSION'))
+if not IN_PYTEST:
+    try:
+        from erp_nexus.modules_enabled import MODULE_APPS  # type: ignore
+    except ImportError:
+        MODULE_APPS = []
+else:
     MODULE_APPS = []
 
 for app in MODULE_APPS:

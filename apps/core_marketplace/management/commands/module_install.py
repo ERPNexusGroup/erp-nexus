@@ -2,6 +2,7 @@
 Management command: module_install
 
 Installs a module from the catalog with full validation and license checks.
+Supports automatic dependency resolution via --with-deps.
 """
 import hashlib
 import os
@@ -53,20 +54,24 @@ class Command(BaseCommand):
             action="store_true",
             help="Skip __meta__.py validation (dangerous)",
         )
+        parser.add_argument(
+            "--with-deps",
+            action="store_true",
+            help="Resolve and install required dependencies automatically",
+        )
+        parser.add_argument(
+            "--no-input",
+            action="store_true",
+            help="Non-interactive mode (no prompts)",
+        )
 
     def handle(self, *args, **options):
         tech_name = options["technical_name"]
-        tag = options.get("tag")
-        license_key = options.get("license_key")
-        force = options["force"]
-        keep_data = options["keep_data"]
-        skip_validation = options["skip_validation"]
+        with_deps = options.get("with_deps", False)
 
         self.stdout.write(f"📦 Installing module: {tech_name}")
 
-        # ═══════════════════════════════════════════════════════════════
-        # STEP 1 — Find in catalog
-        # ═══════════════════════════════════════════════════════════════
+        # Find target in catalog
         try:
             catalog_item = ModuleCatalogItem.objects.get(technical_name=tech_name, is_active=True)
         except ModuleCatalogItem.DoesNotExist:
@@ -75,23 +80,115 @@ class Command(BaseCommand):
         if not catalog_item.repo_url:
             raise CommandError(f"Module '{tech_name}' has no repo_url defined in catalog.")
 
-        # ═══════════════════════════════════════════════════════════════
-        # STEP 2 — Check if already installed
-        # ═══════════════════════════════════════════════════════════════
-        try:
-            enabled = EnabledModule.objects.get(technical_name=tech_name)
-            if not force:
-                raise CommandError(f"Module '{tech_name}' already installed. Use --force to reinstall.")
-            self.stdout.write(self.style.WARNING(f"   ⚠️  Module already installed — reinstalling (--force)"))
-        except EnabledModule.DoesNotExist:
-            enabled = None
+        # Handle dependency resolution
+        if with_deps:
+            from apps.core_marketplace.services import DependencyResolver
+            resolver = DependencyResolver()
+            plan = resolver.resolve_install_plan(tech_name, with_deps=True)
 
-        # ═══════════════════════════════════════════════════════════════
-        # STEP 3 — License validation (before network operations)
-        # ═══════════════════════════════════════════════════════════════
+            if plan.conflicts:
+                conflicts_str = "; ".join(f"{c.module_a} ⇄ {c.module_b}" for c in plan.conflicts)
+                raise CommandError(f"Cannot install due to conflicts: {conflicts_str}")
+
+            if plan.warnings:
+                for w in plan.warnings:
+                    self.stdout.write(self.style.WARNING(f"   ⚠️  {w}"))
+
+            # Install modules in resolved order
+            for item in plan.to_install:
+                # Determine if this item is the final target (gets the license key)
+                is_target = (item.technical_name == tech_name)
+                lic_key = options.get("license_key") if is_target else None
+
+                # Check existing installation
+                try:
+                    enabled = EnabledModule.objects.get(technical_name=item.technical_name)
+                    if not options["force"]:
+                        self.stdout.write(self.style.SUCCESS(f"   ✓ {item.technical_name} already installed (skipped)"))
+                        continue
+                    self.stdout.write(self.style.WARNING(f"   ⚠️  Reinstalling {item.technical_name} (--force)"))
+                except EnabledModule.DoesNotExist:
+                    enabled = None
+
+                self._install_module(item, options, lic_key, already_enabled=enabled)
+        else:
+            # Single module install (original flow)
+            try:
+                enabled = EnabledModule.objects.get(technical_name=tech_name)
+                if not options["force"]:
+                    raise CommandError(f"Module '{tech_name}' already installed. Use --force to reinstall.")
+                self.stdout.write(self.style.WARNING(f"   ⚠️  Module already installed — reinstalling (--force)"))
+            except EnabledModule.DoesNotExist:
+                enabled = None
+
+            self._install_module(catalog_item, options, options.get("license_key"), already_enabled=enabled)
+
+    # ──────────────────────────────────────────────────────────────────
+    # Core installation logic (used for target and dependencies)
+    # ──────────────────────────────────────────────────────────────────
+    def _install_module(
+        self,
+        catalog_item: ModuleCatalogItem,
+        options: dict,
+        license_key: str | None,
+        *,
+        already_enabled: EnabledModule | None = None,
+    ) -> None:
+        """
+        Perform the actual installation of a single module.
+
+        Args:
+            catalog_item: ModuleCatalogItem to install
+            options: parsed command options dict
+            license_key: optional license key for this module (None for deps)
+            already_enabled: EnabledModule instance if already installed (for force reinstall)
+        """
+        tech_name = catalog_item.technical_name
+        tag = options.get("tag")
+        force = options.get("force", False)
+        keep_data = options.get("keep_data", False)
+        skip_validation = options.get("skip_validation", False)
+
+        self.stdout.write(f"   🔧 Installing: {tech_name}")
+
+        # ── STEP 4 — Clone/update repo ────────────────────────────────
+        modules_dir = Path(settings.BASE_DIR) / "modules"
+        modules_dir.mkdir(parents=True, exist_ok=True)
+        target_path = modules_dir / tech_name
+
+        self._clone_or_update_repo(catalog_item.repo_url, target_path, tag)
+
+        # ── STEP 5 — Security & validation checks ─────────────────────
+        if not skip_validation:
+            self._validate_module_safety(target_path, tech_name)
+            self._validate_meta_file(target_path, tech_name)
+
+        # ── STEP 6 — Parse __meta__.py ───────────────────────────────
+        meta_path = target_path / "__meta__.py"
+        meta = self._parse_meta_file(meta_path)
+
+        if meta.get("technical_name") != tech_name:
+            raise CommandError(f"Technical name mismatch: {meta.get('technical_name')} != {tech_name}")
+
+        django_app = meta.get("django_app", tech_name)
+
+        # ── STEP 7 — Check Python dependencies ────────────────────────
+        python_deps = meta.get("python_dependencies", {})
+        if python_deps:
+            self.stdout.write(f"   📋 Python dependencies: {python_deps}")
+
+        # ── STEP 8 — Verify Django app structure exists ───────────────
+        app_dir = target_path / django_app
+        if not app_dir.exists():
+            app_dir = target_path / tech_name
+            if not app_dir.exists():
+                raise CommandError(
+                    f"Module structure invalid: neither '{django_app}' nor '{tech_name}' directory found"
+                )
+
+        # ── STEP 9 — License validation (before DB ops) ───────────────
         license_obj = None
         if catalog_item.license_required:
-            self.stdout.write(f"   🔐 Module requires a license key")
             if not license_key:
                 raise CommandError(
                     f"Module '{tech_name}' requires --license-key. "
@@ -103,7 +200,6 @@ class Command(BaseCommand):
             except ValueError as exc:
                 raise CommandError(f"License error: {exc}")
         elif catalog_item.is_licensed and license_key:
-            # Optional license provided even if not required
             try:
                 license_obj = validate_license_for_module(catalog_item, license_key)
                 self.stdout.write(self.style.SUCCESS(f"   ✅ License accepted (premium features)"))
@@ -111,76 +207,30 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING(f"   ⚠️  Invalid license key ignored: {exc}"))
                 license_obj = None
 
-        # ═══════════════════════════════════════════════════════════════
-        # STEP 4 — Clone/update repo
-        # ═══════════════════════════════════════════════════════════════
-        modules_dir = Path(settings.BASE_DIR) / "modules"
-        modules_dir.mkdir(parents=True, exist_ok=True)
-        target_path = modules_dir / tech_name
-
-        self._clone_or_update_repo(catalog_item.repo_url, target_path, tag)
-
-        # ═══════════════════════════════════════════════════════════════
-        # STEP 5 — Security & validation checks
-        # ═══════════════════════════════════════════════════════════════
-        if not skip_validation:
-            self._validate_module_safety(target_path, tech_name)
-            self._validate_meta_file(target_path, tech_name)
-
-        # ═══════════════════════════════════════════════════════════════
-        # STEP 6 — Parse __meta__.py
-        # ═══════════════════════════════════════════════════════════════
-        meta_path = target_path / "__meta__.py"
-        meta = self._parse_meta_file(meta_path)
-
-        if meta.get("technical_name") != tech_name:
-            raise CommandError(f"Technical name mismatch: {meta.get('technical_name')} != {tech_name}")
-
-        django_app = meta.get("django_app", tech_name)
-
-        # ═══════════════════════════════════════════════════════════════
-        # STEP 7 — Check Python dependencies
-        # ═══════════════════════════════════════════════════════════════
-        python_deps = meta.get("python_dependencies", {})
-        if python_deps:
-            self.stdout.write(f"   📋 Python dependencies: {python_deps}")
-
-        # ═══════════════════════════════════════════════════════════════
-        # STEP 8 — Verify Django app structure exists
-        # ═══════════════════════════════════════════════════════════════
-        app_dir = target_path / django_app
-        if not app_dir.exists():
-            app_dir = target_path / tech_name
-            if not app_dir.exists():
-                raise CommandError(f"Module structure invalid: neither '{django_app}' nor '{tech_name}' directory found")
-
-        # ═══════════════════════════════════════════════════════════════
-        # STEP 9 — Register and update modules_enabled.py
-        # ═══════════════════════════════════════════════════════════════
+        # ── STEP 10 — Register and update modules_enabled.py ──────────
         with transaction.atomic():
-            if enabled and not keep_data:
-                enabled.delete()
+            if already_enabled and not keep_data:
+                already_enabled.delete()
 
             EnabledModule.objects.create(
                 technical_name=tech_name,
                 django_app=django_app,
                 status="active",
+                installed_version=meta.get("version", "0.0.0"),
             )
 
             add_to_modules_enabled(django_app)
 
-            # Consume license seat AFTER successful DB prep
             if license_obj:
                 consume_license(license_obj)
                 self.stdout.write(f"   🎟️  License seat consumed ({license_obj.used_seats}/{license_obj.max_seats})")
 
             catalog_item.touch_installed()
             catalog_item.installed_path = str(target_path)
-            catalog_item.save(update_fields=["installed_path"])
+            catalog_item.installed_version = meta.get("version", catalog_item.version)
+            catalog_item.save(update_fields=["installed_path", "installed_version"])
 
-        # ═══════════════════════════════════════════════════════════════
-        # STEP 10 — Log installation
-        # ═══════════════════════════════════════════════════════════════
+        # ── STEP 11 — Log installation ────────────────────────────────
         ModuleDownload.objects.create(
             module_name=tech_name,
             version=tag or catalog_item.version,
@@ -192,7 +242,7 @@ class Command(BaseCommand):
         self.stdout.write(f"   📁 Path: {target_path}")
         self.stdout.write(f"   🔄 Restart Django to load module (modules_enabled updated)")
 
-        # Invalidate dashboard/sidebar cache so new module appears immediately
+        # Invalidate dashboard/sidebar cache
         from django.core.cache import cache
         cache.delete("admin_dashboard_metrics")
         cache.delete("jazzmin_side_menu_apps")

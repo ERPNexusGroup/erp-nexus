@@ -56,47 +56,36 @@
 Catalog, install/uninstall, API, Admin UI básico.
 
 #### Phase 1.2 — License Management + Jazzmin UI — ✅ DONE (2026-05-11)
-
-**Deliverables:**
-- [x] `ModuleLicense` model (seat tracking, expiry, types: free/trial/paid/perpetual)
-- [x] License validation in `module_install` (reject invalid/expired/over-seat)
-- [x] REST API (4 endpoints: POST create, GET list, GET validate, DELETE revoke)
-- [x] Public catalog page (`/marketplace/`) con filtros, badges, precios, botón staff
-- [x] Admin UI mejorado: seat usage bar, status badges, actions (generate key, revoke, install, uninstall)
-- [x] **Sidebar dinámico ERPNext-style**: sección "Marketplace — Aplicaciones" agrupada por `admin_menu_category`
-- [x] **Dashboard integrado**: tarjetas métricas (installed, licenses active/expiring/expired) + últimos 5 instalados
-- [x] **Cache invalidation automática**: `module_install`/`module_uninstall` eliminan cache → modules aparecen inmediatamente
-- [x] 17→19 E2E tests passing (catalog, install flow, license flow, public page, sidebar integration)
-- [x] Campo `admin_menu_category` en `ModuleCatalogItem` (default: 'Aplicaciones')
-- [x] Context processor `admin_metrics` con `jazzmin_apps` + `dashboard_cards` (cached 5/10 min)
+- [x] ModuleLicense model (seats, expiry, types)
+- [x] License validation en module_install
+- [x] REST API (4 endpoints)
+- [x] Public catalog page `/marketplace/`
+- [x] Admin UI mejorado (seat bar, badges, actions)
+- [x] Sidebar dinámico ERPNext-style
+- [x] Dashboard integrado con métricas
+- [x] Cache invalidation automática
+- [x] 17→19 E2E tests passing
 
 **Applied doc:** `.paul/phases/01-marketplace/01-02-MARKETPLACE-UI-LICENSE-APPLIED.md`
 
-**Tests:** 15 → 19 passing (+4)
-
 #### Phase 1.3 — GitHub auto-discovery + sync — ✅ DONE (2026-05-12)
+- [x] `refresh_catalog` command: escanea GitHub org, upsert catalog
+- [x] Admin: botón "Sync" por registry + acción Jazzmin
+- [x] Auto-creación de `ModuleRegistry` default ("GitHub Official")
+- [x] `parse_meta_file` utility (AST parser seguro)
+- [x] GITHUB_TOKEN + GITHUB_ORG settings
+- [x] Fix: timezone.now() en refresh
+- [x] 2 tests nuevos (default registry + dry-run)
+- [x] Mock mejorado: `refresh_catalog` ejecuta real sin recursion
 
-**Deliverables:**
-- [x] `refresh_catalog` command: escanea GitHub org (topic `erp-nexus-module` + `__meta__.py`), upsert catalog
-- [x] Admin: botón "Sync" por registry + acción Jazzmin "Sync selected"
-- [x] Auto-creación de `ModuleRegistry` default ("GitHub Official") si no existe:
-  - Señal `apps.py` `ready()` → crea al iniciar Django
-  - Lógica en `refresh_catalog` → crea en primer run si no hay registros activos
-- [x] `parse_meta_file` utility (AST parser seguro para `__meta__.py`)
-- [x] GITHUB_TOKEN + GITHUB_ORG settings (rate-limit awareness)
-- [x] Fix: `settings.timezone.now()` → `timezone.now()` en refresh
-- [x] 2 tests nuevos: default registry creation + dry-run behavior
-- [x] Mock `call_command` mejorado: `refresh_catalog` ejecuta real sin recursion
-
-**Files changed (7):** admin.py, apps.py, refresh_catalog.py, module_loader.py, conftest.py, test_marketplace_license.py, settings.py
-
+**Files changed:** admin.py, apps.py, refresh_catalog.py, module_loader.py, conftest.py, test_marketplace_license.py, settings.py
 **Tests:** +2 → **19 passing**
 
-#### Phase 1.4 — Version management + dependencies solver — 📋 PLAN
+#### Phase 1.4 — Version Management + Dependencies Solver — 🔄 IN PROGRESS (2026-05-12)
 
 **Objective:** Gestión robusta de versiones y resolución de dependencias entre módulos.
 
-**Tasks:**
+**Tasks (10):**
 1. `ModuleVersionConstraint` model — rangos de versiones compatibles (semver)
 2. `ModuleDependency` model — dependencias entre módulos (required, optional, conflict)
 3. Semver parser + compatibility checker
@@ -110,6 +99,7 @@ Catalog, install/uninstall, API, Admin UI básico.
 
 **Estimated:** ~20h
 **Commit branch:** `feat/marketplace/version-deps-solver`
+**Current task:** 1.4.1 — ModuleVersionConstraint model
 
 **Success:** Admin puede instalar módulos con dependencias resueltas automáticamente; conflictos detectados antes de install.
 
@@ -150,13 +140,11 @@ Catalog, install/uninstall, API, Admin UI básico.
 
 ## 📊 Current Sprint
 
-**Sprint:** M2 Phase 1.4 — Version Management + Dependencies Solver (PLAN)
+**Sprint:** M2 Phase 1.4 — Version Management + Dependencies Solver (IN PROGRESS — Task 1.4.1)
 
 **Last Sprint:** M2 Phase 1.3 — GitHub Auto-discovery + Sync — ✅ COMPLETADO (2026-05-12)
 
 **Phase 1.3 Deliverables:** 7 archivos modificados, GitHub auto-discovery funcional, `refresh_catalog` command, sync button admin, default registry auto-creation, 19 E2E tests passing.
-
-**Documentación:** `.architecture/` con 17+ archivos técnicos organizados; PAUL state actualizado; ROADMAP sincronizado.
 
 ---
 
@@ -170,5 +158,5 @@ Catalog, install/uninstall, API, Admin UI básico.
 ---
 
 **Last milestone completion:** M0, M1, M2-1.1, M2-1.2, M2-1.3 ✅
-**Current milestone:** M2 Phase 1.4 — PLAN
+**Current milestone:** M2 Phase 1.4 — APPLY IN PROGRESS (Task 1.4.1)
 **Estimated velocity:** 2-3 phases/semana

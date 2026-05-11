@@ -30,6 +30,7 @@ class ModuleCatalogItem(models.Model):
 
     installed_path = models.CharField(max_length=500, blank=True, null=True)
     installed_at = models.DateTimeField(blank=True, null=True)
+    installed_version = models.CharField(max_length=50, blank=True, null=True, help_text='Version last installed from catalog')
     status = models.CharField(max_length=20, default='active')
     is_active = models.BooleanField(default=True)
     django_app = models.CharField(max_length=200, blank=True, null=True)
@@ -62,6 +63,7 @@ class EnabledModule(models.Model):
     django_app = models.CharField(max_length=200)
     status = models.CharField(max_length=20, default='active')
     enabled_at = models.DateTimeField(auto_now_add=True)
+    installed_version = models.CharField(max_length=50, default='0.0.0', help_text='Version installed from catalog')
 
     def __str__(self) -> str:
         return f"{self.technical_name} ({self.status})"
@@ -232,3 +234,161 @@ class ModuleRegistry(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name} ({self.get_source_type_display()})"
+
+
+# ═══════════════════════════════════════════════════════════════
+# Version Management — ModuleVersionConstraint & ModuleDependency
+# ═══════════════════════════════════════════════════════════════
+class ModuleVersionConstraint(models.Model):
+    """Version constraint for a module dependency.
+
+    Supports semver-compatible constraint strings:
+    - '=' (exact version)
+    - '~' (approx equal, patch-level: ~1.2.3 = >=1.2.3 <1.3.0)
+    - '^' (caret, minor-level: ^1.2.3 = >=1.2.3 <2.0.0)
+    - '>', '>=', '<', '<=' (range comparisons)
+    """
+
+    OPERATOR_CHOICES = [
+        ('equal', '='),
+        ('approx_equal', '~'),
+        ('caret', '^'),
+        ('greater', '>'),
+        ('greater_equal', '>='),
+        ('less', '<'),
+        ('less_equal', '<='),
+    ]
+
+    module = models.ForeignKey(
+        ModuleCatalogItem,
+        on_delete=models.CASCADE,
+        related_name='version_constraints',
+        help_text='Module that declares this constraint',
+    )
+    constraint_type = models.CharField(
+        max_length=20,
+        choices=OPERATOR_CHOICES,
+        default='equal',
+        help_text='Type of version constraint',
+    )
+    version = models.CharField(
+        max_length=50,
+        help_text='Version string (e.g. "1.2.3", ">=1.0.0", "^2.0.0")',
+    )
+    description = models.TextField(
+        blank=True,
+        default='',
+        help_text='Human-readable description of this constraint',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Module Version Constraint'
+        verbose_name_plural = 'Module Version Constraints'
+        indexes = [
+            models.Index(fields=['module', 'constraint_type']),
+        ]
+
+    def __str__(self) -> str:
+        op = dict(self.OPERATOR_CHOICES).get(self.constraint_type, self.constraint_type)
+        return f"{self.module.technical_name} {op} {self.version}"
+
+    def is_satisfied_by(self, candidate_version: str) -> bool:
+        """Check if candidate_version satisfies this constraint.
+
+        Args:
+            candidate_version: Version string to check (e.g. "1.2.3")
+
+        Returns:
+            True if constraint satisfied, False otherwise
+        """
+        from .utils.semver import satisfies_constraint
+        return satisfies_constraint(candidate_version, self.constraint_type, self.version)
+
+
+class ModuleDependency(models.Model):
+    """Dependency relationship between two modules.
+
+    A module can:
+    - depend on another module (dependency = required/optional)
+    - conflict with another module (cannot coexist)
+    """
+
+    module = models.ForeignKey(
+        ModuleCatalogItem,
+        on_delete=models.CASCADE,
+        related_name='dependencies',
+        help_text='Module that declares the dependency',
+    )
+    depends_on = models.ForeignKey(
+        ModuleCatalogItem,
+        on_delete=models.CASCADE,
+        related_name='dependents',
+        help_text='Module that is required/optional/conflicted',
+    )
+    version_constraint = models.ForeignKey(
+        ModuleVersionConstraint,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text='Optional version constraint for this dependency',
+    )
+    required = models.BooleanField(
+        default=True,
+        help_text='If True, this dependency is mandatory (hard requirement)',
+    )
+    conflict = models.BooleanField(
+        default=False,
+        help_text='If True, this module cannot coexist with depends_on',
+    )
+    description = models.TextField(
+        blank=True,
+        default='',
+        help_text='Why this dependency exists or conflict reason',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Module Dependency'
+        verbose_name_plural = 'Module Dependencies'
+        unique_together = [('module', 'depends_on')]
+        indexes = [
+            models.Index(fields=['module', 'required']),
+            models.Index(fields=['depends_on']),
+        ]
+
+    def __str__(self) -> str:
+        rel = ">" if self.required else "~"
+        if self.conflict:
+            rel = "X"
+        return f"{self.module.technical_name} {rel} {self.depends_on.technical_name}"
+
+    def clean(self) -> None:
+        """Validate that dependency and conflict are mutually exclusive."""
+        from django.core.exceptions import ValidationError
+        if self.required and self.conflict:
+            raise ValidationError('A dependency cannot be both required and conflict.')
+
+    def save(self, *args, **kwargs):
+        # Ensure full_clean runs on every save to enforce model validation
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def is_satisfied_by(self, installed_modules: set) -> bool:
+        """Check if this dependency is satisfied by currently installed modules.
+
+        Args:
+            installed_modules: Set of technical_names of installed modules
+
+        Returns:
+            True if satisfied (dependency present or optional), False if required missing
+        """
+        if self.conflict:
+            # Conflict is satisfied if the conflicting module is NOT installed
+            return self.depends_on.technical_name not in installed_modules
+        if self.required:
+            return self.depends_on.technical_name in installed_modules
+        # Optional dependency — always satisfied (doesn't block install)
+        return True
