@@ -18,13 +18,13 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 - Marketplace Module Installation Flow ([ADR-004](./ADR/004-marketplace.md))
 - Django Ninja API framework ([ADR-005](./ADR/005-api-framework.md))
 - Plantilla de módulo `_template_module/` para desarrollo rápido
-- Codificación de reglas en `CODING_STANDARDS.md`
-- Plan de trabajo detallado en `WORK_PLAN.md`
-- Guía de desarrollo `DEVELOPMENT.md`
-- Guía de instalación `INSTALL.md`
-- API Reference completa `API_REFERENCE.md`
+- Codificación de reglas en [`.architecture/CODING_STANDARDS.md`](.architecture/CODING_STANDARDS.md)
+- Plan de trabajo detallado en [`.architecture/WORK_PLAN.md`](.architecture/WORK_PLAN.md)
+- Guía de desarrollo [`.architecture/DEVELOPMENT.md`](.architecture/DEVELOPMENT.md)
+- Guía de instalación [`.architecture/INSTALL.md`](.architecture/INSTALL.md)
+- API Reference completa [`.architecture/API_REFERENCE.md`](.architecture/API_REFERENCE.md)
 - ADRs (Architecture Decision Records) en `ADR/`
-- Contributing guide `CONTRIBUTING.md`
+- Contributing guide [`.architecture/CONTRIBUTING.md`](.architecture/CONTRIBUTING.md)
 
 #### **Fixed**
 - Secuencial de facturas duplicado (todos tenían mismo número)

@@ -46,9 +46,9 @@ Esta guía explica el workflow, estándares y proceso de revisión de PRs.
    git pull origin dev
    git checkout -b feat/mi-feature
    ```
-3. **Desarrollar** siguiendo CODING_STANDARDS.md
+3. **Desarrollar** siguiendo [`.architecture/CODING_STANDARDS.md`](.architecture/CODING_STANDARDS.md)
 4. **Tests** — Añadir/actualizar tests
-5. **Docs** — Actualizar README si es público
+5. **Docs** — Actualizar [`README.md`](../README.md) si es público
 6. **Commit** — Seguir Conventional Commits
 7. **Push** y abrir PR a `dev`
 
@@ -85,7 +85,7 @@ Esta guía explica el workflow, estándares y proceso de revisión de PRs.
 
 ## 📝 Estándares de Código
 
-**Todo el código debe seguir:** `CODING_STANDARDS.md`
+**Todo el código debe seguir:** [`.architecture/CODING_STANDARDS.md`](.architecture/CODING_STANDARDS.md)
 
 Resumen rápido:
 
@@ -271,7 +271,7 @@ git push -u origin feat/facturacion-email
 3. **Performance:** ¿N+1 queries? ¿Índices necesarios?
 4. **Tests:** ¿Hay tests? ¿Cubren edge cases?
 5. **Docs:** ¿Docstrings? ¿README actualizado?
-6. **Estilo:** ¿Sigue CODING_STANDARDS?
+6. **Estilo:** ¿Sigue [`.architecture/CODING_STANDARDS.md`](.architecture/CODING_STANDARDS.md)?
 
 ### **Para autores:**
 - Responder comentarios constructivamente

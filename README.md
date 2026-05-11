@@ -115,14 +115,14 @@ open http://localhost:8000/admin
 | Documento | Descripción |
 |-----------|-------------|
 | [`README.md`](README.md) | Este archivo — introducción |
-| [`INSTALL.md`](INSTALL.md) | Guía de instalación paso a paso |
-| [`DEVELOPMENT.md`](DEVELOPMENT.md) | Cómo desarrollar módulos |
-| [`CODING_STANDARDS.md`](CODING_STANDARDS.md) | Reglas de codificación |
-| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Cómo contribuir |
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Diseño técnico profundo |
-| [`MODULE_SPEC.md`](MODULE_SPEC.md) | Cómo construir módulos |
-| [`WORK_PLAN.md`](WORK_PLAN.md) | Roadmap y hitos |
-| [`API_REFERENCE.md`](API_REFERENCE.md) | API REST completa |
+| [`INSTALL.md`](.architecture/INSTALL.md) | Guía de instalación paso a paso |
+| [`DEVELOPMENT.md`](.architecture/DEVELOPMENT.md) | Cómo desarrollar módulos |
+| [`CODING_STANDARDS.md`](.architecture/CODING_STANDARDS.md) | Reglas de codificación |
+| [`CONTRIBUTING.md`](.architecture/CONTRIBUTING.md) | Cómo contribuir |
+| [`ARCHITECTURE.md`](.architecture/ARCHITECTURE.md) | Diseño técnico profundo |
+| [`MODULE_SPEC.md`](.architecture/MODULE_SPEC.md) | Cómo construir módulos |
+| [`WORK_PLAN.md`](.architecture/WORK_PLAN.md) | Roadmap y hitos |
+| [`API_REFERENCE.md`](.architecture/API_REFERENCE.md) | API REST completa |
 | [`CHANGELOG.md`](CHANGELOG.md) | Historial de releases |
 
 ### **Decisiones Arquitectónicas (ADRs)**
@@ -174,7 +174,7 @@ uv run python manage.py loaddata fixtures.json         # Cargar datos
 - `GET /api/v1/facturacion_ec/customers/`
 - `POST /api/v1/facturacion_ec/customers/`
 
-Ver [`API_REFERENCE.md`](API_REFERENCE.md) para detalles.
+Ver [`.architecture/API_REFERENCE.md`](.architecture/API_REFERENCE.md) para detalles.
 
 ---
 
@@ -260,7 +260,7 @@ mypy .
 
 ## 🤝 Contribuir
 
-¡Contribuciones bienvenidas! Por favor lee [`CONTRIBUTING.md`](CONTRIBUTING.md) antes de enviar PR.
+¡Contribuciones bienvenidas! Por favor lee [`.architecture/CONTRIBUTING.md`](.architecture/CONTRIBUTING.md) antes de enviar PR.
 
 1. Fork el repo
 2. Crear branch: `git checkout -b feat/mi-feature`
