@@ -34,6 +34,12 @@ class ModuleCatalogItem(models.Model):
     is_active = models.BooleanField(default=True)
     django_app = models.CharField(max_length=200, blank=True, null=True)
     admin_menu = models.JSONField(blank=True, null=True)
+    admin_menu_category = models.CharField(
+        max_length=100,
+        blank=True,
+        default='Aplicaciones',
+        help_text='Categoria en el menu lateral (ej: Ventas, Inventario, Contabilidad)',
+    )
 
     def __str__(self) -> str:
         name = self.display_name or self.technical_name

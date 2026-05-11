@@ -1,7 +1,7 @@
 # ERP Nexus — Roadmap (PAUL)
 
 **Version:** 1.0.0-alpha
-**Last Updated:** 2026-05-10
+**Last Updated:** 2026-05-11
 
 ---
 
@@ -48,17 +48,53 @@
 
 ### **M2 — Marketplace & Plugin System** ✅ COMPLETED
 **Target:** Semana 4-5
-**Status:** ✅ Done (2026-05-10)
+**Status:** ✅ Done (2026-05-11)
 
 **Objective:** Sistema de marketplace funcional para instalar módulos.
 
-**Phases:**
-- **Phase 1.1** — Marketplace Foundation (catalog, install/uninstall, API, Admin UI) — ✅ DONE
-- **Phase 1.2** — Marketplace UI + License management — ⬜ PLAN
-- **Phase 1.3** — GitHub auto-discovery + sync — ⬜ PLAN
-- **Phase 1.4** — Version management + dependencies solver — ⬜ PLAN
+#### Phase 1.1 — Marketplace Foundation — ✅ DONE
+Catalog, install/uninstall, API, Admin UI básico.
 
-**Success:** Admin puede instalar `hr`, `crm`, `project_mgmt` desde GitHub con un click.
+#### Phase 1.2 — License Management + Jazzmin UI — ✅ DONE (2026-05-11)
+
+**Deliverables:**
+- [x] `ModuleLicense` model (seat tracking, expiry, types: free/trial/paid/perpetual)
+- [x] License validation in `module_install` (reject invalid/expired/over-seat)
+- [x] REST API (4 endpoints: POST create, GET list, GET validate, DELETE revoke)
+- [x] Public catalog page (`/marketplace/`) con filtros, badges, precios, botón staff
+- [x] Admin UI mejorado: seat usage bar, status badges, actions (generate key, revoke, install, uninstall)
+- [x] **Sidebar dinámico ERPNext-style**: sección "Marketplace — Aplicaciones" agrupada por `admin_menu_category`
+- [x] **Dashboard integrado**: tarjetas métricas (installed, licenses active/expiring/expired) + últimos 5 instalados
+- [x] **Cache invalidation automática**: `module_install`/`module_uninstall` eliminan cache → modules aparecen inmediatamente
+- [x] Management command `refresh_catalog` (GitHub org scan + upsert catalog + botón admin Sync)
+- [x] 15 E2E tests passing (catalog, install flow, license flow, public page)
+- [x] Campo `admin_menu_category` en `ModuleCatalogItem` (default: 'Aplicaciones')
+- [x] Context processor `admin_metrics` con `jazzmin_apps` + `dashboard_cards` (cached 5/10 min)
+
+**Applied doc:** `.paul/phases/01-marketplace/01-02-MARKETPLACE-UI-LICENSE-APPLIED.md`
+
+**Files changed (18+):**
+- `apps/core_marketplace/models.py` (+ ModuleLicense, +admin_menu_category)
+- `apps/core_marketplace/admin.py` (Jazzmin enhancements, actions, sync button)
+- `apps/core_marketplace/views.py` + `templates/core_marketplace/catalog_public.html`
+- `apps/core_marketplace/management/commands/refresh_catalog.py` (nuevo)
+- `apps/core_marketplace/management/commands/module_install.py` (+ cache invalidation)
+- `apps/core_marketplace/management/commands/module_uninstall.py` (+ cache invalidation)
+- `apps/core_marketplace/migrations/0002_add_description_field.py`, `0003_add_admin_menu_category.py`
+- `apps/core_dashboard/context_processors.py` (jazzmin_apps + dashboard_cards + cache helpers)
+- `apps/core_dashboard/templates/admin/base.html` (sidebar override completo)
+- `apps/core_dashboard/templates/admin/base_site.html` (site base)
+- `apps/core_dashboard/templates/admin/index.html` (dashboard sections)
+- `apps/core_dashboard/static/core_dashboard/dashboard.css` (metric card styles)
+- `apps/core_api/v1/marketplace.py` (4 API endpoints)
+- `erp_nexus/settings.py` (JAZZMIN_SETTINGS side_menu updates)
+- `apps/core_marketplace/tests/conftest.py` (mock + cache invalidation)
+- `apps/core_marketplace/tests/test_marketplace_license.py` (+3 public tests → total 15)
+
+#### Phase 1.3 — GitHub auto-discovery + sync — 📋 PLAN
+#### Phase 1.4 — Version management + dependencies solver — 📋 PLAN
+
+**Success:** Admin puede instalar módulos desde GitHub con un click; aparecen inmediatamente en dashboard y menú.
 
 ---
 
@@ -97,9 +133,11 @@
 
 ## 📊 Current Sprint
 
-**Sprint:** M2 (Marketplace Foundation 1.1) — ✅ COMPLETADO
+**Sprint:** M2 (Marketplace License Management 1.2) — ✅ COMPLETADO (2026-05-11)
 
-**Upcoming Sprint:** M2 Phase 1.2 — Marketplace UI + License Management
+**Next Sprint:** M2 Phase 1.3 — GitHub Auto-discovery + Sync
+
+**Phase 1.2 Deliverables:** 18+ archivos modificados, 15 tests passing, sidebar + dashboard integrados con cache invalidation instantánea.
 
 ---
 
@@ -112,6 +150,6 @@
 
 ---
 
-**Last milestone completion:** M0, M1, M2-1.1 ✅
-**Current milestone:** M2 Phase 1.2 — NEXT
+**Last milestone completion:** M0, M1, M2-1.1, M2-1.2 ✅
+**Current milestone:** M2 Phase 1.3 — IN PROGRESS
 **Estimated velocity:** 2-3 phases/semana

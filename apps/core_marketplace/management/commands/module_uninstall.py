@@ -106,5 +106,10 @@ class Command(BaseCommand):
                 status="failed",  # repurposed to track uninstalls
             )
 
+        # Invalidate dashboard/sidebar cache so module disappears immediately
+        from django.core.cache import cache
+        cache.delete("admin_dashboard_metrics")
+        cache.delete("jazzmin_side_menu_apps")
+
         self.stdout.write(self.style.SUCCESS(f"\n✅ Module '{tech_name}' uninstalled successfully!"))
         self.stdout.write(f"   🔄 Restart Django to unload module")

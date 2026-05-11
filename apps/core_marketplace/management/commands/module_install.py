@@ -192,6 +192,11 @@ class Command(BaseCommand):
         self.stdout.write(f"   📁 Path: {target_path}")
         self.stdout.write(f"   🔄 Restart Django to load module (modules_enabled updated)")
 
+        # Invalidate dashboard/sidebar cache so new module appears immediately
+        from django.core.cache import cache
+        cache.delete("admin_dashboard_metrics")
+        cache.delete("jazzmin_side_menu_apps")
+
     # ──────────────────────────────────────────────────────────────────
     # Helper methods
     # ──────────────────────────────────────────────────────────────────

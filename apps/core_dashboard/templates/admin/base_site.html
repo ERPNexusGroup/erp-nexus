@@ -1,0 +1,12 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {{ jazzmin_settings.site_title }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+  <a href="{% url 'admin:index' %}">{{ jazzmin_settings.site_header }}</a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

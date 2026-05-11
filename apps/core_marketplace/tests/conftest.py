@@ -168,6 +168,11 @@ def mock_call_command(monkeypatch):
             catalog_item.touch_installed()
             catalog_item.installed_path = f"/mock/path/{technical_name}"
             catalog_item.save(update_fields=["installed_path"])
+
+            # Invalidate dashboard cache for tests
+            from django.core.cache import cache
+            cache.delete("admin_dashboard_metrics")
+            cache.delete("jazzmin_side_menu_apps")
             return None
 
         elif command_name == "module_uninstall":
@@ -176,6 +181,10 @@ def mock_call_command(monkeypatch):
                 EnabledModule.objects.get(technical_name=technical_name).delete()
             except EnabledModule.DoesNotExist:
                 pass
+            # Invalidate cache
+            from django.core.cache import cache
+            cache.delete("admin_dashboard_metrics")
+            cache.delete("jazzmin_side_menu_apps")
             return None
 
         else:

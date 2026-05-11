@@ -97,6 +97,51 @@ JAZZMIN_SETTINGS = {
     "topmenu_links": [
         {"name": "Dashboard", "url": "admin:index", "permissions": ["auth.view_user"]},
     ],
+    # Menú lateral agrupado por funcionalidad (estilo ERPNext)
+    "side_menu": [
+        {
+            "label": "Dashboard",
+            "icon": "fas fa-tachometer-alt",
+            "url": "admin:index",
+            "permissions": ["auth.view_user"],
+        },
+        {
+            "label": " Empresa",
+            "icon": "fas fa-building",
+            "models": [
+                "core_companies.company",
+                "core_companies.membership",
+            ],
+        },
+        {
+            "label": " Usuarios",
+            "icon": "fas fa-users",
+            "models": [
+                "auth.user",
+                "core_users.userprofile",
+            ],
+        },
+        {
+            "label": " Marketplace",
+            "icon": "fas fa-puzzle-piece",
+            "models": [
+                "core_marketplace.modulecatalogitem",
+                "core_marketplace.enabledmodule",
+                "core_marketplace.modulelicense",
+                "core_marketplace.moduleregistry",
+            ],
+        },
+        {
+            "label": " Configuración",
+            "icon": "fas fa-cog",
+            "models": [
+                "core_config.configkey",
+                "core_config.systemconfig",
+                "core_currency.currency",
+                "core_currency.exchangerate",
+            ],
+        },
+    ],
     "icons": {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
@@ -104,6 +149,9 @@ JAZZMIN_SETTINGS = {
         "core_companies.company": "fas fa-building",
         "core_companies.membership": "fas fa-user-tag",
         "core_marketplace.modulecatalogitem": "fas fa-puzzle-piece",
+        "core_marketplace.enabledmodule": "fas fa-box-open",
+        "core_marketplace.modulelicense": "fas fa-key",
+        "core_marketplace.moduleregistry": "fas fa-database",
         "core_currency.currency": "fas fa-money-bill-dollar",
         "core_currency.exchangerate": "fas fa-calculator",
         "core_chart_of_accounts.account": "fas fa-chart-pie",
