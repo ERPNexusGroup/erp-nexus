@@ -67,7 +67,7 @@ Catalog, install/uninstall, API, Admin UI básico.
 - [x] **Dashboard integrado**: tarjetas métricas (installed, licenses active/expiring/expired) + últimos 5 instalados
 - [x] **Cache invalidation automática**: `module_install`/`module_uninstall` eliminan cache → modules aparecen inmediatamente
 - [x] Management command `refresh_catalog` (GitHub org scan + upsert catalog + botón admin Sync)
-- [x] 15 E2E tests passing (catalog, install flow, license flow, public page)
+- [x] 17 E2E tests passing (catalog, install flow, license flow, public page)
 - [x] Campo `admin_menu_category` en `ModuleCatalogItem` (default: 'Aplicaciones')
 - [x] Context processor `admin_metrics` con `jazzmin_apps` + `dashboard_cards` (cached 5/10 min)
 
