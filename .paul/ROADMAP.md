@@ -106,9 +106,19 @@ Catalog, install/uninstall, API, Admin UI básico.
 
 ---
 
-### **M3 — Production Ready** 📋 PLANNED
+### **M3 — Production Ready** 🔄 IN PROGRESS
 **Target:** Semana 6-7
 **Status:** ⬜ Planned
+
+#### Phase 2.1 — Docker Production Image — ✅ DONE (2026-05-11)
+- [x] `Dockerfile.prod` multi-stage (builder + runtime)
+- [x] `docker-compose.prod.yml` (postgres + redis + web)
+- [x] `entrypoint.sh` (migrate + collectstatic + gunicorn)
+- [x] `/health/` endpoint (DB health check)
+- [x] `.dockerignore`, `.env.prod.example`
+- [x] `docs/DEPLOYMENT.md` deployment guide
+- [x] 21 Docker integration tests passing
+- [x] `pyproject.toml` `[project]` + gunicorn dependency
 
 **Objective:** Despliegue en producción.
 

@@ -96,6 +96,29 @@
 
 ---
 
+
+## ✅ Phase 2.1 — Docker Production Image (APPLIED — COMPLETE)
+
+**Fecha:** 2026-05-11
+**Estado:** ✅ APPLIED + UNIFY COMPLETE
+**Commit:** `feat(m3): Docker production image — Phase 2.1 COMPLETE` (cdf6d36)
+
+**Objetivo:** Imagen Docker multi-stage optimizada para producción.
+
+**Entregables:**
+- [x] `Dockerfile.prod` — builder (uv + collectstatic) + runtime (python:3.13-slim)
+- [x] `docker-compose.prod.yml` — stack: postgres + redis + gunicorn
+- [x] `entrypoint.sh` — migrate, collectstatic, gunicorn arranque
+- [x] Endpoint `/health/` (health_check view en erp_nexus/urls.py)
+- [x] `.dockerignore` — excluye tests, docs, .git, .venv, .paul
+- [x] `docs/DEPLOYMENT.md` — guía completa de despliegue
+- [x] `.env.prod.example` — plantilla variables de entorno
+- [x] `pyproject.toml` — `[project]` section + `gunicorn` dependency
+- [x] Tests de integración Docker (21 tests pasan)
+
+**Tests:** 21 infrastructure tests passing (test_docker_integration.py)
+**Referencia:** `.paul/phases/03-production/02-01-DOCKER-PRODUCTION.md`
+
 ## ✅ Phase 1.4 — Version Management + Dependencies Solver (APPLIED — COMPLETE)
 
 **Fecha:** 2026-05-11
