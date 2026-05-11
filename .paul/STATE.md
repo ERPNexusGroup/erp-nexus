@@ -2,11 +2,13 @@
 
 **Project:** ERP Nexus Core (Framework + Essential Modules)
 **Architecture:** Hybrid — Essential modules in core, Optional modules as plugins
-**Current Phase:** 1.1 — Marketplace Foundation (APPLIED — UNIFY COMPLETE)
-**Loop Position:** UNIFY COMPLETE → READY FOR NEXT PHASE
+**Current Phase:** 1.4 — Version Management + Dependencies Solver (PLAN)
+**Loop Position:** PLAN → READY FOR APPLY
 **Last Completed:** Phase 0.6 — Hybrid Restructure (2026-05-10) ✅
 **Last Completed:** Phase 1.1 — Marketplace Foundation (2026-05-10) ✅
-**Next Milestone:** M2 Phase 1.2 — Marketplace UI Polish + License Management
+**Last Completed:** Phase 1.2 — Marketplace UI Polish + License Management (2026-05-11) ✅
+**Last Completed:** Phase 1.3 — GitHub Auto-discovery + Sync (2026-05-12) ✅
+**Next Milestone:** M2 Phase 1.4 — Version Management + Dependencies Solver
 
 ---
 
@@ -47,64 +49,96 @@
 | 1.1.7 | Validation & Security | ✅ |
 
 **Total:** ~9h — COMPLETADO
+**Commit:** `feat(1.1): marketplace foundation — phase complete` (1229197)
 
 ---
 
-## 🔄 Phase 1.1 — Summary Completed
+## 🔹 Phase 1.2 — Marketplace UI Polish + License Management (APPLIED — COMPLETE)
 
-### Deliverables
+**Fecha:** 2026-05-11
+**Estado:** ✅ APPLIED + UNIFY COMPLETE
+**Commit:** `feat(marketplace): Phase 1.2 — License Management + Jazzmin UI Integration` (cbbc240)
 
-**Models** (`apps/core_marketplace/models.py`):
-- `ModuleCatalogItem` — extended: module_type, repo_url, dependencies, versions
-- `EnabledModule` — tracks installed modules
-- `ModuleDownload` — audit log
-- `ModuleRegistry` — GitHub org registries
+**Objetivo:** Interfaz de catálogo rica + gestión de licencias.
 
-**Management Commands**:
-- `scan_github_org <org>` — automáticamente descubre módulos de GitHub
-- `module_install <name> [--tag VERSION]` — instala módulo desde catálogo
-- `module_uninstall <name>` — desinstala módulo
-- Utilería: `module_loader.py` (read/write MODULE_APPS)
+**Entregables (9 tasks):**
+- [x] `ModuleLicense` model (seats, expiry, types: free/trial/paid/perpetual)
+- [x] License validation en `module_install` (consume/release en transacción)
+- [x] REST API licencias (4 endpoints: POST create, GET list, GET validate, DELETE revoke)
+- [x] Public catalog page `/marketplace/` con filtros, badges, precios, botón staff
+- [x] Admin UI mejorado: seat usage bar, status badges, actions (generate key, revoke, install, uninstall)
+- [x] Sidebar dinámico ERPNext-style agrupado por `admin_menu_category`
+- [x] Dashboard integrado: tarjetas métricas + últimos 5 instalados
+- [x] Cache invalidation automática post install/uninstall
+- [x] 17 E2E tests passing
 
-**Admin UI** (`apps/core_marketplace/admin.py`):
-- Botones Install/Uninstall directos en ModuleCatalogItemAdmin
-- Custom views: `install_view`, `uninstall_view`
-- EnabledModuleAdmin, ModuleDownloadAdmin, ModuleRegistryAdmin
-
-**API** (`apps/core_api/v1/marketplace.py`):
-- `GET /api/v1/marketplace/catalog` — lista catálogo (filters: module_type, installed)
-- `POST /api/v1/marketplace/{name}/install` — instala módulo
-- `POST /api/v1/marketplace/{name}/uninstall` — desinstala módulo
-- `GET /api/v1/marketplace/installed` — lista módulos instalados
-- `GET /api/v1/marketplace/status` — estado del marketplace
-- Protegido por JWTAuth
-
-**Dynamic Loading**:
-- `modules_enabled.py` cargado dinámicamente en `erp_nexus/settings/base.py`
-- Watcher en `CoreMarketplaceConfig.ready()` — detecta cambios en archivo
-- `add_to_modules_enabled()` / `remove_from_modules_enabled()` API
-
-**Validation**:
-- AST-safe parsing de `__meta__.py`
-- Required fields: `technical_name`, `version`
-- Semver format check
-- Security: path checks, no core overwrite
-
-**Migrations**:
-- `0001_initial` (recreated) — 4 models
-- `0002_extend_catalog` — ModuleCatalogItem fields extension
-- Aplicadas cleanly — `makemigrations --check`: no pending
-
-**Quality Checks**:
-- ✅ `manage.py check` — no issues
-- ✅ `manage.py migrate` — all applied
-- ✅ `manage.py runserver` — arranca sin errores
-- ✅ All 17 core apps + core_marketplace load correctly
+**Tests:** 15 → 17 passing (+2)
+**Referencia:** `.paul/phases/01-marketplace/01-02-MARKETPLACE-UI-LICENSE-APPLIED.md`
 
 ---
 
-## 🎯 Acceptance Criteria Phase 1.1
+## ✅ Phase 1.3 — GitHub Auto-discovery + Sync (APPLIED — COMPLETE)
 
+**Fecha:** 2026-05-12
+**Estado:** ✅ APPLIED + UNIFY COMPLETE
+**Commit:** `feat(marketplace): GitHub auto-discovery + admin UI polish + default registry` (2f5977d)
+
+**Objetivo:** Detección automática de módulos desde GitHub + sincronización de catálogo.
+
+**Entregables:**
+- [x] `refresh_catalog` command — escanea GitHub org (topic `erp-nexus-module` + `__meta__.py`), upsert catalog
+- [x] Admin: botón "Sync" por registry + acción Jazzmin "Sync selected"
+- [x] Auto-creación de `ModuleRegistry` default ("GitHub Official") — señal `apps.py` `ready()` + lógica en `refresh_catalog`
+- [x] `parse_meta_file` utility (AST parser seguro para `__meta__.py`)
+- [x] Settings: `GITHUB_TOKEN` + `GITHUB_ORG` (rate-limit awareness)
+- [x] Fix: `settings.timezone.now()` → `timezone.now()` en refresh
+- [x] 2 tests nuevos: default registry creation + dry-run behavior
+- [x] Mock `call_command` mejorado: `refresh_catalog` ejecuta real sin recursion
+
+**Tests:** +2 → **19 passing** (total marketplace suite)
+**Referencia:** `.paul/phases/01-marketplace/01-03-GITHUB-DISCOVERY.md`
+
+---
+
+## 📊 Code Stats Cumulative (Phases 0.6 + 1.1 + 1.2 + 1.3)
+
+**New files cumulative:** ~28
+- 4 management commands (scan_github_org, module_install, module_uninstall, refresh_catalog)
+- 4 utils (module_loader.py, github.py, license.py, parse helpers)
+- 6+ migrations (core_marketplace, core_dashboard)
+- Admin/API/views/templates/static extensions
+- Context processors + cache helpers
+
+**Updated files:** ~25
+- `apps/core_marketplace/`: models, admin, apps, views, urls, tests
+- `apps/core_dashboard/`: context_processors.py, templates/*, static/*
+- `apps/core_api/v1/marketplace.py` — license endpoints
+- `erp_nexus/`: settings.py, urls.py, modules_enabled.py
+- Documentation reorganization (`.architecture/`, `docs/`)
+
+**Total code churn:** ~35k lines added/modified across all completed phases
+
+**Quality Metrics:**
+- ✅ `manage.py check` — 0 issues
+- ✅ `makemigrations --check` — no pending migrations
+- ✅ `manage.py migrate` — all applied cleanly
+- ✅ Django server starts without errors
+- ✅ **19 E2E tests passing** (marketplace catalog, install/uninstall, license flow, public page, GitHub sync, sidebar integration)
+
+---
+
+## 🔗 Dependencies Resolved
+
+✅ Phase 0.6 — Baseline hybrid architecture (17 Django apps)
+✅ Phase 1.1 — Marketplace foundation (catalog, install/uninstall, dynamic loading)
+✅ Phase 1.2 — License management + Jazzmin UI polish (dashboard, sidebar, cache invalidation)
+✅ Phase 1.3 — GitHub auto-discovery + registry sync
+
+---
+
+## 🎯 Acceptance Criteria — All Phases Verified
+
+### Phase 1.1 ✅
 - [x] ModuleCatalogItem extendido con metadata completa
 - [x] scan_github_org command implementado
 - [x] module_install / module_uninstall commands funcionan
@@ -115,51 +149,96 @@
 - [x] All migrations applied, no pending changes
 - [x] Django check passes, server starts cleanly
 
----
+### Phase 1.2 ✅
+- [x] `ModuleLicense` model con seat tracking, expiry, types
+- [x] License validation en `module_install`
+- [x] REST API 4 endpoints licencias
+- [x] Public catalog page `/marketplace/`
+- [x] Admin UI mejorado: seat bar, badges, actions
+- [x] Sidebar dinámico ERPNext-style
+- [x] Dashboard integrado con métricas
+- [x] Cache invalidation automática
+- [x] 17 E2E tests passing
 
-## 📊 Code Stats Phase 1.1
-
-**New files:** 9
-- 3 management commands (scan_github_org, module_install, module_uninstall)
-- 2 utils (module_loader.py, __init__.py)
-- 1 migration (0002_extend_catalog)
-- Extensions (admin.py, apps.py, models.py)
-
-**Updated files:** 5
-- `apps/core_api/v1/marketplace.py` — new REST endpoints
-- `apps/core_marketplace/models.py` — 4 models
-- `apps/core_marketplace/admin.py` — custom actions
-- `apps/core_marketplace/apps.py` — watcher
-- Migrations restructured (consolidated 0002, 0003, 0004 → 0002)
-
-**Total changes:** ~14k lines added/modified
-
----
-
-## 🔗 Dependencies Resolved
-
-✅ Phase 0.6 (Hybrid Restructure) — baseline
-✅ Core marketplace app existed (Phase M0)
-✅ Requests library installed
-✅ All 17 core apps validated
-✅ DB migrations clean (no conflicts)
+### Phase 1.3 ✅
+- [x] `ModuleRegistry` funciona con `source_type='github'`
+- [x] Command `refresh_catalog` escanea org y upsert catalog
+- [x] Filtrado por `__meta__.py` y topic `erp-nexus-module`
+- [x] Repos sin metadata se omiten (log warning)
+- [x] Auto-creación de registry default
+- [x] Admin: botón "Sync Now" en `ModuleRegistryAdmin`
+- [x] Tests: 2 E2E con mocks GitHub API (total 19)
 
 ---
 
-## 🎯 Next Steps
+## 📋 Next Phase — Phase 1.4 — Version Management + Dependencies Solver (PLAN)
 
-### Phase 1.2 — Marketplace UI Polish + License Management (PLAN)
+**Objetivo:** Gestión robusta de versiones y resolución de dependencias entre módulos.
 
-**Tasks:**
-1. Marketplace catalog UI in admin — table with filters, search, version check warnings
-2. License model: `ModuleLicense` — free/paid, expiry, seat count
-3. License validation during install — check license before allowing
-4. Marketplace frontend (simple) — una página HTML de catálogo público
-5. Test install flow end-to-end con mock module
+**Estado:** 📋 PLAN — Esperando APPLY
 
-**Estimated:** 1-2 semanas
+### Tasks Phase 1.4
+
+| Task | Descripción | Estimado |
+|------|-------------|----------|
+| 1.4.1 | `ModuleVersionConstraint` model — rango de versiones compatibles (semver) | 2h |
+| 1.4.2 | `ModuleDependency` model — dependencias entre módulos (required, optional, conflicts) | 2h |
+| 1.4.3 | Semver parser + compatibility checker — `is_compatible(module_version, constraint)` | 2h |
+| 1.4.4 | Dependency resolver algorithm — topological sort + conflict detection | 3h |
+| 1.4.5 | Conflict detection UI en Admin — warnings pre-install, auto-suggest resolutions | 2h |
+| 1.4.6 | Auto-dependency installation — instalar dependencias requeridas automáticamente | 2h |
+| 1.4.7 | Upgrade path analysis — determinar si actualización es segura (backward compatible) | 2h |
+| 1.4.8 | Tests E2E — conflict scenarios, circular deps, version mismatches | 3h |
+| 1.4.9 | Cache + admin integration — invalidate metadata post-install/upgrade | 1h |
+| 1.4.10 | Documentation — DEPENDENCIES.md, upgrade guide | 1h |
+
+**Total estimado:** ~20h
+
+### Deliverables
+
+1. **Models:**
+   ```python
+   class ModuleVersionConstraint(models.Model):
+       module = ForeignKey(ModuleCatalogItem)
+       min_version = CharField()  # semver
+       max_version = CharField()  # semver (exclusive)
+       operator = CharField()  # '=', '~', '^', '>', '>=', '<', '<='
+
+   class ModuleDependency(models.Model):
+       module = ForeignKey(ModuleCatalogItem, related_name='dependencies')
+       depends_on = ForeignKey(ModuleCatalogItem, related_name='dependents')
+       required = BooleanField()  # True = hard requirement, False = optional
+       conflict = BooleanField()  # True = cannot coexist
+   ```
+
+2. **Commands:**
+   - `check_dependencies <module_name>` — muestra árbol de dependencias
+   - `resolve_dependencies <module_name>` — calcula install order + conflicts
+   - `validate_version_compatibility <module> <version>` — check contra installed
+
+3. **Admin UI:**
+   - `ModuleCatalogItemAdmin`: sección "Dependencies" + "Version Constraints"
+   - `module_install` view: pre-flight check, muestra conflictos, sugiere soluciones
+   - Dashboard: dependencia graph visualization (simple Mermaid)
+
+4. **API Extensions:**
+   - `GET /api/v1/marketplace/dependencies/{module}` — devuelve dependency tree
+   - `POST /api/v1/marketplace/validate-install/{module}` — pre-flight validation
+
+**Success criteria:**
+- [ ] `module_install` rechaza instalación si dependencias no satisfechas (con mensaje claro)
+- [ ] `module_install` auto-instala dependencias opcionales (flag `--with-deps`)
+- [ ] Admin muestra warnings de conflictos antes de install
+- [ ] Upgrade path analysis evita breaking changes
+- [ ] 5+ tests E2E cubriendo conflictos, ciclos, versiones
+
+**Commit branch:** `feat/marketplace/version-deps-solver`
 
 ---
 
-**Estado Phase 1.1:** ✅ APPLIED + UNIFY COMPLETE
-**Next Phase:** 1.2 — Marketplace UI + License Management — INICIO INMEDIATO
+**Estado fases completadas:**
+- ✅ Phase 0.6: Hybrid Restructure (2026-05-10)
+- ✅ Phase 1.1: Marketplace Foundation (2026-05-10)
+- ✅ Phase 1.2: License Management + UI Polish (2026-05-11)
+- ✅ Phase 1.3: GitHub Auto-discovery + Sync (2026-05-12)
+- 🔄 Phase 1.4: Version Management + Dependencies Solver — SIGUIENTE

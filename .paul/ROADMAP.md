@@ -48,11 +48,11 @@
 
 ### **M2 — Marketplace & Plugin System** ✅ COMPLETED
 **Target:** Semana 4-5
-**Status:** ✅ Done (2026-05-11)
+**Status:** ✅ Done (2026-05-12)
 
-**Objective:** Sistema de marketplace funcional para instalar módulos.
+**Objective:** Sistema de marketplace completo para instalar módulos.
 
-#### Phase 1.1 — Marketplace Foundation — ✅ DONE
+#### Phase 1.1 — Marketplace Foundation — ✅ DONE (2026-05-10)
 Catalog, install/uninstall, API, Admin UI básico.
 
 #### Phase 1.2 — License Management + Jazzmin UI — ✅ DONE (2026-05-11)
@@ -66,31 +66,13 @@ Catalog, install/uninstall, API, Admin UI básico.
 - [x] **Sidebar dinámico ERPNext-style**: sección "Marketplace — Aplicaciones" agrupada por `admin_menu_category`
 - [x] **Dashboard integrado**: tarjetas métricas (installed, licenses active/expiring/expired) + últimos 5 instalados
 - [x] **Cache invalidation automática**: `module_install`/`module_uninstall` eliminan cache → modules aparecen inmediatamente
-- [x] 17 E2E tests passing (catalog, install flow, license flow, public page)
+- [x] 17→19 E2E tests passing (catalog, install flow, license flow, public page, sidebar integration)
 - [x] Campo `admin_menu_category` en `ModuleCatalogItem` (default: 'Aplicaciones')
 - [x] Context processor `admin_metrics` con `jazzmin_apps` + `dashboard_cards` (cached 5/10 min)
 
 **Applied doc:** `.paul/phases/01-marketplace/01-02-MARKETPLACE-UI-LICENSE-APPLIED.md`
 
-**Files changed (18+):**
-- `apps/core_marketplace/models.py` (+ ModuleLicense, +admin_menu_category)
-- `apps/core_marketplace/admin.py` (Jazzmin enhancements, actions, sync button)
-- `apps/core_marketplace/views.py` + `templates/core_marketplace/catalog_public.html`
-- `apps/core_marketplace/management/commands/refresh_catalog.py` (nuevo)
-- `apps/core_marketplace/management/commands/module_install.py` (+ cache invalidation)
-- `apps/core_marketplace/management/commands/module_uninstall.py` (+ cache invalidation)
-- `apps/core_marketplace/migrations/0002_add_description_field.py`, `0003_add_admin_menu_category.py`
-- `apps/core_dashboard/context_processors.py` (jazzmin_apps + dashboard_cards + cache helpers)
-- `apps/core_dashboard/templates/admin/base.html` (sidebar override completo)
-- `apps/core_dashboard/templates/admin/base_site.html` (site base)
-- `apps/core_dashboard/templates/admin/index.html` (dashboard sections)
-- `apps/core_dashboard/static/core_dashboard/dashboard.css` (metric card styles)
-- `apps/core_api/v1/marketplace.py` (4 API endpoints)
-- `erp_nexus/settings.py` (JAZZMIN_SETTINGS side_menu updates)
-- `apps/core_marketplace/tests/conftest.py` (mock + cache invalidation)
-- `apps/core_marketplace/tests/test_marketplace_license.py` (+3 public tests → total 15)
-
-**Tests:** 15 → 19 passing
+**Tests:** 15 → 19 passing (+4)
 
 #### Phase 1.3 — GitHub auto-discovery + sync — ✅ DONE (2026-05-12)
 
@@ -106,14 +88,30 @@ Catalog, install/uninstall, API, Admin UI básico.
 - [x] 2 tests nuevos: default registry creation + dry-run behavior
 - [x] Mock `call_command` mejorado: `refresh_catalog` ejecuta real sin recursion
 
-**Files changed (7):** admin.py, apps.py, refresh_catalog.py, module_loader.py,
-conftest.py, test_marketplace_license.py, settings.py
+**Files changed (7):** admin.py, apps.py, refresh_catalog.py, module_loader.py, conftest.py, test_marketplace_license.py, settings.py
 
 **Tests:** +2 → **19 passing**
 
 #### Phase 1.4 — Version management + dependencies solver — 📋 PLAN
 
-**Success:** Admin puede instalar módulos desde GitHub con un click; aparecen inmediatamente en dashboard y menú.
+**Objective:** Gestión robusta de versiones y resolución de dependencias entre módulos.
+
+**Tasks:**
+1. `ModuleVersionConstraint` model — rangos de versiones compatibles (semver)
+2. `ModuleDependency` model — dependencias entre módulos (required, optional, conflict)
+3. Semver parser + compatibility checker
+4. Dependency resolver algorithm (topological sort + conflict detection)
+5. Conflict detection UI en Admin (pre-flight warnings)
+6. Auto-dependency installation (--with-deps flag)
+7. Upgrade path analysis (backward compatibility checks)
+8. Tests E2E (conflicts, circular deps, version mismatches)
+9. Cache invalidation + admin integration
+10. Documentation (DEPENDENCIES.md, upgrade guide)
+
+**Estimated:** ~20h
+**Commit branch:** `feat/marketplace/version-deps-solver`
+
+**Success:** Admin puede instalar módulos con dependencias resueltas automáticamente; conflictos detectados antes de install.
 
 ---
 
@@ -152,13 +150,13 @@ conftest.py, test_marketplace_license.py, settings.py
 
 ## 📊 Current Sprint
 
-**Sprint:** M2 (Marketplace License Management 1.2) — ✅ COMPLETADO (2026-05-11)
+**Sprint:** M2 Phase 1.4 — Version Management + Dependencies Solver (PLAN)
 
-**Next Sprint:** M2 Phase 1.3 — GitHub Auto-discovery + Sync
+**Last Sprint:** M2 Phase 1.3 — GitHub Auto-discovery + Sync — ✅ COMPLETADO (2026-05-12)
 
-**Phase 1.2 Deliverables:** 18+ archivos modificados, **17 tests passing**, sidebar + dashboard integrados con cache invalidation instantánea.
+**Phase 1.3 Deliverables:** 7 archivos modificados, GitHub auto-discovery funcional, `refresh_catalog` command, sync button admin, default registry auto-creation, 19 E2E tests passing.
 
-**Documentación:** Reorganización completa — `.architecture/` con 17 archivos técnicos + `READM`e índices para desarrolladores.
+**Documentación:** `.architecture/` con 17+ archivos técnicos organizados; PAUL state actualizado; ROADMAP sincronizado.
 
 ---
 
@@ -172,5 +170,5 @@ conftest.py, test_marketplace_license.py, settings.py
 ---
 
 **Last milestone completion:** M0, M1, M2-1.1, M2-1.2, M2-1.3 ✅
-**Current milestone:** M2 Phase 1.4 — IN PROGRESS
+**Current milestone:** M2 Phase 1.4 — PLAN
 **Estimated velocity:** 2-3 phases/semana
