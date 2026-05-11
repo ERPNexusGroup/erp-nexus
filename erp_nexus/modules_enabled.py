@@ -2,4 +2,8 @@
 # Use `python manage.py module_install/uninstall` to manage plugins.
 # Essential modules are defined in INSTALLED_APPS (apps/).
 
-MODULE_APPS: list[str] = []
+MODULE_APPS = [
+    'core',
+    'facturacion',
+    'sales',
+]

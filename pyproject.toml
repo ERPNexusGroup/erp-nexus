@@ -1,5 +1,19 @@
 # Configuración de calidad de código — ERP Nexus
 
+[project]
+name = "erp-nexus"
+description = "ERP Nexus — Hybrid Django ERP Framework"
+version = "1.0.0-alpha"
+requires-python = ">=3.13"
+dependencies = [
+    "Django>=5.0",
+    "gunicorn>=21.0",
+    "psycopg[binary]>=3.1",
+    "redis>=5.0",
+    "requests>=2.31",
+    "pydantic>=2.0",
+]
+
 [tool.black]
 line-length = 100
 target-version = ['py312']

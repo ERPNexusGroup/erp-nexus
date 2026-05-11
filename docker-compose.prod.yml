@@ -1,0 +1,97 @@
+# ERP Nexus — Docker Compose Producción
+# Servicios: PostgreSQL + Redis + Django (Gunicorn)
+# Volúmenes persistentes: pgdata, media, static, logs
+
+services:
+  # ─── PostgreSQL Database ────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: erp_nexus_db
+    restart: unless-stopped
+    env_file:
+      - .env.prod
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-erp_nexus}
+      POSTGRES_USER: ${POSTGRES_USER:-erp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-erp}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - erp_nexus_net
+
+  # ─── Redis Cache ────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: erp_nexus_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    env_file:
+      - .env.prod
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - erp_nexus_net
+
+  # ─── Django Web Application ─────────────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        #uv
+    container_name: erp_nexus_web
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env.prod
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-erp}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-erp_nexus}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379/0
+    volumes:
+      # Persist media uploads y static files
+      - media:/app/media
+      - static:/app/static
+      # Logs externos para rotación
+      - logs:/app/logs
+    ports:
+      - "80:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - erp_nexus_net
+
+# ─── Volúmenes ────────────────────────────────────────────────────────────────
+volumes:
+  pgdata:
+    driver: local
+  media:
+    driver: local
+  static:
+    driver: local
+  logs:
+    driver: local
+  redisdata:
+    driver: local
+
+# ─── Red ─────────────────────────────────────────────────────────────────────
+networks:
+  erp_nexus_net:
+    driver: bridge

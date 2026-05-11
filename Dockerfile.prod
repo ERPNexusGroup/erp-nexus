@@ -1,0 +1,88 @@
+# ERP Nexus — Dockerfile para Producción (Multi-Stage)
+# Etapa 1: Builder — instala dependencias, collectstatic, compila assets
+# Etapa 2: Runtime — imagen ultra-slim con código mínimo
+
+# ─── Builder Stage ────────────────────────────────────────────────────────────
+FROM python:3.13-slim AS builder
+
+# Evitar prompts interactivos durante install
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy
+
+# Instalar herramientas del sistema (compilación, git)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    libpq-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar metadata de dependencias
+WORKDIR /app
+COPY pyproject.toml uv.lock* ./
+
+# Instalar uv (gestor de paquetes ultra-rápido)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin/:${PATH}"
+
+# Crear venv e instalar dependencias (sin dev, sin extra opcional)
+RUN uv venv /app/.venv --python 3.13
+RUN uv pip install --no-dev --no-cache-dir -e .
+
+# ─── Runtime Stage ───────────────────────────────────────────────────────────
+FROM python:3.13-slim AS runtime
+
+# Configuración de entorno
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/app/.venv/bin:${PATH}" \
+    DJANGO_SETTINGS_MODULE=erp_nexus.settings \
+    WEB_WORKERS=4 \
+    WEB_TIMEOUT=120
+
+# Instalar solo runtime essentials del sistema
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear usuario no-root `erp` (UID 1000) y directorios de trabajo
+RUN groupadd -g 1000 erp && \
+    useradd -u 1000 -g erp -m -d /home/erp erp && \
+    mkdir -p /app/media /app/static /app/logs && \
+    chown -R erp:erp /app /home/erp /app/media /app/static /app/logs
+
+WORKDIR /app
+
+# Copiar venv desde builder (solo lo necesario)
+COPY --from=builder --chown=erp:erp /app/.venv /app/.venv
+
+# Copiar código fuente (excluyendo .git, tests, docs, etc.)
+COPY --chown=erp:erp . .
+
+# Asegurar permisos de volúmenes
+RUN chmod 755 /app/media /app/static /app/logs
+
+# Crear entrypoint
+COPY --chown=erp:erp entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Healthcheck — verifica que Django responda
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8000/health/ || exit 1
+
+# Exponer puerto (Gunicorn por defecto en 8000)
+EXPOSE 8000
+
+# Cambiar a usuario no-root
+USER erp
+
+# Entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Comando por defecto (Gunicorn)
+CMD ["gunicorn", "erp_nexus.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "120"]

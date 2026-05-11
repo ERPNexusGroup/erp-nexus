@@ -1,0 +1,75 @@
+# Archivos y directorios excluidos de la imagen Docker de producción
+
+# Git y control de versiones
+.git
+.gitignore
+.github
+.gitlab
+
+# Entornos virtuales y caches
+.venv
+venv
+.pytest_cache
+.coverage
+htmlcov
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+.Python
+*.egg-info
+dist
+build
+
+# Documentación y desarrollo
+docs/
+.architecture/
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE
+
+# Dependencias y locks (se usan solo en builder, no van a runtime)
+uv.lock
+poetry.lock
+Pipfile.lock
+
+# Environment files (usar .env.prod en runtime)
+.env
+.env.*.local
+
+# Scripts y herramientas de desarrollo
+scripts/dev-*
+scripts/test-*
+.husky
+.pre-commit-config.yaml
+
+# Archivos de datos para desarrollo
+*.sqlite3
+*.db
+
+# Directorio PAUL (estado de iteraciones)
+.paul/
+
+# Graphify output (no necesario en producción)
+graphify-out/
+
+# Tests unitarios (no necesarios en imagen de producción)
+tests/
+*/tests/
+test_*.py
+*_test.py
+
+# Archivos de configuración Docker adicionales (solo usamos Dockerfile.prod)
+Dockerfile
+docker-compose*.yml
+
+# Archivos de IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+#其他
+*.log
+!.env.prod.example
