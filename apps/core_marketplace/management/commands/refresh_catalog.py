@@ -6,9 +6,11 @@ Escanea ModuleRegistry activos y actualiza ModuleCatalogItem.
 """
 from pathlib import Path
 
+import os
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.utils import timezone
 
 
 class Command(BaseCommand):
@@ -48,6 +50,30 @@ class Command(BaseCommand):
         else:
             registries = ModuleRegistry.objects.filter(is_active=True)
 
+        # Si no hay registros activos, crear registry default desde settings
+        if not registries.exists():
+            default_registry, created = ModuleRegistry.objects.get_or_create(
+                name="GitHub Official",
+                defaults={
+                    "source_type": "github",
+                    "url": os.getenv("GITHUB_ORG", "ERPNexusGroup"),
+                    "description": "Official GitHub organization modules",
+                    "is_active": True,
+                    "is_default": True,
+                    "priority": 100,
+                },
+            )
+            if created:
+                self.stdout.write(
+                    self.style.SUCCESS(f"  Created default registry: {default_registry.name}")
+                )
+                # Reemplazar registries con QuerySet del registry creado
+                registries = ModuleRegistry.objects.filter(id=default_registry.id)
+            else:
+                # Ya existe pero no está activo — no procesar
+                self.stdout.write(self.style.WARNING("No active registries found."))
+                return
+
         if not registries.exists():
             self.stdout.write(self.style.WARNING("No active registries found."))
             return
@@ -83,7 +109,7 @@ class Command(BaseCommand):
             total_deactivated += deactivated
 
             if not dry_run:
-                registry.last_sync = settings.timezone.now()
+                registry.last_sync = timezone.now()
                 registry.save(update_fields=['last_sync'])
 
         # Summary

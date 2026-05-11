@@ -186,7 +186,18 @@ def mock_call_command(monkeypatch):
             cache.delete("admin_dashboard_metrics")
             cache.delete("jazzmin_side_menu_apps")
             return None
-
+        elif command_name == "refresh_catalog":
+            # Ejecutar comando REAL importando directamente la clase Command
+            # para evitar recursion con el monkeypatch de call_command
+            from apps.core_marketplace.management.commands.refresh_catalog import Command
+            cmd = Command()
+            # Simular stdout/stderr silenciosos
+            from io import StringIO
+            cmd.stdout = StringIO()
+            cmd.stderr = StringIO()
+            # El handle() de BaseCommand ya parsea args/kwargs según add_arguments
+            # Pasamos options directamente (call_command internamente hace lo mismo)
+            return cmd.handle(*args, **kwargs)
         else:
             from django.core.management import call_command as real_call_command
             return real_call_command(command_name, *args, **kwargs)

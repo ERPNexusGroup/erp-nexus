@@ -174,3 +174,11 @@ FACTURACION = {
 }
 
 FACTURACION_EC_AUTO_SEND = os.getenv("FACTURACION_EC_AUTO_SEND", "true").lower() == "true"
+
+# ─── GitHub Integration (Marketplace auto-discovery) ──────────────────────
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "")
+GITHUB_ORG = os.getenv("GITHUB_ORG", "ERPNexusGroup")
+
+# Default registry creado automáticamente en migrations/ seeding
+# Si no existe ModuleRegistry, se crea uno por defecto apuntando a GITHUB_ORG
+

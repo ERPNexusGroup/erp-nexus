@@ -113,3 +113,43 @@ def remove_from_modules_enabled(technical_name: str) -> None:
     if technical_name in current:
         current = [m for m in current if m != technical_name]
         write_modules_enabled(current)
+
+
+def parse_meta_file(meta_path: Path) -> dict:
+    """
+    Parse a __meta__.py file and extract metadata.
+
+    Supports literal values: str, int, float, bool, list, dict.
+    Ignores complex expressions or imports.
+
+    Args:
+        meta_path: Path to __meta__.py file
+
+    Returns:
+        dict with metadata keys
+    """
+    import ast
+
+    if not meta_path.exists():
+        return {}
+
+    try:
+        with open(meta_path, "r") as f:
+            content = f.read()
+        tree = ast.parse(content)
+
+        meta: dict = {}
+        for node in ast.iter_child_nodes(tree):
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if isinstance(target, ast.Name):
+                        try:
+                            # Use ast.literal_eval for safe literal evaluation
+                            import ast as ast_literal
+                            meta[target.id] = ast_literal.literal_eval(node.value)
+                        except Exception:
+                            # Skip non-literal or unsupported values
+                            pass
+        return meta
+    except (SyntaxError, UnicodeDecodeError, FileNotFoundError):
+        return {}

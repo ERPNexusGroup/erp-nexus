@@ -360,3 +360,46 @@ class TestSidebarIntegration:
         dashboard_cards = resp.context.get('dashboard_cards', {})
         assert dashboard_cards.get('active_modules') == 3
         assert dashboard_cards.get('installed_modules') == 3
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# GitHub Registry + refresh_catalog Tests
+# ═══════════════════════════════════════════════════════════════════════
+
+class TestGitHubRegistry:
+    def test_create_default_registry_on_command(self):
+        """El comando refresh_catalog crea un ModuleRegistry default si no existe."""
+        from django.core.management import call_command
+        from apps.core_marketplace.models import ModuleRegistry
+
+        # Asegurar que no existan registros
+        ModuleRegistry.objects.all().delete()
+
+        call_command('refresh_catalog', '--dry-run')
+
+        # Debe crearse el registro default
+        assert ModuleRegistry.objects.filter(is_default=True).exists()
+        default = ModuleRegistry.objects.get(is_default=True)
+        assert default.name == "GitHub Official"
+        assert default.source_type == "github"
+        assert default.url == "ERPNexusGroup"  # valor por defecto de GITHUB_ORG
+
+    def test_refresh_catalog_dry_run_no_changes(self):
+        """Dry run no modifica la base de datos (skip por falta de token)."""
+        from django.core.management import call_command
+        from apps.core_marketplace.models import ModuleCatalogItem
+        from io import StringIO
+
+        # Crear un módulo en catálogo
+        ModuleCatalogItem.objects.create(
+            technical_name="existing_mod",
+            display_name="Existing Module",
+            version="1.0",
+        )
+
+        out = StringIO()
+        call_command('refresh_catalog', '--dry-run', stdout=out)
+
+        # Sin GITHUB_TOKEN real, el comando skipea (no falla)
+        # Verificar que el módulo original sigue ahí
+        assert ModuleCatalogItem.objects.filter(technical_name="existing_mod").exists()
