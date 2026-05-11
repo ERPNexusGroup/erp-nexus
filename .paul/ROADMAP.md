@@ -1,7 +1,7 @@
 # ERP Nexus — Roadmap (PAUL)
 
 **Version:** 1.0.0-alpha
-**Last Updated:** 2026-05-11
+**Last Updated:** 2026-05-12
 
 ---
 
@@ -66,7 +66,6 @@ Catalog, install/uninstall, API, Admin UI básico.
 - [x] **Sidebar dinámico ERPNext-style**: sección "Marketplace — Aplicaciones" agrupada por `admin_menu_category`
 - [x] **Dashboard integrado**: tarjetas métricas (installed, licenses active/expiring/expired) + últimos 5 instalados
 - [x] **Cache invalidation automática**: `module_install`/`module_uninstall` eliminan cache → modules aparecen inmediatamente
-- [x] Management command `refresh_catalog` (GitHub org scan + upsert catalog + botón admin Sync)
 - [x] 17 E2E tests passing (catalog, install flow, license flow, public page)
 - [x] Campo `admin_menu_category` en `ModuleCatalogItem` (default: 'Aplicaciones')
 - [x] Context processor `admin_metrics` con `jazzmin_apps` + `dashboard_cards` (cached 5/10 min)
@@ -91,7 +90,27 @@ Catalog, install/uninstall, API, Admin UI básico.
 - `apps/core_marketplace/tests/conftest.py` (mock + cache invalidation)
 - `apps/core_marketplace/tests/test_marketplace_license.py` (+3 public tests → total 15)
 
-#### Phase 1.3 — GitHub auto-discovery + sync — 📋 PLAN
+**Tests:** 15 → 19 passing
+
+#### Phase 1.3 — GitHub auto-discovery + sync — ✅ DONE (2026-05-12)
+
+**Deliverables:**
+- [x] `refresh_catalog` command: escanea GitHub org (topic `erp-nexus-module` + `__meta__.py`), upsert catalog
+- [x] Admin: botón "Sync" por registry + acción Jazzmin "Sync selected"
+- [x] Auto-creación de `ModuleRegistry` default ("GitHub Official") si no existe:
+  - Señal `apps.py` `ready()` → crea al iniciar Django
+  - Lógica en `refresh_catalog` → crea en primer run si no hay registros activos
+- [x] `parse_meta_file` utility (AST parser seguro para `__meta__.py`)
+- [x] GITHUB_TOKEN + GITHUB_ORG settings (rate-limit awareness)
+- [x] Fix: `settings.timezone.now()` → `timezone.now()` en refresh
+- [x] 2 tests nuevos: default registry creation + dry-run behavior
+- [x] Mock `call_command` mejorado: `refresh_catalog` ejecuta real sin recursion
+
+**Files changed (7):** admin.py, apps.py, refresh_catalog.py, module_loader.py,
+conftest.py, test_marketplace_license.py, settings.py
+
+**Tests:** +2 → **19 passing**
+
 #### Phase 1.4 — Version management + dependencies solver — 📋 PLAN
 
 **Success:** Admin puede instalar módulos desde GitHub con un click; aparecen inmediatamente en dashboard y menú.
@@ -152,6 +171,6 @@ Catalog, install/uninstall, API, Admin UI básico.
 
 ---
 
-**Last milestone completion:** M0, M1, M2-1.1, M2-1.2 ✅
-**Current milestone:** M2 Phase 1.3 — IN PROGRESS
+**Last milestone completion:** M0, M1, M2-1.1, M2-1.2, M2-1.3 ✅
+**Current milestone:** M2 Phase 1.4 — IN PROGRESS
 **Estimated velocity:** 2-3 phases/semana

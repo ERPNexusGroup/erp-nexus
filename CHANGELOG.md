@@ -25,6 +25,13 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 - API Reference completa [`.architecture/API_REFERENCE.md`](.architecture/API_REFERENCE.md)
 - ADRs (Architecture Decision Records) en `ADR/`
 - Contributing guide [`.architecture/CONTRIBUTING.md`](.architecture/CONTRIBUTING.md)
+- Management command `refresh_catalog` (GitHub org scan + upsert catalog)
+- Auto-creación de ModuleRegistry default (GitHub Official) via signal + command fallback
+- `parse_meta_file` utility (AST parser seguro para `__meta__.py`)
+- Settings: GITHUB_TOKEN, GITHUB_ORG
+- Admin improvements: ModuleRegistry sync button, ModuleLicense seat usage bar
+- Fix: `settings.timezone.now()` → `timezone.now()` en refresh_catalog
+- Tests: TestGitHubRegistry (2 tests) → **19 passing** total marketplace
 
 #### **Fixed**
 - Secuencial de facturas duplicado (todos tenían mismo número)
