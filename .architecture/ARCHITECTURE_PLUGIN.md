@@ -1,7 +1,7 @@
 # 🏗️ Arquitectura de Software — ERP Nexus
 
 **Versión:** 1.0.0-alpha  
-**Fecha:** 2026-05-10  
+**Fecha:** 2026-05-12  
 **Tipo:** Plugin-based Modular Architecture
 
 ---
@@ -418,6 +418,105 @@ done
 
 ---
 
+## 🔗 GitHub Auto-discovery & Registry
+
+### ModuleRegistry: Catálogo de Fuentes
+```python
+# apps/core_marketplace/models.py
+class ModuleRegistry(models.Model):
+    name            = CharField(max_length=100)       # "GitHub Official"
+    source_type     = CharField(choices=SOURCE_TYPES) # 'github', 'git', 'json'
+    url             = CharField(...)                  # org name o URL base
+    is_active       = BooleanField(default=True)
+    is_default      = BooleanField(default=False)    # registry por defecto
+    priority        = IntegerField(default=0)
+    last_sync       = DateTimeField(null=True, blank=True)
+    cached_modules  = JSONField(default=dict)         # cache temporal del catálogo
+```
+
+### Auto-creación del Registry Default
+**Dos mecanismos complementarios:**
+
+1. **Signal `apps.py` `ready()`** — Al arrancar Django (dev o prod):
+```python
+# apps/core_marketplace/apps.py
+class CoreMarketplaceConfig(AppConfig):
+    def ready(self):
+        from apps.core_marketplace.models import ModuleRegistry
+        if not ModuleRegistry.objects.filter(is_default=True).exists():
+            ModuleRegistry.objects.get_or_create(
+                name="GitHub Official",
+                defaults={
+                    "source_type": "github",
+                    "url": getattr(settings, "GITHUB_ORG", "ERPNexusGroup"),
+                    "is_active": True,
+                    "is_default": True,
+                    "priority": 100,
+                },
+            )
+```
+
+2. **Fallback en comando `refresh_catalog`** — Si no hay registros activos:
+```python
+# management/commands/refresh_catalog.py
+if not registries.exists():
+    default, created = ModuleRegistry.objects.get_or_create(...)
+    if created:
+        self.stdout.write(f"Created default registry: {default.name}")
+        registries = ModuleRegistry.objects.filter(id=default.id)
+```
+
+### Comando `refresh_catalog`
+```bash
+$ python manage.py refresh_catalog [--registry <name>] [--dry-run] [--force]
+```
+
+**Flujo:**
+1. Determina `ModuleRegistry` a procesar (todos activos o uno específico)
+2. Si no hay registros → crea default registry y continúa
+3. Por cada registry:
+   - Si `source_type == 'github'` → `_sync_github()`
+   - Lista repos de la org vía GitHub API (topic `erp-nexus-module`)
+   - Para cada repo: valida `__meta__.py` (HEAD request o shallow clone)
+   - Parsea metadata con `parse_meta_file()` (AST-based safe parser)
+   - `ModuleCatalogItem.objects.update_or_create(technical_name, defaults=...)`
+4. Actualiza `last_sync` del registry (skip en dry-run)
+
+**Settings:**
+- `GITHUB_TOKEN` — token personal (opcional, sin token: 60 req/h rate limit)
+- `GITHUB_ORG`  — organización GitHub (default: `ERPNexusGroup`)
+
+**Admin UI:**
+- `ModuleRegistryAdmin`: columna "Sync" button (por registro) + acción Jazzmin "Sync selected"
+- `ModuleCatalogItemAdmin`: columna "Actions" con botones Install/Reinstall
+- `ModuleLicenseAdmin`: seat usage bar visual, license key generation, validity badge
+
+### parse_meta_file Utility
+```python
+# apps/core_marketplace/utils/module_loader.py
+def parse_meta_file(meta_path: Path) -> dict:
+    """Parsea __meta__.py usando AST (seguro: solo literales)."""
+    import ast
+    try:
+        tree = ast.parse(meta_path.read_text())
+        meta = {}
+        for node in ast.iter_child_nodes(tree):
+            if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name):
+                try:
+                    meta[node.targets[0].id] = ast.literal_eval(node.value)
+                except Exception:
+                    pass
+        return meta
+    except (SyntaxError, UnicodeDecodeError, FileNotFoundError):
+        return {}
+```
+
+**Usado por:**
+- `refresh_catalog._sync_github()` — parseo remoto vía raw.githubusercontent.com
+- `module_install` — validación local de `__meta__.py`
+
+---
+
 ## 🎯 Comparación con Otros Sistemas
 
 | Sistema | Core | Módulos | Instalación |
@@ -524,36 +623,56 @@ Para que un directorio sea reconocido como plugin:
 
 ## 🔍 Cómo el Core Detecta Plugins
 
-**ModuleRegistry:**
+### Fuentes de Plugins
+
+**1. Directorios locales (modules/):**
 ```python
 class ModuleRegistry:
     @staticmethod
     def discover_plugins():
         """Escanea directorios de plugins instalados."""
         plugin_dirs = [
-            settings.BASE_DIR / "modules",  # ~/.erp-nexus/modules/
-            settings.PLUGIN_DIRS,           # Directorios configurados
+            settings.BASE_DIR / "modules",          # ~/.erp-nexus/modules/
+            settings.PLUGIN_DIRS,                    # Directorios configurados
         ]
         for plugin_dir in plugin_dirs:
             for module_path in plugin_dir.iterdir():
                 if (module_path / "__meta__.py").exists():
                     ModuleRegistry.register(module_path)
-
-    @staticmethod
-    def get_enabled_modules():
-        """Retorna plugins activos para INSTALLED_APPS."""
-        return [m.technical_name for m in Module.objects.filter(enabled=True)]
 ```
 
-**Settings (dynamic):**
+**2. GitHub Registry (auto-discovery via `refresh_catalog`):**
+```bash
+# Management command: escanea GitHub org
+$ python manage.py refresh_catalog [--dry-run] [--registry <name>]
+
+# Busca repos con topic 'erp-nexus-module' y __meta__.py
+# Parsea __meta__.py → crea/actualiza ModuleCatalogItem
+# Botón "Sync" en admin + acción Jazzmin multi-select
+```
+
+- **GitHub org configurable:** `GITHUB_ORG` setting (default: `ERPNexusGroup`)
+- **Token opcional:** `GITHUB_TOKEN` environment variable (rate limit 60/hr sin token)
+- **Filtros:** topic `erp-nexus-module` + presencia de `__meta__.py` en raíz
+- **Metadata parsing:** AST-based `parse_meta_file()` → extrae `technical_name`, `version`, `dependencies`, etc.
+- **Upsert:** `ModuleCatalogItem.objects.update_or_create(technical_name=..., defaults=...)`
+
+**3. Default Registry (auto-creación):**
+- **Signal `apps.py` `ready()`:** crea `ModuleRegistry` "GitHub Official" al iniciar Django (si no existe)
+- **Fallback en comando:** si no hay registros activos, `refresh_catalog` crea default y continúa
+- **Configuración:** `url = GITHUB_ORG`, `source_type = github`, `is_default = True`
+
+**4. Settings (dynamic):**
 ```python
 # En runtime, al arrancar Django:
 from apps.core_marketplace.registry import ModuleRegistry
-ModuleRegistry.discover_plugins()
-ModuleRegistry.load_to_settings()  # Añade a INSTALLED_APPS
+ModuleRegistry.discover_plugins()          # Escanea modules/ locales
+ModuleRegistry.load_to_settings()          # Añade a INSTALLED_APPS
 
 django.setup()  # Carga todas las apps
 ```
+
+---
 
 ---
 

@@ -2,6 +2,8 @@
 
 **Para desarrolladores que extienden el framework**
 
+**Última actualización:** 2026-05-12
+
 ---
 
 ## 🎯 Visión de Desarrollo
@@ -433,6 +435,65 @@ def validate_ruc(ruc: str):
     if not ruc.isdigit():
         raise ValidationError("RUC solo dígitos")
 ```
+
+---
+
+## 🔗 GitHub Auto-discovery & Publishing
+
+### Publicar un módulo en GitHub (para Marketplace)
+
+1. **Repositorio en GitHub** (orgconfigurada en `GITHUB_ORG`):
+   - Nombre: `<technical_name>` (ej: `facturacion_ec`)
+   - Topic: `erp-nexus-module` (requerido para ser discoverable)
+   - `__meta__.py` en raíz del repo (ver `MODULE_SPEC.md`)
+   - Tags SemVer: `v0.1.0`, `v0.2.0`, etc.
+
+2. **Settings del Core** (`erp_nexus/settings.py`):
+   ```python
+   GITHUB_ORG = os.getenv("GITHUB_ORG", "ERPNexusGroup")
+   GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "")  # opcional
+   ```
+   - Sin token: rate limit 60 requests/hora (anónimo)
+   - Con token: 5000 requests/hora
+
+3. **Sincronizar catálogo** (desde admin o CLI):
+   ```bash
+   # CLI
+   python manage.py refresh_catalog [--dry-run]
+
+   # Admin Django → core_marketplace → ModuleRegistry → Sync button
+   ```
+   El comando:
+   - Lista repos de la org con topic `erp-nexus-module`
+   - Para cada repo: valida `__meta__.py` (HEAD a raw.githubusercontent.com/.../__meta__.py)
+   - Parsea metadata con `parse_meta_file()` (AST-based, seguro)
+   - Crea/actualiza `ModuleCatalogItem`
+
+4. **Instalar desde Admin**
+   - Admin → Core Marketplace → Module Catalog
+   - Click "Install" → ejecuta `module_install` command
+   - Plugin se clona a `~/.erp-nexus/modules/` y se registra en DB
+   - `apps.py:ready()` → `ModuleRegistry.discover_plugins()` lo añade a INSTALLED_APPS
+   -Migraciones aplicadas → módulo activo
+
+### Default Registry (auto-creación)
+Si no existe ningún `ModuleRegistry` activo:
+- `refresh_catalog` crea automáticamente "GitHub Official" (is_default=True)
+- Signal `apps.py` `ready()` también lo crea al iniciar Django
+- `url = GITHUB_ORG` (fallback a `ERPNexusGroup`)
+
+### Admin UI Mejorado
+- **ModuleRegistryAdmin**: botón "Sync" por fila + acción "Sync selected" (Jazzmin)
+- **ModuleCatalogItemAdmin**: botones "Install" / "Reinstall" en columna Actions
+- **ModuleLicenseAdmin**: barra visual de uso de asientos, badge valid/invalid, generate/revoke keys
+- **Dashboard**: métricas de módulos instalados + últimos 5
+- **Sidebar**: agrupación por `admin_menu_category` (ERPNext-style)
+
+### parse_meta_file
+Ubicación: `apps/core_marketplace/utils/module_loader.py`
+Parsea `__meta__.py` via AST (solo literales, seguro). Usado por:
+- `refresh_catalog._sync_github()`
+- `module_install` (validación local)
 
 ---
 
