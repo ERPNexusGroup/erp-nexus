@@ -137,7 +137,9 @@ Catalog, install/uninstall, API, Admin UI básico.
 
 **Next Sprint:** M2 Phase 1.3 — GitHub Auto-discovery + Sync
 
-**Phase 1.2 Deliverables:** 18+ archivos modificados, 15 tests passing, sidebar + dashboard integrados con cache invalidation instantánea.
+**Phase 1.2 Deliverables:** 18+ archivos modificados, **17 tests passing**, sidebar + dashboard integrados con cache invalidation instantánea.
+
+**Documentación:** Reorganización completa — `.architecture/` con 17 archivos técnicos + `READM`e índices para desarrolladores.
 
 ---
 
