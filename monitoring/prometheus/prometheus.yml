@@ -1,0 +1,72 @@
+# Prometheus — ERP Nexus Production Monitoring
+# Scrape interval: 15s | Retention: 30d (configured in docker-compose)
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'erp-nexus-prod'
+    environment: production
+    service: 'erp-nexus'
+
+rule_files:
+  - /etc/prometheus/alerts/erp_nexus_rules.yml
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
+      scheme: http
+      timeout: 10s
+
+scrape_configs:
+  # ─── Django / Gunicorn ───────────────────────────────────────────────────
+  - job_name: 'django'
+    metrics_path: '/metrics/'
+    static_configs:
+      - targets: ['web:8000']
+        labels:
+          group: 'application'
+          service: 'django'
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: '([^:]+):.*'
+        target_label: host
+        replacement: '${1}'
+      - source_labels: [__address__]
+        target_label: instance
+
+  # ─── Celery Workers ───────────────────────────────────────────────────────
+  - job_name: 'celery'
+    metrics_path: '/metrics/'
+    static_configs:
+      - targets: ['worker:8000']
+        labels:
+          group: 'celery'
+          service: 'celery-worker'
+
+  # ─── cAdvisor — Container metrics ────────────────────────────────────────
+  - job_name: 'cadvisor'
+    scrape_interval: 20s
+    static_configs:
+      - targets: ['cadvisor:8080']
+        labels:
+          group: 'infrastructure'
+          service: 'cadvisor'
+
+  # ─── Node Exporter — Host metrics ─────────────────────────────────────────
+  - job_name: 'node'
+    scrape_interval: 20s
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          group: 'infrastructure'
+          service: 'node-exporter'
+
+  # ─── AlertManager health ───────────────────────────────────────────────────
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['alertmanager:9093']
+        labels:
+          group: 'monitoring'
+          service: 'alertmanager'

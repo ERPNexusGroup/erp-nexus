@@ -1,0 +1,135 @@
+groups:
+  - name: erp_nexus_critical
+    rules:
+      # ─── Latencia alta de respuesta (P95 > 1s) ───────────────────────────────
+      - alert: HighResponseLatency
+        expr: histogram_quantile(0.95, sum(rate(django_http_response_time_seconds_bucket[5m])) by (le)) > 1.0
+        for: 5m
+        labels:
+          severity: critical
+          service: django
+        annotations:
+          summary: "Latencia alta (>1s) en Django"
+          description: "P95 response time {{ $value | humanizeDuration }} en {{ $labels.instance }}"
+          runbook_url: "https://erp-nexus.com/runbooks/high-latency"
+
+      # ─── Tasa de error 5xx > 5% ─────────────────────────────────────────────
+      - alert: High5xxErrorRate
+        expr: |
+          sum(rate(django_http_responses_total{status=~"5.."}[5m]))
+          /
+          sum(rate(django_http_responses_total[5m])) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          service: django
+        annotations:
+          summary: "Tasa de error 5xx > 5%"
+          description: "{{ $value | humanizePercentage }} de requests devuelven 5xx en {{ $labels.instance }}"
+          runbook_url: "https://erp-nexus.com/runbooks/high-5xx"
+
+      # ─── PostgreSQL caído ────────────────────────────────────────────────────
+      - alert: DatabaseDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: postgres
+        annotations:
+          summary: "PostgreSQL no responde"
+          description: "La base de datos está inaccesible en {{ $labels.instance }}"
+          runbook_url: "https://erp-nexus.com/runbooks/database-down"
+
+      # ─── Redis caído ─────────────────────────────────────────────────────────
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: redis
+        annotations:
+          summary: "Redis no responde"
+          description: "La caché Redis está inaccesible en {{ $labels.instance }}"
+          runbook_url: "https://erp-nexus.com/runbooks/redis-down"
+
+      # ─── Contenedor caído (django, celery, cadvisor, nginx) ─────────────────
+      - alert: ContainerDown
+        expr: up{job=~"django|celery|cadvisor|nginx"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: docker
+        annotations:
+          summary: "Contenedor {{ $labels.job }} está caído"
+          description: "El servicio {{ $labels.job }} en {{ $labels.instance }} no responde"
+
+      # ─── Certificado SSL expira en < 7 días ───────────────────────────────────
+      - alert: SSLCertificateExpiring
+        expr: probe_ssl_earliest_cert_expiry - time() < 604800
+        for: 1h
+        labels:
+          severity: critical
+          service: nginx
+        annotations:
+          summary: "Certificado SSL expira en < 7 días"
+          description: "Certificado para {{ $labels.instance }} expira en {{ $value | humanizeDuration }}"
+          runbook_url: "https://erp-nexus.com/runbooks/ssl-expiry"
+
+  - name: erp_nexus_warnings
+    rules:
+      # ─── CPU host > 90% ───────────────────────────────────────────────────────
+      - alert: HostHighCPU
+        expr: 100 - (avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 90
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "CPU host > 90%"
+          description: "Uso de CPU en {{ $labels.instance }}: {{ $value }}%"
+
+      # ─── Memoria host < 10% libre ─────────────────────────────────────────────
+      - alert: HostLowMemory
+        expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 < 10
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "Memoria host < 10% libre"
+          description: "Memoria disponible en {{ $labels.instance }}: {{ $value }}%"
+
+      # ─── Disco > 85% usado (solo 15% libre) ───────────────────────────────────
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 15
+        for: 10m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "Espacio en disco < 15% libre"
+          description: "Disco {{ $labels.instance }}: {{ $value }}% disponible"
+
+      # ─── Consultas DB lentas (P99 > 2s) ─────────────────────────────────────────
+      - alert: SlowDatabaseQueries
+        expr: histogram_quantile(0.99, sum(rate(django_db_query_duration_seconds_bucket[5m])) by (le)) > 2.0
+        for: 10m
+        labels:
+          severity: warning
+          service: django
+        annotations:
+          summary: "Consultas DB lentas (>2s P99)"
+          description: "P99 query time: {{ $value | humanizeDuration }}"
+          runbook_url: "https://erp-nexus.com/runbooks/slow-queries"
+
+      # ─── Cola Celery acumulándose (>100 tareas) ─────────────────────────────────
+      - alert: CeleryQueueLengthHigh
+        expr: celery_queue_length > 100
+        for: 15m
+        labels:
+          severity: warning
+          service: celery
+        annotations:
+          summary: "Cola Celery con +100 tareas pendientes"
+          description: "Queue {{ $labels.queue }}: {{ $value }} tareas pendientes"
+          runbook_url: "https://erp-nexus.com/runbooks/celery-queue"

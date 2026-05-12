@@ -194,6 +194,109 @@ services:
     networks:
       - erp_nexus_net
 
+# ─── Prometheus — Metrics Collection ────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    container_name: erp_nexus_prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/alerts:/etc/prometheus/alerts:ro
+      - promdata:/prometheus
+    ports:
+      - "9090:9090"
+    depends_on:
+      - web
+      - cadvisor
+      - node-exporter
+    networks:
+      - erp_nexus_net
+    restart: unless-stopped
+
+# ─── Grafana — Dashboards & Visualization ───────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.4.2-oss
+    container_name: erp_nexus_grafana
+    env_file:
+      - .env.prod
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+      GF_SMTP_ENABLED: "true"
+      GF_SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com:587}
+      GF_SMTP_USER: ${SMTP_USER}
+      GF_SMTP_PASSWORD: ${SMTP_PASSWORD}
+      GF_SMTP_FROM_ADDRESS: ${ALERT_FROM_EMAIL}
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafanadata:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - erp_nexus_net
+    restart: unless-stopped
+
+# ─── cAdvisor — Container Metrics ──────────────────────────────────────────────
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: erp_nexus_cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    ports:
+      - "8080:8080"
+    networks:
+      - erp_nexus_net
+    restart: unless-stopped
+
+# ─── Node Exporter — Host Metrics ──────────────────────────────────────────────
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    container_name: erp_nexus_node_exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100"
+    networks:
+      - erp_nexus_net
+    restart: unless-stopped
+
+# ─── AlertManager — Alert Routing ──────────────────────────────────────────────
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    container_name: erp_nexus_alertmanager
+    volumes:
+      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanagerdata:/data
+    ports:
+      - "9093:9093"
+    depends_on:
+      - prometheus
+    networks:
+      - erp_nexus_net
+    restart: unless-stopped
+
 # ─── Volúmenes ────────────────────────────────────────────────────────────────
 volumes:
   pgdata:
@@ -211,6 +314,12 @@ volumes:
   certbot_conf:
     driver: local
   certbot_data:
+    driver: local
+  promdata:
+    driver: local
+  grafanadata:
+    driver: local
+  alertmanagerdata:
     driver: local
 
 # ─── Red ─────────────────────────────────────────────────────────────────────

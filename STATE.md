@@ -7,48 +7,47 @@
 | 2.1 | Docker multi-stage + healthcheck | ✅ | 30% | 100% |
 | 2.2 | PostgreSQL tuning + Redis AOF | ✅ | 25% | 100% |
 | 2.3 | Celery workers + beat | ✅ | 20% | 100% |
-| 2.4 | **SSL/TLS + Nginx reverse proxy** | ✅ | 15% | **100%** |
-| 2.5 | Monitoring (Prom+Grafana+Sentry) | ⏳ | 10% | 0% |
+| 2.4 | SSL/TLS + Nginx reverse proxy | ✅ | 15% | 100% |
+| 2.5 | **Monitoring Stack** | ✅ | 10% | **100%** |
 
-## 📦 Entregables M3 Phase 2.4 — SSL + Nginx
+## 📦 Entregables M3 Phase 2.5 — Monitoring
 
 | Entregable | Estado | Ubicación |
 |------------|--------|-----------|
-| Nginx config (TLS 1.2/1.3, HSTS, CSP, headers) | ✅ | `nginx/nginx.conf` |
-| Certbot container con auto-renew | ✅ | `docker-compose.prod.yml` |
-| Volúmenes persistentes Certbot | ✅ | `docker-compose.prod.yml` |
-| Variables DOMAIN + SSL_EMAIL | ✅ | `.env.prod.example` |
-| Documentación de deploy SSL | ✅ | `docs/SSL_NGINX.md` |
-| Test suite de integración (45 tests) | ✅ | `apps/core_marketplace/tests/test_ssl_nginx_in_nginx_integration.py` |
-| Certbot dhparam (2048-bit) | ⚠️ | Generar en deploy: `openssl dhparam -out nginx/ssl/dhparam.pem 2048` |
+| Prometheus config (scrape jobs, rules) | ✅ | `monitoring/prometheus/prometheus.yml` |
+| Reglas de alerta (12: 7 crit + 5 warn) | ✅ | `monitoring/prometheus/alerts/erp_nexus_rules.yml` |
+| Grafana datasource provisioning | ✅ | `monitoring/grafana/provisioning/datasources/prometheus.yml` |
+| Grafana dashboard provisioning | ✅ | `monitoring/grafana/provisioning/dashboards/erp_nexus.yml` |
+| Grafana config (SMTP, admin) | ✅ | `monitoring/grafana/provisioning/config/grafana.ini` |
+| Dashboard preconfigurado (9 paneles) | ✅ | `monitoring/grafana/dashboards/erp_nexus.json` |
+| AlertManager routing (Slack + Email) | ✅ | `monitoring/alertmanager/alertmanager.yml` |
+| Docker Compose servicios monitoreo | ✅ | `docker-compose.prod.yml` |
+| Variables env monitoreo | ✅ | `.env.prod.example` |
+| Tests integración | ✅ | `apps/core_marketplace/tests/test_monitoring_integration.py` (53 tests) |
 
 ## ✅ Commits
 
-- `7033989` — feat(production): Phase 2.4 — SSL/TLS + Nginx reverse proxy
+- (pendiente push) Phase 2.5 — Monitoring Stack completo
 
-## 🧪 Test Results (SSL/Nginx — 45 tests)
+## 🧪 Test Results (Monitoring — 53 tests)
 
 ```
-45 passed, 1 warning in 0.11s
+53 passed, 1 warning in 0.19s ✅
 ```
 
 Categorías validadas:
-- NginxConfiguration (7 tests)
-- SSLConfiguration (6 tests)
-- SecurityHeaders (6 tests)
-- StaticAndMedia (4 tests)
-- HTTP→HTTPS Redirect (3 tests)
-- DockerComposeIntegration (10 tests)
-- CertbotVolumes (5 tests)
-- EnvironmentVariables (4 tests)
+- PrometheusConfiguration (9 tests)
+- AlertRules (6 tests)
+- GrafanaProvisioning (8 tests)
+- AlertManager (6 tests)
+- DockerComposeIntegration (16 tests)
+- DockerComposeVolumes (3 tests)
+- EnvironmentVariables (5 tests)
+- Integration (2 tests)
 
-## 🚀 Próximo: M3 Phase 2.5 — Monitoring Stack
+## 🚀 Próximo
 
-- Prometheus + cAdvisor + Node Exporter
-- Grafana dashboards (pre-configured)
-- AlertManager + Slack webhook
-- Sentry (error tracking)
-- Health checks + uptime monitoring
+M3 **COMPLETO** (100%). Sprint M4: Deployment hardening + runbooks.
 
 ---
-*Actualizado: 2026-05-12 | commit: 7033989*
+*Actualizado: 2026-05-12 | Phase 2.5 listo*
