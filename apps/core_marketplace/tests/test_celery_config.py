@@ -127,28 +127,20 @@ class TestCeleryTasksExist:
 
     def test_sri_task_exists(self):
         """Debe existir tarea send_invoice_to_sri_task."""
-        try:
-            from apps.core_notifications.tasks import send_invoice_to_sri_task
-            assert callable(send_invoice_to_sri_task), "send_invoice_to_sri_task no es callable"
-        except ImportError:
-            # Si core_notifications no existe, buscar en facturacion
-            try:
-                from apps.facturacion.tasks import send_invoice_to_sri_task
-                assert callable(send_invoice_to_sri_task)
-            except ImportError:
-                pytest.fail("No se encontró send_invoice_to_sri_task en ninguna app")
+        from apps.notifications.tasks import send_invoice_to_sri_task
+        assert callable(send_invoice_to_sri_task), "send_invoice_to_sri_task no es callable"
 
     def test_email_task_exists(self):
         """Debe existir tarea send_email_task."""
-        from apps.core_notifications.tasks import send_email_task
+        from apps.notifications.tasks import send_email_task
         assert callable(send_email_task)
 
     def test_report_task_exists(self):
         """Debe existir al menos una tarea de reportes."""
-        from apps.core_notifications.tasks import generate_invoice_pdf_task
+        from apps.notifications.tasks import generate_invoice_pdf_task
         assert callable(generate_invoice_pdf_task)
 
     def test_webhook_task_exists(self):
         """Debe existir tarea send_webhook_task."""
-        from apps.core_notifications.tasks import send_webhook_task
+        from apps.notifications.tasks import send_webhook_task
         assert callable(send_webhook_task)
