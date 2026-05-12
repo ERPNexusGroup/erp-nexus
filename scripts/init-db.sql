@@ -1,15 +1,16 @@
--- Inicialización PostgreSQL para ERP Nexus
--- Ejecutado automáticamente al crear el contenedor
+-- ERP Nexus — PostgreSQL Initial Extensions
+-- Se ejecuta una sola vez al crear la base de datos por primera vez
+-- (montado en /docker-entrypoint-initdb.d/ por docker-compose)
 
--- Crear extensiones útiles
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+-- Extensiones de monitoreo y estadísticas
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+CREATE EXTENSION IF NOT EXISTS pg_stat_kcache;
+CREATE EXTENSION IF NOT EXISTS pg_qualstats;
+CREATE EXTENSION IF NOT EXISTS pg_wait_sampling;
 
--- Configuraciones de conexión
-ALTER SYSTEM SET max_connections = 200;
-ALTER SYSTEM SET shared_buffers = '256MB';
-ALTER SYSTEM SET effective_cache_size = '1GB';
+-- Índices útiles para queries comunes (ajustar según carga real)
+-- Nota: Los índices reales se migran vía Django migrations
 
--- Mostrar info
-SELECT 'PostgreSQL inicializado para ERP Nexus' as status,
-       version() as pg_version;
+-- Comment extensiones
+COMMENT ON EXTENSION pg_stat_statements IS 'Track execution statistics of all SQL statements';
+COMMENT ON EXTENSION pg_stat_kcache IS 'Track CPU and I/O statistics of queries';

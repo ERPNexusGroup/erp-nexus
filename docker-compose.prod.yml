@@ -1,11 +1,10 @@
-# ERP Nexus — Docker Compose Producción
-# Servicios: PostgreSQL + Redis + Django (Gunicorn)
-# Volúmenes persistentes: pgdata, media, static, logs
+# ERP Nexus — Docker Compose Producción (v2 — con DB tuning + Redis persistencia)
+# Servicios: PostgreSQL 16 (tuned) + Redis 7 (AOF) + Django (Gunicorn)
 
 services:
-  # ─── PostgreSQL Database ────────────────────────────────────────────────────
+  # ─── PostgreSQL Database (Production Tuned) ─────────────────────────────────
   db:
-    image: postgres:16-alpine
+    image: postgres:16
     container_name: erp_nexus_db
     restart: unless-stopped
     env_file:
@@ -14,26 +13,56 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-erp_nexus}
       POSTGRES_USER: ${POSTGRES_USER:-erp}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    command: >
+      postgres
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=64MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+      -c work_mem=4MB
+      -c max_connections=100
+      -c max_wal_size=1GB
+      -c min_wal_size=80MB
+      -c log_min_duration_statement=1000  # log queries > 1s
+      -c log_rotation_age=1d
+      -c log_rotation_size=100MB
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-erp}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-erp} -d ${POSTGRES_DB:-erp_nexus}"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - erp_nexus_net
 
-  # ─── Redis Cache ────────────────────────────────────────────────────────────
+  # ─── Redis Cache (Production with AOF persistence) ─────────────────────────
   redis:
     image: redis:7-alpine
     container_name: erp_nexus_redis
     restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD:-}
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+      --appendfsync everysec
+      --save 60 1000
+      --rename-command FLUSHDB ""
+      --rename-command FLUSHALL ""
+      --protected-mode yes
     env_file:
       - .env.prod
     volumes:
       - redisdata:/data
+      - ./scripts/redis.conf:/usr/local/etc/redis/redis.conf:ro
     healthcheck:
       test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
       interval: 10s
@@ -47,8 +76,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.prod
-      args:
-        #uv
     container_name: erp_nexus_web
     restart: unless-stopped
     depends_on:
@@ -62,11 +89,10 @@ services:
       DATABASE_URL: postgres://${POSTGRES_USER:-erp}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-erp_nexus}
       REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379/0
     volumes:
-      # Persist media uploads y static files
       - media:/app/media
       - static:/app/static
-      # Logs externos para rotación
       - logs:/app/logs
+      - backup:/backup  # Para scripts de backup
     ports:
       - "80:8000"
     healthcheck:
@@ -89,6 +115,8 @@ volumes:
   logs:
     driver: local
   redisdata:
+    driver: local
+  backup:
     driver: local
 
 # ─── Red ─────────────────────────────────────────────────────────────────────
