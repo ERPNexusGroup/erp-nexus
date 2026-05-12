@@ -1,10 +1,12 @@
 # Digital Signature - Firma XML con certificado X.509 (.p12)
 from cryptography.hazmat.primitives import serialization, hashes
+from cryptography.hazmat.primitives.serialization.pkcs12 import load_key_and_certificates
 from cryptography.x509 import load_pem_x509_certificate
 from cryptography.exceptions import UnsupportedAlgorithm
 from signxml import XMLSigner, methods
 from signxml.exceptions import InvalidSignature
 import base64
+from datetime import datetime
 from lxml import etree
 
 
@@ -35,49 +37,65 @@ class DigitalSigner:
     def _load_certificate(self):
         """Carga certificado desde archivo PKCS#12"""
         try:
+            from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, NoEncryption
+
             with open(self.p12_path, 'rb') as f:
                 p12_data = f.read()
 
             self._private_key, self._cert, self._additional_certs = (
-                serialization.pkcs12.load_key_and_certificates(
+                load_key_and_certificates(
                     p12_data,
                     self.password.encode('utf-8')
                 )
             )
+
+            # Convertir certificado a PEM para signxml
+            self._cert_pem = self._cert.public_bytes(Encoding.PEM).decode('utf-8')
+            self._private_key_pem = self._private_key.private_bytes(
+                encoding=Encoding.PEM,
+                format=PrivateFormat.PKCS8,
+                encryption_algorithm=NoEncryption()
+            ).decode('utf-8')
         except Exception as e:
             raise ValueError(f"Error cargando certificado: {e}")
 
-    def sign_xml(self, xml_string: str, canonicalize: bool = True) -> str:
+    def sign_xml(self, xml_string: str, reference_id: str = "comprobante") -> str:
         """
-        Firma un documento XML según estándar W3C.
+        Firma un documento XML según estándar del SRI Ecuador.
+
+        Para factura electrónica (XSD SRI), el elemento <factura> debe tener
+        atributo Id (mayúscula) y la firma enveloped referencia ese ID.
 
         Args:
             xml_string: XML como string (UTF-8)
-            canonicalize: Si aplicar canonicalización (recomendado)
+            reference_id: Atributo Id del elemento a firmar (default: 'comprobante')
 
         Returns:
             XML firmado (con elemento Signature anexado)
         """
-        if not self._private_key or not self._cert:
-            raise ValueError("Certificado no cargado")
+        if not hasattr(self, '_private_key_pem') or not hasattr(self, '_cert_pem'):
+            raise ValueError("Certificado no cargado en formato PEM")
 
         try:
             signer = XMLSigner(
                 method=methods.enveloped,
                 signature_algorithm="rsa-sha256",
-                digest_algorithm="sha256",
-                c14n_algorithm="http://www.w3.org/2006/12/xml-c14n"
+                digest_algorithm="sha256"
             )
 
             # Parsear XML
             xml_doc = etree.fromstring(xml_string.encode('utf-8'))
 
-            # Firmar
+            # Asegurar atributo Id mayúscula en el elemento raíz (requerido por SRI)
+            if xml_doc.get('Id') is None:
+                xml_doc.set('Id', reference_id)
+
+            # Firmar con PEM strings (formato que acepta signxml)
             signed_xml = signer.sign(
                 xml_doc,
-                cert=self._cert,
-                key=self._private_key,
-                reference_uri=""  # Empty URI for enveloped signature
+                cert=self._cert_pem,
+                key=self._private_key_pem,
+                reference_uri=f"#{reference_id}"
             )
 
             return etree.tostring(signed_xml, encoding='utf-8', xml_declaration=True).decode('utf-8')
@@ -118,7 +136,7 @@ def load_certificate_info(p12_path: str, password: str) -> dict:
     try:
         with open(p12_path, 'rb') as f:
             p12_data = f.read()
-        _, cert, _ = serialization.pkcs12.load_key_and_certificates(
+        _, cert, _ = load_key_and_certificates(
             p12_data, password.encode('utf-8')
         )
 

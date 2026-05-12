@@ -1,6 +1,6 @@
-# API v1 — Facturación Electrónica Ecuador
+# API v1 — Facturación Electrónica Ecuador (Plugin SRI)
 from ninja import Router
-from apps.facturacion.api.routes import router as facturacion_router
+from modules.facturacion_ec.api.routes import router as facturacion_router
 
-# Exponer endpoints de facturación bajo /api/v1/facturacion/
+# Expone endpoints bajo /api/v1/facturacion_ec/
 router = facturacion_router

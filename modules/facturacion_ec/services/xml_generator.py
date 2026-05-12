@@ -1,16 +1,24 @@
-# XML Generator - Genera factura electrónica XML según XSD SRI Ecuador
+"""
+XMLGenerator — Genera XML SRI Ecuador desde core facturacion models
+
+Usa:
+- apps.facturacion.models: Invoice, InvoiceLine, Customer, Product
+- modules.facturacion_ec.models: SriTipoComprobante
+
+Accede a campos SRI a través de InvoiceSRIExtension.
+"""
 from jinja2 import Template
-from datetime import datetime
-from decimal import Decimal, ROUND_DOWN
+from datetime import datetime, date
+from decimal import Decimal
 from typing import Optional
+import hashlib
+import urllib.parse
 
 
-# Plantilla XML SRI Ecuador (factura 01)
-# Cumple con XSD oficial SRI (versión 1.0.0)
 INVOICE_XML_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
 <factura id="comprobante" version="1.0.0">
   <infoTributaria>
-    <ambiente>{{ environment }}</ambiente>
+    <ambiente>{{ ambiente }}</ambiente>
     <tipoEmision>1</tipoEmision>
     <razonSocialSujeto>{{ company.legal_name | e }}</razonSocialSujeto>
     <nombreComercial>{{ company.commercial_name | default(company.name) | e }}</nombreComercial>
@@ -19,6 +27,7 @@ INVOICE_XML_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
     <estab>{{ establishment_code }}</estab>
     <ptoEmi>{{ emission_point_code }}</ptoEmi>
     <secuencial>{{ sequential_str }}</secuencial>
+    <claveAcceso>{{ access_key }}</claveAcceso>
     <dirMatriz>{{ company.address | e }}</dirMatriz>
     {% if invoice.customer.identification_type == '04' %}
     <codDocSustento></codDocSustento>
@@ -44,17 +53,12 @@ INVOICE_XML_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
     <propina>0.00</propina>
     <importeTotal>{{ "%.2f"|format(invoice.total) }}</importeTotal>
     <moneda>DOLAR</moneda>
-    {% if extra_fields %}
-    {% for key, value in extra_fields.items() %}
-    <campoAdicional nombre="{{ key | e }}">{{ value | e }}</campoAdicional>
-    {% endfor %}
-    {% endif %}
   </infoTributaria>
   <detalles>
     {% for line in invoice_lines %}
     <detalle>
       <codigoPrincipal>{{ line.product.code | e }}</codigoPrincipal>
-      <descripcion>{{ line.product.name | e }}</descripcion>
+      <descripcion>{{ line.description | e }}</descripcion>
       <cantidad>{{ "%.4f"|format(line.quantity) }}</cantidad>
       <precioUnitario>{{ "%.6f"|format(line.unit_price) }}</precioUnitario>
       <precioTotalSinImpuesto>{{ "%.2f"|format(line.subtotal) }}</precioTotalSinImpuesto>
@@ -73,185 +77,77 @@ INVOICE_XML_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
     </detalle>
     {% endfor %}
   </detalles>
-  <infoAdicional>
-    {% if forma_pago %}
-    <campoAdicional nombre="FormasPago">{{ forma_pago }}</campoAdicional>
-    {% endif %}
-  </infoAdicional>
 </factura>
 """
 
 
 class XMLGenerator:
-    """Generador de XML para facturas electrónicas SRI Ecuador"""
-
-    def __init__(self, company):
-        self.company = company
+    def __init__(self):
         self.template = Template(INVOICE_XML_TEMPLATE)
 
-    def generate(self, invoice, invoice_lines, formapago="20") -> str:
+    def generate_invoice_xml(
+        self,
+        invoice,
+        ambiente: int,
+        access_key: str,
+        establishment_code: str = "001",
+        emission_point_code: str = "001",
+        sequential: str = "",
+        **kwargs
+    ) -> str:
         """
-        Genera XML completo de factura.
+        Genera XML de factura desde core Invoice.
 
         Args:
-            invoice: Instancia Invoice model
-            invoice_lines: Lista de InvoiceLine
-            formapago: Forma de pago SRI (20=Otros, 01=Efectivo, etc.)
+            invoice: apps.facturacion.models.Invoice
+            ambiente: 1=Pruebas, 2=Producción
+            access_key: clave acceso SRI (49 dígitos)
+            establishment_code: código establecimiento (3 dígitos)
+            emission_point_code: código punto emisión (3 dígitos)
+            sequential: secuencial (9 dígitos)
 
         Returns:
-            String XML (UTF-8)
+            str: XML generado (sin firmar)
         """
-        # Calcular totales por tipo de impuesto
-        impuestos_agrupados = self._group_taxes(invoice_lines)
+        company = invoice.company
+        customer = invoice.customer
+        invoice_lines = invoice.lines.all()
 
-        # Constraints XML
-        invoice_date = invoice.date.strftime("%d/%m/%Y")
+        # Agrupar impuestos (por ahora todos IVA 2)
+        total_impuestos = [{
+            'codigo': '2',
+            'codigo_porcentaje': '12',
+            'base_imponible': float(invoice.subtotal),
+            'valor': float(invoice.tax_total)
+        }]
+
+        # Fecha en formato SRI: YYYY-MM-ddThh:mm:ssOffset
+        emission_dt = datetime.combine(invoice.date, datetime.min.time())
+        fecha_emision = emission_dt.strftime("%Y-%m-%dT%H:%M:%S%z")
+        # Añadir offset manual si no hay tz
+        if not fecha_emision.endswith(('-05:00', '+00:00')):
+            fecha_emision += "-05:00"
 
         context = {
-            "environment": invoice.ambiente,
-            "company": self.company,
-            "invoice": invoice,
-            "invoice_type_code": invoice.tipo_comprobante.code,
-            "establishment_code": "001",   # TODO: desde company config
-            "emission_point_code": "001",  # TODO: desde company config
-            "sequential_str": self._extract_sequential(invoice.number),
-            "invoice_date": invoice_date,
-            "invoice_lines": invoice_lines,
-            "total_impuestos": impuestos_agrupados,
-            "forma_pago": formapago,
-            "extra_fields": self._get_extra_fields(invoice),
+            'ambiente': ambiente,
+            'invoice_type_code': '01',  # Factura por defecto
+            'company': {
+                'legal_name': company.legal_name or company.name,
+                'commercial_name': company.commercial_name or company.name,
+                'name': company.name,
+                'ruc': company.ruc,
+                'address': company.address or 'Dirección no especificada',
+            },
+            'establishment_code': establishment_code,
+            'emission_point_code': emission_point_code,
+            'sequential_str': sequential,
+            'access_key': access_key,
+            'invoice_date': fecha_emision,
+            'invoice': invoice,
+            'customer': customer,
+            'invoice_lines': invoice_lines,
+            'total_impuestos': total_impuestos,
         }
 
-        xml_str = self.template.render(**context)
-
-        # Asegurar UTF-8
-        xml_bytes = xml_str.encode('utf-8')
-        return xml_bytes.decode('utf-8')
-
-    def _extract_sequential(self, number: str) -> str:
-        """Extrae el secuencial de 9 dígitos del número 001-001-000000001"""
-        parts = number.split("-")
-        if len(parts) == 3:
-            return parts[2].zfill(9)
-        return "000000001"
-
-    def _group_taxes(self, invoice_lines):
-        """
-        Agrupa impuestos por código/porcentaje para elemento <totalConImpuestos>.
-        SRI requiere un <totalImpuesto> por tipo de impuesto.
-        """
-        groups = {}
-        for line in invoice_lines:
-            key = (line.tax_rate, line.tax_code if hasattr(line, 'tax_code') else '2')
-            if key not in groups:
-                groups[key] = {
-                    'codigo': key[1],  # 2=IVA, 3=ICE, etc.
-                    'codigo_porcentaje': str(int(line.tax_rate)) if line.tax_rate == int(line.tax_rate) else str(line.tax_rate),
-                    'base_imponible': Decimal('0.00'),
-                    'valor': Decimal('0.00'),
-                }
-            groups[key]['base_imponible'] += Decimal(str(line.subtotal))
-            groups[key]['valor'] += Decimal(str(line.tax_amount))
-
-        return list(groups.values())
-
-    def _get_extra_fields(self, invoice):
-        """Campos adicionales opcionales (por ejemplo: Guía remisión)"""
-        extra = {}
-        if invoice.guia_remision_number:
-            extra["GuiaRemision"] = invoice.guia_remision_number
-        return extra
-
-
-def validate_xml_against_xsd(xml_string: str, xsd_path: str = None) -> tuple[bool, str]:
-    """
-    Valida XML generado contra XSD oficial del SRI.
-
-    Args:
-        xml_string: String XML a validar
-        xsd_path: Ruta al archivo XSD (si None, usa XSD embebido)
-
-    Returns:
-        (es_valido, mensaje_error)
-    """
-    from lxml import etree
-
-    try:
-        xml_doc = etree.fromstring(xml_string.encode('utf-8'))
-
-        if xsd_path:
-            with open(xsd_path, 'rb') as f:
-                xsd_doc = etree.parse(f)
-        else:
-            # XSD mínimo embebido (solo para pruebas de estructura)
-            xsd_str = _get_minimal_xsd()
-            xsd_doc = etree.fromstring(xsd_str.encode('utf-8'))
-
-        schema = etree.XMLSchema(xsd_doc)
-        schema.assertValid(xml_doc)
-        return True, "XML válido contra XSD"
-
-    except etree.DocumentInvalid as e:
-        return False, f"Error validación XSD: {str(e)}"
-    except Exception as e:
-        return False, f"Error inesperado: {str(e)}"
-
-
-def _get_minimal_xsd() -> str:
-    """
-    XSD mínimo embebido para validaciones en desarrollo.
-    En producción usar XSD oficial descargado del SRI.
-    """
-    return """<?xml version="1.0"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="factura">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="infoTributaria"><xs:complexType><xs:sequence>
-          <xs:element name="ambiente" type="xs:integer"/>
-          <xs:element name="tipoEmision" type="xs:integer"/>
-          <xs:element name="razonSocialSujeto" type="xs:string"/>
-          <xs:element name="ruc" type="xs:string"/>
-          <xs:element name="codDoc" type="xs:string"/>
-          <xs:element name="estab" type="xs:string"/>
-          <xs:element name="ptoEmi" type="xs:string"/>
-          <xs:element name="secuencial" type="xs:string"/>
-          <xs:element name="fechaEmision" type="xs:string"/>
-        </xs:sequence></xs:complexType></xs:element>
-        <xs:element name="detalles">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="detalle" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="codigoPrincipal" type="xs:string"/>
-                    <xs:element name="descripcion" type="xs:string"/>
-                    <xs:element name="cantidad" type="xs:decimal"/>
-                    <xs:element name="precioUnitario" type="xs:decimal"/>
-                    <xs:element name="precioTotalSinImpuesto" type="xs:decimal"/>
-                    <xs:element name="impuestos">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="impuesto">
-                            <xs:complexType>
-                              <xs:sequence>
-                                <xs:element name="codigo" type="xs:string"/>
-                                <xs:element name="codigoPorcentaje" type="xs:string"/>
-                                <xs:element name="baseImponible" type="xs:decimal"/>
-                                <xs:element name="valor" type="xs:decimal"/>
-                              </xs:sequence>
-                            </xs:complexType>
-                          </xs:element>
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-</xs:schema>"""
+        xml = self.template.render(**context)
+        return xml

@@ -14,6 +14,23 @@ dependencies = [
     "requests>=2.31",
     "pydantic>=2.0",
     "pyyaml>=6.0.3",
+    # Facturación electrónica Ecuador (plugin facturacion_ec)
+    "cryptography>=42.0",      # PKCS#12, firma digital X.509
+    "signxml>=2.10",           # XMLDSig (firma XML enveloped)
+    "lxml>=5.0",               # XML parser/processor
+    "jinja2>=3.1",             # Templates XML SRI
+    "httpx>=0.27",             # SOAP async client para SRI
+    "asgiref>=3.7",            # sync_to_async (ya incluido con Django)
+    "django-jazzmin>=3.0.4",
+    "django-cors-headers>=4.9.0",
+    "django-redis>=6.0.0",
+    "django-celery-beat>=2.9.0",
+    "djangorestframework>=3.17.1",
+    "drf-spectacular>=0.29.0",
+    "django-ninja>=1.6.2",
+    "pyjwt>=2.12.1",
+    "django-extensions>=4.1",
+    "drf-yasg>=1.21.15",
 ]
 
 [tool.black]

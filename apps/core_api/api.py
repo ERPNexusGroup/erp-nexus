@@ -83,3 +83,7 @@ api.add_router("/pages/", pages_router, tags=["pages"])
 # ─── Facturación Electrónica (facturacion) ───────────────────────────────
 from apps.core_api.v1.facturacion_ec import router as facturacion_router  # noqa: E402
 api.add_router("/facturacion/", facturacion_router, tags=["facturacion"])
+
+# ─── Payments & Payouts ─────────────────────────────────────────────────────
+from apps.core_payments.api import router as payments_router  # noqa: E402
+api.add_router("/payments/", payments_router, tags=["payments"])

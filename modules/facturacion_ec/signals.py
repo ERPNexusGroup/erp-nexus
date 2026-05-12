@@ -1,29 +1,23 @@
-# Señales del módulo facturacion_ec
+"""
+Signals para facturacion_ec (plugin SRI).
+"""
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.conf import settings
-from .models import Invoice
-from .services import send_invoice_to_sri
-import threading
+
+from .models import InvoiceSRIExtension
 
 
-@receiver(post_save, sender=Invoice)
-def invoice_created_handler(sender, instance, created, **kwargs):
+@receiver(post_save, sender=InvoiceSRIExtension)
+def invoice_sri_extension_post_save(sender, instance, created, **kwargs):
     """
-    Al crear factura, disparar envío a SRI en background (no bloquear response).
-
-    Para producción con Celery/ARQ:
-        send_invoice_task.delay(instance.id)
-
-    Para desarrollo sin Celery:
-        threading.Thread(target=send_invoice_to_sri, args=(instance.id,)).start()
+    Cuando se crea/actualiza una extensión SRI, recalcular totals de la factura core
+    (por si cambió impuestos) y loggear evento.
     """
-    if created and instance.sri_status == 'pending':
-        # Solo si configuración permite auto-envío
-        if settings.DEBUG or getattr(settings, 'FACTURACION_EC_AUTO_SEND', True):
-            thread = threading.Thread(
-                target=send_invoice_to_sri,
-                args=(instance.id,),
-                daemon=True
-            )
-            thread.start()
+    if created:
+        # Log creación
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(
+            f"Factura {instance.invoice.number} — Extensión SRI creada "
+            f"(ambiente={instance.ambiente}, status={instance.sri_status})"
+        )

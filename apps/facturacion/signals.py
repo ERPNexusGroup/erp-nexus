@@ -1,29 +1,57 @@
-# Señales del módulo facturacion
-from django.db.models.signals import post_save
+"""
+Signals para facturación core.
+
+Auto-numbering de Invoice y cálculo de totals automático.
+"""
+from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
-from django.conf import settings
-from .models import Invoice
-from .services import send_invoice_to_sri
-import threading
+
+from .models import Invoice, InvoiceLine
+
+
+# =========== INVOICE ===========
+
+@receiver(pre_save, sender=Invoice)
+def invoice_pre_save(sender, instance, **kwargs):
+    """
+    Asigna número único a Invoice si es nuevo (status=draft).
+    Formato: XXX-XXX-XXXXXXXXX
+    """
+    if instance._state.adding and not instance.number:
+        from .services.invoice_sequencer import generate_next_invoice_number
+        instance.number = generate_next_invoice_number(instance.company)
 
 
 @receiver(post_save, sender=Invoice)
-def invoice_created_handler(sender, instance, created, **kwargs):
+def invoice_post_save(sender, instance, created, **kwargs):
     """
-    Al crear factura, disparar envío a SRI en background (no bloquear response).
-
-    Para producción con Celery/ARQ:
-        send_invoice_task.delay(instance.id)
-
-    Para desarrollo sin Celery:
-        threading.Thread(target=send_invoice_to_sri, args=(instance.id,)).start()
+    Actualiza totals sumando líneas.
     """
-    if created and instance.sri_status == 'pending':
-        # Solo si configuración permite auto-envío
-        if settings.DEBUG or getattr(settings, 'FACTURACION_EC_AUTO_SEND', True):
-            thread = threading.Thread(
-                target=send_invoice_to_sri,
-                args=(instance.id,),
-                daemon=True
-            )
-            thread.start()
+    lines = instance.facturacion_lines.all()
+    subtotal = sum(l.subtotal for l in lines)
+    tax_total = sum(l.tax_amount for l in lines)
+    total = subtotal + tax_total
+
+    Invoice.objects.filter(pk=instance.pk).update(
+        subtotal=subtotal,
+        tax_total=tax_total,
+        total=total
+    )
+
+
+@receiver(post_delete, sender=InvoiceLine)
+def invoice_line_post_delete(sender, instance, **kwargs):
+    """
+    Al eliminar una línea, recalcular totals de la factura.
+    """
+    invoice = instance.invoice
+    lines = invoice.facturacion_lines.all()
+    subtotal = sum(l.subtotal for l in lines)
+    tax_total = sum(l.tax_amount for l in lines)
+    total = subtotal + tax_total
+
+    Invoice.objects.filter(pk=invoice.pk).update(
+        subtotal=subtotal,
+        tax_total=tax_total,
+        total=total
+    )

@@ -3,9 +3,13 @@ Settings base — compartidas entre todos los entornos.
 """
 import os
 import sys
+import uuid
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+# Default generator for UUID primary keys
+UUID_FIELD_DEFAULT = uuid.uuid4
 
 # ─── Añadir modules/core al path para importar el paquete 'core' ──────
 # modules/core contiene el paquete 'core' (con __init__.py y apps.py)
@@ -42,11 +46,12 @@ INSTALLED_APPS = [
     "apps.core_audit",
     "apps.core_stats",
     "apps.core_pagebuilder",
+    "apps.core_payments",
     # Essential modules (integrated)
-    "apps.facturacion",
     "apps.inventory",
     "apps.sales",
     "apps.purchases",
+    "apps.facturacion",  # Core facturación local (sin SRI)
     "apps.notifications",
     "apps.print_manager",
 ]

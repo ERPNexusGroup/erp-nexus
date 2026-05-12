@@ -1,113 +1,178 @@
-# Integración completa: Crear factura → XML → Firmar → Enviar a SRI
+"""
+Integración completa: Core Invoice → SRI Extension → XML → Firma → Envío
+
+Flujo:
+1. Obtener Invoice desde core facturacion (ya existe)
+2. Crear/obtener InvoiceSRIExtension asociada
+3. Generar XML SRI
+4. Firmar XML
+5. Enviar a SRI
+6. Actualizar extensión con respuesta
+"""
 from datetime import datetime
 from decimal import Decimal
-from ..models import Invoice
-from .code_unique import generate_access_key, generate_invoice_number
+from typing import Optional, Dict, Any
+
+from apps.facturacion.models import Invoice as CoreInvoice
+from modules.facturacion_ec.models import InvoiceSRIExtension, SriTipoComprobante
+from .code_unique import generate_access_key, generate_invoice_number, get_next_sequential_for_invoice
 from .xml_generator import XMLGenerator
 from .digital_signature import DigitalSigner
 from .sri_client import SRIClient
 from django.conf import settings
 
 
-# TODO: Mover a settings
-SRI_ENVIRONMENT = 1  # 1=Pruebas, 2=Producción
-CERTIFICATE_PATH = "/path/to/certificate.p12"
-CERTIFICATE_PASSWORD = ""
-
-
-def send_invoice_to_sri(invoice_id: int) -> dict:
+def generate_sri_extension(invoice_id: int, ambiente: int = 1) -> InvoiceSRIExtension:
     """
-    Orquesta el flujo completo de factura electrónica:
-
-    1. Carga factura desde DB
-    2. Genera XML
-    3. Firma digital
-    4. Envía a SRI
-    5. Guarda respuesta
+    Genera la extensión SRI para una factura core.
 
     Args:
-        invoice_id: ID de Invoice
+        invoice_id: ID de factura del core
+        ambiente: 1=Pruebas, 2=Producción
 
     Returns:
-        dict: {success: bool, estado: str, mensaje: str, xml_sent: str, xml_response: str}
+        InvoiceSRIExtension guardada
     """
-    try:
-        invoice = Invoice.objects.get(id=invoice_id)
-    except Invoice.DoesNotExist:
-        return {"success": False, "estado": "ERROR", "mensaje": "Factura no encontrada"}
+    invoice = CoreInvoice.objects.get(id=invoice_id)
 
-    # 1. Cargar líneas
-    lines = list(invoice.lines.all())
-    if not lines:
-        return {"success": False, "estado": "ERROR", "mensaje": "Factura sin líneas"}
-
-    # 2. Generar clave acceso (si no existe)
-    if not invoice.access_key:
-        seq = generate_invoice_number(
-            "001", "001", get_next_sequential(invoice.company, "001", "001")
-        ).split("-")[2]
-        invoice.access_key = generate_access_key(
-            ruc=invoice.company.ruc,
-            ambiente=invoice.ambiente,
-            establishment_code="001",
-            emission_point="001",
-            sequential=seq,
-            date=invoice.date,
-        )
-        invoice.save(update_fields=["access_key"])
-
-    # 3. Generar XML
-    generator = XMLGenerator(invoice.company)
-    xml_raw = generator.generate(invoice, lines)
-
-    # 4. Firmar
-    signer = DigitalSigner(CERTIFICATE_PATH, CERTIFICATE_PASSWORD)
-    xml_signed = signer.sign_xml(xml_raw)
-
-    # Guardar XML firmado
-    invoice.xml_content = xml_signed
-    invoice.save(update_fields=["xml_content"])
-
-    # 5. Enviar a SRI
-    client = SRIClient(environment=invoice.ambiente)
-    result = client.send(xml_signed)
-
-    # 6. Guardar log
-    from .models import SRISendLog
-    SRISendLog.objects.create(
+    # Obtener o crear extensión
+    extension, created = InvoiceSRIExtension.objects.get_or_create(
         invoice=invoice,
-        endpoint=client.url,
-        request_xml=xml_signed[:1000],  # truncado
-        response_xml=result.get("respuesta_xml", "")[:2000],
-        response_code=result.get("estado", ""),
-        success=result.get("success", False),
-        error_message=result.get("mensaje", ""),
+        defaults={'ambiente': ambiente}
     )
 
-    # 7. Actualizar estado factura
-    estado_sri = result.get("estado", "").upper()
-    if estado_sri in ("APROBADA", "AUTORIZADA", "AUTORIZADO"):
-        invoice.sri_status = "accepted"
-        invoice.sri_authorization_date = datetime.now()
-        invoice.sri_xml_autorizado = result.get("comprobante_autorizado", "")
-    elif estado_sri == "RECHAZADA":
-        invoice.sri_status = "rejected"
-    else:
-        invoice.sri_status = "sent"
+    # Asignar tipo comprobante (default Factura 01)
+    tipo_comp, _ = SriTipoComprobante.objects.get_or_create(
+        code='01',
+        defaults={'name': 'Factura', 'description': 'Factura de venta'}
+    )
+    extension.tipo_comprobante = tipo_comp
 
-    invoice.sri_message = result.get("mensaje", "")
-    invoice.save(update_fields=["sri_status", "sri_message", "sri_authorization_date", "sri_xml_autorizado"])
+    # Generar clave acceso
+    establishment_code = getattr(invoice.company, 'establishment_code', '001')
+    emission_point_code = getattr(invoice.company, 'point_emission_code', '001')
+    sequential = get_next_sequential_for_invoice(invoice.company)
 
-    # 8. Incrementar contador licencia
+    access_key = generate_access_key(
+        ruc=invoice.company.ruc,
+        ambiente=extension.ambiente,
+        establishment_code=establishment_code,
+        emission_point_code=emission_point_code,
+        sequential=sequential,
+        date=invoice.date
+    )
+    extension.access_key = access_key
+
+    # Generar número de factura
+    invoice.number = generate_invoice_number(
+        establishment_code=establishment_code,
+        emission_point_code=emission_point_code,
+        sequential=int(sequential)
+    )
+    invoice.save(update_fields=['number'])
+
+    # Generar XML
+    xml_gen = XMLGenerator()
+    xml_content = xml_gen.generate_invoice_xml(
+        invoice=invoice,
+        ambiente=extension.ambiente,
+        access_key=access_key,
+        establishment_code=establishment_code,
+        emission_point_code=emission_point_code,
+        sequential=sequential,
+    )
+
+    # Firmar XML
+    cert_path = getattr(settings, 'FACTURACION_EC_CERT_PATH', '')
+    cert_pass = getattr(settings, 'FACTURACION_EC_CERT_PASSWORD', '')
+    signer = DigitalSigner(p12_path=cert_path, password=cert_pass)
+    signed_xml = signer.sign_xml(xml_content)
+
+    extension.xml_content = signed_xml
+
+    # Hash para registro
+    import hashlib
+    extension.xml_original_hash = hashlib.sha256(signed_xml.encode('utf-8')).hexdigest()
+    extension.save()
+
+    return extension
+
+
+def send_invoice_to_sri(invoice_id: int) -> Dict[str, Any]:
+    """
+    Envía factura (core) al SRI, creando extensión si no existe.
+
+    Args:
+        invoice_id: ID de Invoice del core
+
+    Returns:
+        dict con éxito/error
+    """
     try:
-        from .models import CompanyLicense
-        license_obj = CompanyLicense.objects.filter(
-            company=invoice.company,
-            is_active=True
-        ).first()
-        if license_obj:
-            license_obj.increment_invoice_count()
-    except Exception:
-        pass
+        invoice = CoreInvoice.objects.get(id=invoice_id)
 
-    return result
+        # Obtener o crear extensión SRI
+        extension, created = InvoiceSRIExtension.objects.get_or_create(
+            invoice=invoice
+        )
+
+        # Si no tiene XML/firma, generarla (usa extension.ambiente)
+        if not extension.xml_content:
+            generate_sri_extension(invoice_id, ambiente=extension.ambiente or 1)
+            extension.refresh_from_db()
+
+        # Enviar a SRI
+        client = SRIClient(environment=extension.ambiente or 1)
+        result = client.send_xml(extension.xml_content)
+
+        # Actualizar extensión con respuesta
+        extension.sri_status = 'accepted' if result.get('success') else 'rejected'
+        extension.sri_message = result.get('mensaje', '')
+        extension.sri_xml_autorizado = result.get('xml_autorizado', '')
+        if result.get('success'):
+            extension.sri_authorization_date = datetime.now()
+        extension.save()
+
+        # Actualizar factura core status
+        invoice.status = 'sent' if result.get('success') else 'draft'
+        invoice.save(update_fields=['status'])
+
+        return result
+
+    except Exception as e:
+        return {'success': False, 'mensaje': str(e)}
+
+
+def process_pending_invoices(limit: int = 50, company_id: int = None) -> dict:
+    """
+    Procesa facturas pendientes de envío SRI.
+    Usado por management command.
+    """
+    qs = CoreInvoice.objects.filter(status='draft').order_by('date', 'id')
+    if company_id:
+        qs = qs.filter(company_id=company_id)
+
+    pending = qs[:limit]
+    total = pending.count()
+
+    results = {
+        'total': total,
+        'success': 0,
+        'errors': 0,
+        'details': []
+    }
+
+    for invoice in pending:
+        try:
+            res = send_invoice_to_sri(invoice.id)
+            if res.get('success'):
+                results['success'] += 1
+                results['details'].append(f"{invoice.number}: OK")
+            else:
+                results['errors'] += 1
+                results['details'].append(f"{invoice.number}: {res.get('mensaje','ERROR')}")
+        except Exception as e:
+            results['errors'] += 1
+            results['details'].append(f"{invoice.number}: {str(e)}")
+
+    return results
