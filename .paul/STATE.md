@@ -2,10 +2,10 @@
 
 **Project:** ERP Nexus Core (Framework + Essential Modules)
 **Architecture:** Hybrid — Essential modules in core, Optional modules as plugins
-**Current Phase:** M3 Phase 2.1 — Docker Production Image (COMPLETED)
+**Current Phase:** M3 Phase 2.2 — PostgreSQL + Redis Production (COMPLETED)
 **Loop Position:** UNIFY COMPLETE
-**Last Completed:** Phase 2.1 — Docker Production Image (2026-05-11) ✅
-**Current Milestone:** M3 — Production Ready (Phase 2.2 PLANNED)
+**Last Completed:** Phase 2.2 — PostgreSQL + Redis Production (2026-05-11) ✅
+**Current Milestone:** M3 — Production Ready (Phase 2.3 PLANNED)
 **Branch:** `main`
 
 ## ✅ Phase 0.6 — Hybrid Restructure (COMPLETED)
@@ -96,6 +96,32 @@
 
 
 ## ✅ Phase 2.1 — Docker Production Image (APPLIED — COMPLETE)
+## ✅ Phase 2.2 — PostgreSQL + Redis Production (APPLIED — COMPLETE)
+
+**Fecha:** 2026-05-11
+**Estado:** ✅ APPLIED + UNIFY COMPLETE
+**Commit:** `feat(m3): PostgreSQL + Redis production tuning — Phase 2.2 COMPLETE` (7028a00)
+
+**Objetivo:** Configuración de producción para PostgreSQL y Redis.
+
+**Entregables:**
+- [x] PostgreSQL 16 con tuning avanzado (shared_buffers, work_mem, checkpoint, WAL)
+- [x] Redis 7 con AOF persistencia + maxmemory LRU + comandos FLUSH* deshabilitados
+- [x] Volumen `backup` montado (/backup) para scripts
+- [x] Extensiones PostgreSQL: pg_stat_statements, pg_stat_kcache, pg_qualstats, pg_wait_sampling
+- [x] Script `backup-db.sh` — dump + gzip + rotación (7d diario, 4s semanal)
+- [x] Script `restore-db.sh` — restauración desde backup con confirmación
+- [x] Script `maintenance-db.sh` — VACUUM ANALYZE + estadísticas + top queries
+- [x] Script `maintenance-redis.sh` — info, memoria, keyspace, slowlog
+- [x] Documentación `docs/PROD_DB_TUNING.md` (tuning, métricas, troubleshooting)
+- [x] Documentación `scripts/README.md` (uso de scripts)
+- [x] Tests automatizados: 25 tests en test_production_scripts.py ✅
+
+**Tests:** 25 production scripts tests passing
+**Referencia:** `.paul/phases/03-production/02-02-PG-REDIS-PRODUCTION.md`
+
+
+
 
 **Fecha:** 2026-05-11
 **Estado:** ✅ APPLIED + UNIFY COMPLETE

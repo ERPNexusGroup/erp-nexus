@@ -110,6 +110,15 @@ Catalog, install/uninstall, API, Admin UI básico.
 **Target:** Semana 6-7
 **Status:** ⬜ Planned
 
+#### Phase 2.2 — PostgreSQL + Redis Production — ✅ DONE (2026-05-11)
+- [x] PostgreSQL 16 tuning avanzado (shared_buffers, work_mem, checkpoint, WAL)
+- [x] Redis 7 AOF persistencia + maxmemory LRU + comandos seguros
+- [x] Volumen backup (/backup) para scripts
+- [x] Extensiones: pg_stat_statements, pg_stat_kcache, pg_qualstats
+- [x] Scripts: backup-db, restore-db, maintenance-db, maintenance-redis
+- [x] Documentación: PROD_DB_TUNING.md + scripts README
+- [x] 25 tests automatizados pasan
+
 #### Phase 2.1 — Docker Production Image — ✅ DONE (2026-05-11)
 - [x] `Dockerfile.prod` multi-stage (builder + runtime)
 - [x] `docker-compose.prod.yml` (postgres + redis + web)
