@@ -2,10 +2,10 @@
 
 **Project:** ERP Nexus Core (Framework + Essential Modules)
 **Architecture:** Hybrid — Essential modules in core, Optional modules as plugins
-**Current Phase:** M3 Phase 2.2 — PostgreSQL + Redis Production (COMPLETED)
+**Current Phase:** M3 Phase 2.3 — Celery Workers (COMPLETED)
 **Loop Position:** UNIFY COMPLETE
-**Last Completed:** Phase 2.2 — PostgreSQL + Redis Production (2026-05-11) ✅
-**Current Milestone:** M3 — Production Ready (Phase 2.3 PLANNED)
+**Last Completed:** Phase 2.3 — Celery Workers (2026-05-11) ✅
+**Current Milestone:** M3 — Production Ready (Phase 2.4 PLANNED)
 **Branch:** `main`
 
 ## ✅ Phase 0.6 — Hybrid Restructure (COMPLETED)
@@ -97,6 +97,36 @@
 
 ## ✅ Phase 2.1 — Docker Production Image (APPLIED — COMPLETE)
 ## ✅ Phase 2.2 — PostgreSQL + Redis Production (APPLIED — COMPLETE)
+## ✅ Phase 2.3 — Celery Workers (APPLIED — COMPLETE)
+
+**Fecha:** 2026-05-11
+**Estado:** ✅ APPLIED + UNIFY COMPLETE
+**Commit:** `feat(m3): Celery workers with Redis broker — Phase 2.3 COMPLETE` (8c1eaca)
+
+**Objetivo:** Sistema de colas asíncronas para tareas pesadas.
+
+**Entregables:**
+- [x] `erp_nexus/celery.py` — Celery app con autodiscover de tareas
+- [x] Configuración colas: sri (0), notifications (1), webhooks (3), default (5), reports (9)
+- [x] Tareas base en `apps/core_notifications/tasks.py`:
+  * send_email_task (retry 3x, 60s delay)
+  * send_templated_email_task (HTML + texto)
+  * send_invoice_to_sri_task (alta prioridad, SRI Ecuador)
+  * generate_invoice_pdf_task (reportes pesados)
+  * send_webhook_task (integraciones externas)
+  * cleanup_old_sessions, refresh_marketplace_cache (periódicas)
+- [x] Docker Compose: servicios `worker` y `beat`
+  * worker: --concurrency=4, --queues=default,sri,notifications,reports,webhooks
+  * beat: scheduler para tareas periódicas
+- [x] `pyproject.toml`: agregada dependencia `celery>=5.3`
+- [x] Tests automatizados: 19 tests en test_celery_config.py ✅
+- [x] Documentación `docs/CELERY.md` (queues, retry, beat, Flower, troubleshooting)
+
+**Tests:** 19 Celery configuration tests passing
+**Referencia:** `.paul/phases/03-production/02-03-CELERY-WORKERS.md`
+
+
+
 
 **Fecha:** 2026-05-11
 **Estado:** ✅ APPLIED + UNIFY COMPLETE

@@ -119,6 +119,15 @@ Catalog, install/uninstall, API, Admin UI básico.
 - [x] Documentación: PROD_DB_TUNING.md + scripts README
 - [x] 25 tests automatizados pasan
 
+#### Phase 2.3 — Celery Workers — ✅ DONE (2026-05-11)
+- [x] Celery app + autodiscover (erp_nexus/celery.py)
+- [x] 5 colas: sri (0), notifications (1), webhooks (3), default (5), reports (9)
+- [x] Tareas base: email, SRI, reports, webhooks, periodic
+- [x] Docker services: worker + beat
+- [x] pyproject.toml: celery>=5.3
+- [x] 19 tests de configuración pasan
+- [x] Documentación CELERY.md
+
 #### Phase 2.1 — Docker Production Image — ✅ DONE (2026-05-11)
 - [x] `Dockerfile.prod` multi-stage (builder + runtime)
 - [x] `docker-compose.prod.yml` (postgres + redis + web)
