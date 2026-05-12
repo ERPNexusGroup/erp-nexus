@@ -185,5 +185,28 @@ CACHES = {
 }
 
 # ─── Celery (override en production) ─────────────────────────────────
+# En desarrollo: TASK_ALWAYS_EAGER=True (síncrono, sin broker)
+# En producción: broker URL desde REDIS_URL, colas definidas abajo
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
+
+# Configuración base de colas (se usa en producción)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 300  # 5 minutos máximo por tarea
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 1000  # prevenir memory leaks
+
+# Definición de colas (queues) y prioridades
+CELERY_TASK_QUEUES = {
+    'default': {'exchange': 'default', 'routing_key': 'default'},
+    'sri': {'exchange': 'sri', 'routing_key': 'sri.#', 'priority': 0},      # Alta prioridad
+    'notifications': {'exchange': 'notifications', 'routing_key': 'notifications.#', 'priority': 1},
+    'reports': {'exchange': 'reports', 'routing_key': 'reports.#', 'priority': 5},      # Baja prioridad
+    'webhooks': {'exchange': 'webhooks', 'routing_key': 'webhooks.#', 'priority': 3},
+}
+CELERY_TASK_DEFAULT_QUEUE = 'default'
+CELERY_TASK_DEFAULT_EXCHANGE = 'default'
+CELERY_TASK_DEFAULT_ROUTING_KEY = 'default'
+# Prioridad numérica: 0 (máxima) a 9 (mínima)

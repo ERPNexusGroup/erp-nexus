@@ -104,6 +104,60 @@ services:
     networks:
       - erp_nexus_net
 
+# ─── Celery Worker (async tasks) ─────────────────────────────────────────────
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: erp_nexus_worker
+    command: >
+      celery -A erp_nexus worker
+      --loglevel=info
+      --queues=default,sri,notifications,reports,webhooks
+      --concurrency=${CELERY_WORKER_CONCURRENCY:-4}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+    env_file:
+      - .env.prod
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-erp}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-erp_nexus}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379/0
+    volumes:
+      - logs:/app/logs
+    networks:
+      - erp_nexus_net
+    restart: unless-stopped
+
+# ─── Celery Beat (periodic tasks scheduler) ──────────────────────────────────
+  beat:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: erp_nexus_beat
+    command: celery -A erp_nexus beat --loglevel=info
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      worker:
+        condition: service_healthy
+    env_file:
+      - .env.prod
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-erp}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-erp_nexus}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379/0
+    volumes:
+      - logs:/app/logs
+    networks:
+      - erp_nexus_net
+    restart: unless-stopped
+
 # ─── Volúmenes ────────────────────────────────────────────────────────────────
 volumes:
   pgdata:
