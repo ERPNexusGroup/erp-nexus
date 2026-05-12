@@ -123,6 +123,14 @@
 - [x] Documentación `docs/CELERY.md` (queues, retry, beat, Flower, troubleshooting)
 
 **Tests:** 19 Celery configuration tests passing
+
+**Post-completion fix (2026-05-11):**
+- `modules_enabled.py` — force `MODULE_APPS = []` to avoid duplicate app labels
+  (facturacion/sales already in INSTALLED_APPS as apps.facturacion/apps.sales)
+- Consolidated `core_notifications/tasks.py` → `apps/notifications/tasks.py`
+- All tests passing: 131 core_marketplace + 19 Celery config ✅
+- Django check: 0 issues ✅
+
 **Referencia:** `.paul/phases/03-production/02-03-CELERY-WORKERS.md`
 
 
