@@ -31,4 +31,6 @@ urlpatterns = [
     path("api/v1/", api.urls),  # Sin namespace extra — endpoints accesibles directamente
     path("marketplace/", include("apps.core_marketplace.urls")),  # Public catalog
     path("health/", health_check, name="health_check"),
+    # core_pagebuilder — páginas públicas
+    path("pages/", include("apps.core_pagebuilder.urls_public")),
 ]

@@ -2,10 +2,12 @@
 
 **Project:** ERP Nexus Core (Framework + Essential Modules)
 **Architecture:** Hybrid — Essential modules in core, Optional modules as plugins
-**Current Phase:** M3 Phase 2.3 — Celery Workers (COMPLETED)
-**Loop Position:** UNIFY COMPLETE
-**Last Completed:** Phase 2.3 — Celery Workers (2026-05-11) ✅
-**Current Milestone:** M3 — Production Ready (Phase 2.4 PLANNED)
+**Current Phases:**
+  • Phase 0.6.2 — core_pagebuilder completion (APPLIED — COMPLETE)
+  • Phase 3.x — M4 Production Hardening (IN PROGRESS — monitoring complete)
+**Loop Position:** UNIFY COMPLETE (0.6 / 1.1 / 1.2 / 1.3) | APPLY IN PROGRESS (0.6.2)
+**Last Completed:** Phase 0.6.2 — core_pagebuilder API + Frontend (2026-05-13) ✅
+**Current Milestone:** M4 — Deployment Hardening (Phase 0.6.2 COMPLETE)
 **Branch:** `main`
 
 ## ✅ Phase 0.6 — Hybrid Restructure (COMPLETED)
@@ -28,7 +30,41 @@
 
 ---
 
-## ✅ Phase 1.1 — Marketplace Foundation (APPLIED — COMPLETE)
+## ✅ Phase 0.6.2 — core_pagebuilder API + Frontend Completion (APPLIED — COMPLETE)
+
+**Fecha:** 2026-05-13
+**Estado:** ✅ APPLIED + UNIFY COMPLETE
+**Duración:** ~3h
+**Commits:** `feat(pagebuilder): API REST + public views + renderer`
+
+**Objetivo:** Completar módulo core_pagebuilder con API REST extendida + servicio de renderizado + frontend.
+
+**Entregables (9 tasks — 8/9 implementados, 1 documentación opcional):**
+- [x] 0.6.2.1 — Serializers + API Foundation (`serializers.py`, extensión `apps/core_api/v1/pages.py`)
+- [x] 0.6.2.2 — Layout Validation Schema (`validators.py` con JSON schema + pydantic)
+- [x] 0.6.2.3 — Render Service (`renderer.py` — `PageRenderer` con `mark_safe`, templates inline)
+- [x] 0.6.2.4 — Template Views + Public URLs (`views_public.py`, `urls_public.py`)
+- [x] 0.6.2.5 — Frontend Components Library (`page-builder.css`, `page_detail.html`, `base.html`)
+- [x] 0.6.2.6 — Management Commands (`create_demo_pages`, `publish_all` — páginas demo creadas)
+- [x] 0.6.2.7 — Manual verification (HTML pages 200 ✅, JSON render endpoint 200 ✅, API endpoints funcionales ✅)
+- [ ] 0.6.2.8 — Documentation (OPCIONAL — funcionalidad ya documentada en código)
+- [x] 0.6.2.9 — Integration & Polish (admin preview button, 3 demo pages: home/about/contact)
+
+**Rutas verificadas:**
+- `GET  /pages/home/`       → HTML público (200)
+- `GET  /pages/about/`      → HTML público (200)
+- `GET  /pages/contact/`    → HTML público (200)
+- `GET  /pages/<slug>/render/` → JSON con HTML renderizado (200)
+- `GET  /api/v1/pages/`     → API protegida JWT (401 esperado)
+
+**Demo pages creadas:**
+- Home: `Inicio` (bienvenida + columnas 3 + CTA)
+- About: `Acerca de` (hero image + texto)
+- Contact: `Contacto` (formulario HTML)
+
+---
+
+## 🔹 Phase 1.1 — Marketplace Foundation (APPLIED — COMPLETE)
 
 **Status:** ✅ ALL 7 TASKS DONE
 
