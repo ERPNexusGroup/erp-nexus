@@ -3,12 +3,12 @@
 **Project:** ERP Nexus Core (Framework + Essential Modules)
 **Architecture:** Hybrid — Essential modules in core, Optional modules as plugins
 **Current Phases:**
-  • Phase M5-A.1 — Payout Models + Migrations (APPLIED — COMPLETE)
-  • Phase M5-A.2 — Commission Calculator Service (IN PROGRESS)
+  • Phase M5-A.2 — Commission Calculator Service (APPLIED — COMPLETE)
+  • Phase M5-A.3 — Bank Integration Layer (IN PROGRESS)
   • Phase M5 — Feature Extensions (multi-tenant, analytics, API v2, Sentry — PLANNED)
 **Loop Position:** APPLY COMPLETE (0.6 / 0.6.2 / 1.1 / 1.2 / 1.3 / 1.4 / 2.1 / 2.2 / 2.3 / M4)
-**Last Completed:** Phase M5-A.1 — Payout Models + Migrations (2026-05-13) ✅
-**Current Milestone:** M5 — Feature Extensions (Phase M5-A.1 COMPLETE | M5-A.2 IN PROGRESS)
+**Last Completed:** Phase M5-A.2 — Commission Calculator + Signals (2026-05-13) ✅
+****Current Milestone:** M5 — Feature Extensions (Phase M5-A.2 COMPLETE | M5-A.3 IN PROGRESS)
 **Branch:** `main`
 
 ## ✅ Phase 0.6 — Hybrid Restructure (COMPLETED)
@@ -59,7 +59,36 @@
 
 ---
 
-## 🔄 Phase M5-A.2 — Commission Calculator Service (IN PROGRESS)
+## ✅ Phase M5-A.2 — Commission Calculator Service + Signals (APPLIED — COMPLETE)
+
+**Fecha:** 2026-05-13
+**Estado:** ✅ APPLIED + UNIFY COMPLETE
+**Skill:** coding-agent
+**Commits:** `feat(payout): commission calculator service + signals + management command` (0a1a25f)
+
+**Objetivo:** Servicio de cálculo de comisiones + signals automáticos + command.
+
+**Entregables:**
+- [x] Modelo `CommissionRecord` (FK Order/PurchaseOrder, status workflow, indexes)
+- [x] `CommissionCalculator` service (`services.py`) — gross/net/retention logic, min/max thresholds
+- [x] Signal `post_save` en Order (status='completed') → auto-create CommissionRecord
+- [x] Management command `calculate_commissions` (--date, --dry-run)
+- [x] `get_pending_commissions(company, start_date, end_date)` — date/datetime flexible
+- [x] Bulk helpers: `bulk_create_from_orders`, `bulk_create_from_purchase_orders`
+- [x] Tests: 48 tests passing (models + services)
+- [x] Django check: 0 issues ✅
+
+**Tests detalle:**
+- CommissionRecord model tests (12)
+- CommissionCalculator unit tests (25)
+- Signal integration tests (8)
+- Management command tests (3)
+
+**Fixed:** `created_at` default changed from `auto_now_add=True` to `default=timezone.now` para permitir assignment en tests.
+
+---
+
+## 🔄 Phase M5-A.3 — Bank Integration Layer (IN PROGRESS)
 
 **Fecha:** 2026-05-13
 **Estado:** ✅ APPLIED + UNIFY COMPLETE

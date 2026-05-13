@@ -219,3 +219,52 @@ CELERY_TASK_DEFAULT_QUEUE = 'default'
 CELERY_TASK_DEFAULT_EXCHANGE = 'default'
 CELERY_TASK_DEFAULT_ROUTING_KEY = 'default'
 # Prioridad numérica: 0 (máxima) a 9 (mínima)
+
+# ─── Payouts / Bank Integration ─────────────────────────────────────
+BANK_API_TIMEOUT = int(os.environ.get('BANK_API_TIMEOUT', '30'))
+BANK_RETRY_ATTEMPTS = int(os.environ.get('BANK_RETRY_ATTEMPTS', '3'))
+
+BANK_PROVIDERS = {
+    'produbanco': {
+        'api_key': os.environ.get('BANK_PRODUBANCO_KEY', ''),
+        'api_secret': os.environ.get('BANK_PRODUBANCO_SECRET', ''),
+        'sandbox': os.environ.get('BANK_PRODUBANCO_SANDBOX', 'True').lower() in ('true', '1', 'yes'),
+    },
+    'pichincha': {
+        'api_key': os.environ.get('BANK_PICHINCHA_KEY', ''),
+        'api_secret': os.environ.get('BANK_PICHINCHA_SECRET', ''),
+    },
+    'guayaquil': {
+        'api_key': os.environ.get('BANK_GUAYAQUIL_KEY', ''),
+        'api_secret': os.environ.get('BANK_GUAYAQUIL_SECRET', ''),
+    },
+}
+
+# Logging para payout banks
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'structured': {
+            'format': '%(levelname)s %(asctime)s [%(name)s] %(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'structured',
+        },
+    },
+    'loggers': {
+        'payouts': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'payouts.banks': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
