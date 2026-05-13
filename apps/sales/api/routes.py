@@ -193,7 +193,7 @@ def order_to_invoice(request, order_id: int):
         return {"error": "La orden debe estar confirmada"}, 400
 
     # Generar factura via facturacion module (REST call interno)
-    from apps.facturacion.services import create_invoice_from_order
+    from modules.facturacion_ec.services.facturation_integration import create_invoice_from_order
     invoice = create_invoice_from_order(order)
 
     return {

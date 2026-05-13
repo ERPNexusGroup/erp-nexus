@@ -67,7 +67,7 @@ def send_invoice_to_sri_task(self, invoice_id: int):
     Tarea asíncrona para enviar factura al SRI (Ecuador).
     Se ejecuta en cola de alta prioridad (sri).
     """
-    from apps.facturacion.models import Invoice
+    from modules.facturacion_ec.models import Invoice
 
     try:
         invoice = Invoice.objects.get(id=invoice_id)
@@ -102,7 +102,7 @@ def generate_invoice_pdf_task(self, invoice_id: int):
     Genera PDF de factura en background (tarea pesada).
     Guarda en media/invoices/pdf/ y notifica por email.
     """
-    from apps.facturacion.models import Invoice
+    from modules.facturacion_ec.models import Invoice
     from io import BytesIO
     # Placeholder: usar weasyprint o reportlab
     # pdf = generate_pdf(invoice)

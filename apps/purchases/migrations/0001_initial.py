@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('facturacion', '0003_invoiceline_discount'),
+        ('facturacion', '0001_initial'),
         ('inventory', '0001_initial'),
     ]
 
