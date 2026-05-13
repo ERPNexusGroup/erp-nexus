@@ -3,10 +3,12 @@
 **Project:** ERP Nexus Core (Framework + Essential Modules)
 **Architecture:** Hybrid — Essential modules in core, Optional modules as plugins
 **Current Phases:**
-  • Phase M5 — Feature Extensions (PLANNED — pending kickoff)
+  • Phase M5-A.1 — Payout Models + Migrations (APPLIED — COMPLETE)
+  • Phase M5-A.2 — Commission Calculator Service (IN PROGRESS)
+  • Phase M5 — Feature Extensions (multi-tenant, analytics, API v2, Sentry — PLANNED)
 **Loop Position:** APPLY COMPLETE (0.6 / 0.6.2 / 1.1 / 1.2 / 1.3 / 1.4 / 2.1 / 2.2 / 2.3 / M4)
-**Last Completed:** Phase 0.6.2 — core_pagebuilder API + Frontend (2026-05-13) ✅
-**Current Milestone:** M5 — Feature Extensions (PLANNED — awaiting kickoff)
+**Last Completed:** Phase M5-A.1 — Payout Models + Migrations (2026-05-13) ✅
+**Current Milestone:** M5 — Feature Extensions (Phase M5-A.1 COMPLETE | M5-A.2 IN PROGRESS)
 **Branch:** `main`
 
 ## ✅ Phase 0.6 — Hybrid Restructure (COMPLETED)
@@ -29,7 +31,35 @@
 
 ---
 
-## ✅ Phase 0.6.2 — core_pagebuilder API + Frontend Completion (APPLIED — COMPLETE)
+## ✅ Phase M5-A.1 — Payout Automation — Models + Migrations (APPLIED — COMPLETE)
+
+**Fecha:** 2026-05-13
+**Estado:** ✅ APPLIED + UNIFY COMPLETE
+**Skill:** coding-agent
+**Commits:** `feat(payout): models + migrations + admin`
+
+**Objetivo:** Schema de datos para payout automation (5 modelos).
+
+**Entregables:**
+- [x] App `payouts` creada (`apps/payouts/`) y registrada en INSTALLED_APPS
+- [x] 5 modelos implementados: BankAccount, CommissionRule, Payout, PayoutItem, PayoutConfig
+- [x] Admin registration funcional (list_display, filters, inlines, actions)
+- [x] Migración `0001_initial.py` generada y aplicada
+- [x] Tests: 32 model tests passing ✅
+- [x] Django check: 0 issues ✅
+
+**Detalles modelos:**
+- `BankAccount`: 8 bancos ecuatorianos + tipos cuenta + holder + RUT
+- `CommissionRule`: módulo (sales/purchases/marketplace), tipo (percentage/fixed), umbrales min/max
+- `Payout`: reference único (PAY-YYYYMMDD-NNNN), status workflow (6 estados), FK company + bank_account
+- `PayoutItem`: FK a Order/PurchaseOrder nullable, cálculo neto = gross - retention
+- `PayoutConfig`: OneToOne Company, auto_approve, retention_rate, payout_schedule, notify_emails
+
+**Testing:** 32 tests (model validation, __str__, ordering, JSONField, constraints)
+
+---
+
+## 🔄 Phase M5-A.2 — Commission Calculator Service (IN PROGRESS)
 
 **Fecha:** 2026-05-13
 **Estado:** ✅ APPLIED + UNIFY COMPLETE

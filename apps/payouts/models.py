@@ -1,6 +1,7 @@
 from decimal import Decimal
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
 
 
 class BankAccount(models.Model):
@@ -351,3 +352,88 @@ class PayoutConfig(models.Model):
 
     def __str__(self):
         return f"Configuración - {self.company}"
+
+
+class CommissionRecord(models.Model):
+    """Registro individual de comisión generada por una orden/compra."""
+    STATUS_CHOICES = [
+        ('pending', 'Pendiente'),
+        ('paid', 'Pagada'),
+        ('cancelled', 'Cancelada'),
+    ]
+
+    order = models.ForeignKey(
+        'sales.Order',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='commission_records'
+    )
+    purchase_order = models.ForeignKey(
+        'purchases.PurchaseOrder',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='commission_records'
+    )
+    company = models.ForeignKey(
+        'core_companies.Company',
+        on_delete=models.CASCADE,
+        db_index=True
+    )
+    commission_rule = models.ForeignKey(
+        'CommissionRule',
+        on_delete=models.PROTECT
+    )
+    gross_amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        help_text="Comisión antes de retención"
+    )
+    retention_amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        help_text="Retención SRI aplicada"
+    )
+    net_amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        help_text="Neto a pagar"
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+        db_index=True
+    )
+    payout_item = models.ForeignKey(
+        'PayoutItem',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='commission_records'
+    )
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        db_index=True,
+        help_text="Fecha de creación del registro"
+    )
+    paid_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['company', 'status', 'created_at']),
+        ]
+        ordering = ['-created_at']
+        verbose_name = 'Registro de Comisión'
+        verbose_name_plural = 'Registros de Comisión'
+
+    def __str__(self):
+        if self.order:
+            ref = f"Order {self.order.order_number}"
+        elif self.purchase_order:
+            ref = f"PO {self.purchase_order.po_number}"
+        else:
+            ref = "Sin referencia"
+        return f"{ref} — {self.net_amount} ({self.status})"
