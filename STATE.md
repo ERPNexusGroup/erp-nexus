@@ -14,8 +14,8 @@
 | **M3.4** | **SSL/TLS + Nginx reverse proxy** | ✅ | 15% | 100% |
 | **M3.5** | **Monitoring Stack (Prom+Grafana+cAdvisor+Node+AlertManager)** | ✅ | 10% | 100% |
 | M4 | **Deployment Hardening + Runbooks + Automation Scripts** | ✅ | 15% | 100% |
-| **F1** | **Facturación Core Separation (Modularización)** | ✅ | 15% | 85% |
-| **TOTAL** | | | **125%** | **~90%** |
+| **F1** | **Facturación Core Separation (Modularización)** | ✅ | 15% | **95%** |
+| **TOTAL** | | | **125%** | **~95%** |
 
 ---
 
@@ -42,35 +42,37 @@ Separar el módulo monolítico `facturacion_ec` en dos capas claras:
 ### Arquitectura Resultante
 ```
 apps/
- └─ facturacion/          → Core invoice, customer, product, quote, api, signals, admin
+ └─ facturacion/          → Core invoice, customer, api, signals, admin
 modules/
- └─ facturacion_ec/       → Plugin SRI: catalogs, licensing, SRI extension, services
+ └─ facturacion_ec/       → Plugin SRI: catalogs, licensing, extension, services
 ```
 
-### Estado Actual
-- ✅ `apps/facturacion/`: modelos core (Customer, Invoice, InvoiceLine) + related_names únicos
-- ✅ `apps/facturacion/`: signals (auto-numbering), admin, API Django Ninja
-- ✅ `apps.facturacion` registrado en INSTALLED_APPS
-- ✅ `modules/facturacion_ec/`: modelos SRI (InvoiceSRIExtension + catálogos) con OneToOne a core
-- ✅ `modules/facturacion_ec/`: services (XML, signature, SRI client, integration), admin, API Ninja
-- ✅ Migraciones aplicadas: facturacion.0001 + 0002; facturacion_ec.0001
-- ✅ `MODULE_APPS` incluye 'modules.facturacion_ec' (plugin dinámico)
-- ✅ `sales`/`purchases` funcionan con nuevas dependencias migración
-- ⏳ Migración de datos legacy (pendiente)
-- ⏳ Tests de integración SRI (pendientes)
+### Estado Actual (F1 — 95% completado)
+- ✅ `apps.facturacion/`: modelos core (Customer, Invoice, InvoiceLine), `related_name` únicos
+- ✅ `apps.facturacion/`: signals (auto-numbering, totals), admin, API Django Ninja
+- ✅ `apps.facturacion/`: migraciones 0001_initial + 0002_alter aplicadas
+- ✅ `modules.facturacion_ec/`: modelos SRI (InvoiceSRIExtension + catálogos) — OneToOne a core
+- ✅ `modules.facturacion_ec/`: services integrados (XML, signature, SRI client, integration)
+- ✅ `modules.facturacion_ec/`: migración 0001_initial + tests integración básicos
+- ✅ `apps/core_api/v1/`: endpoints `/facturacion/` (core) y `/facturacion_ec/` (SRI)
+- ✅ `erp_nexus/settings/base.py`: `apps.facturacion` en INSTALLED_APPS
+- ✅ `modules_enabled.py`: `modules.facturacion_ec` como plugin dinámico
+- ✅ `sales`/`purchases`: dependencias migración actualizadas a `facturacion.0001_initial`
+- ✅ Config `pyproject.toml`: deps `cryptography`, `signxml`, `lxml`, `jinja2`, `httpx` agregados
+- ⏳ Migración de datos legacy (pendiente — requiere validación con datos reales en producción/dev)
 
 ### Próximos Pasos (F1)
-1. **Validar migraciones** en base de datos de desarrollo
-2. **Ejecutar migración de datos** desde tablas legacy
-3. **Actualizar tests** para nuevos modelos y servicios
-4. **Documentar arquitectura** y guía de desarrollo
-5. **Commit y push** con etiqueta `facturacion-separation-v1`
+1. **Migración de datos legacy** — ejecutar `migrate_facturacion_ec_data` con datos reales
+2. **Validación smoke tests** en entorno dev (pytest en facturacion y facturacion_ec)
+3. **Push a GitHub** y deploy en staging
+4. **Monitoreo inicial** — verificar logs SRI (success_rate, rejection_rate)
 
 ---
 
 ## ✅ Commits Recientes
 
-- `a17b5e8` — F1: core facturación separation — models, api, services, migrations applied ✅
+- `3c78b1b` — docs(facturacion): arquitectura separación core/SRI + tests integración
+- `a17b5e8` — F1: core facturación separation — models, api, services, migrations applied
 - `ca62b50` — M4: deployment hardening — monitoring docs + runbooks + automation scripts
 
 ---
@@ -87,21 +89,21 @@ modules/
 
 ---
 
-## 🚀 Próximo Sprint (después de F1)
+## 🚀 Roadmap Post-F1 (M5+)
 
 **M5 — Feature Extensions:**
-- Payout automation (comisiones → transferencias bancarias)
-- Advanced analytics / BI dashboards
-- Multi-tenant support (si roadmap lo requiere)
+- Payout automation (comisiones → transferencias bancarias via SRI/Nube)
+- Advanced analytics / BI dashboards (ventas, KPIs)
+- Multi-tenant organizations (si roadmap lo requiere)
 - API v2 (GraphQL opcional)
 
-**F1 Completion:**
-- Migración de datos 100% validada
-- Tests de integración SRI passantes
-- Documentación de arquitectura
+**F1 Cierre (95% → 100%):**
+- [ ] Migración de datos 100% validada en producción
+- [ ] Tests de integración SRI con ambiente pruebas 1
+- [ ] `docs/FACTURACION_CORE_SEPARATION.md` revisado y finalizado
 
 ---
 
-**M3 Production Stack:** ✅ 100% | **M4 Hardening:** ✅ 100% | **Facturación Separation:** ✅ 85%
+**M3 Production Stack:** ✅ 100% | **M4 Hardening:** ✅ 100% | **Facturación Separation:** ✅ 95%
 
-*Última actualización: 2026-05-12 | Pendiente: migración datos, integración tests*
+*Última actualización: 2026-05-12 | Pendiente: migración datos legacy y validación producción*
