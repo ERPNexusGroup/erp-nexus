@@ -11,8 +11,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Default generator for UUID primary keys
 UUID_FIELD_DEFAULT = uuid.uuid4
 
-# ─── Añadir modules/core al path para importar el paquete 'core' ──────
-# modules/core contiene el paquete 'core' (con __init__.py y apps.py)
+# ─── Añadir Project ERP NEXUS al path para módulos externos ─────────────
+PROJECT_ROOT = BASE_DIR.parent  # ~/Project ERP NEXUS
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+# modules/core (core local dentro de erp-nexus)
 CORE_PKG_DIR = BASE_DIR / "modules" / "core"
 if str(CORE_PKG_DIR) not in sys.path:
     sys.path.insert(0, str(CORE_PKG_DIR))
