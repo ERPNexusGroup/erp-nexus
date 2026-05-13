@@ -57,15 +57,14 @@ INSTALLED_APPS = [
 ]
 
 # Módulos externos cargados dinámicamente
-# En entornos de pytest ignoramos MODULE_APPS para evitar colisiones
-# de etiquetas entre apps estáticas y dinámicas.
+# En pytest también cargamos MODULE_APPS para que los tests vean todas las apps
 IN_PYTEST = bool(os.environ.get('PYTEST_VERSION'))
-if not IN_PYTEST:
-    try:
-        from erp_nexus.modules_enabled import MODULE_APPS  # type: ignore
-    except ImportError:
-        MODULE_APPS = []
-else:
+try:
+    from erp_nexus.modules_enabled import MODULE_APPS  # type: ignore
+    if IN_PYTEST:
+        # En tests forzamos carga de plugins para validar integración
+        pass  # MODULE_APPS ya contiene 'modules.facturacion_ec'
+except ImportError:
     MODULE_APPS = []
 
 for app in MODULE_APPS:

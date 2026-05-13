@@ -55,3 +55,21 @@ def invoice_line_post_delete(sender, instance, **kwargs):
         tax_total=tax_total,
         total=total
     )
+
+
+@receiver(post_save, sender=InvoiceLine)
+def invoice_line_post_save(sender, instance, created, **kwargs):
+    """
+    Al crear/actualizar una línea, recalcular totals de la factura.
+    """
+    invoice = instance.invoice
+    lines = invoice.facturacion_lines.all()
+    subtotal = sum(l.subtotal for l in lines)
+    tax_total = sum(l.tax_amount for l in lines)
+    total = subtotal + tax_total
+
+    Invoice.objects.filter(pk=invoice.pk).update(
+        subtotal=subtotal,
+        tax_total=tax_total,
+        total=total
+    )

@@ -1,9 +1,10 @@
-# Generated manually for facturacion core separation
-# Django 5.0
+# Generated manually — Core Facturación initial migration
+# Django 6.0.5
 
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
+import django.utils.timezone
 
 
 class Migration(migrations.Migration):
@@ -12,6 +13,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('core_companies', '0001_initial'),
+        ('inventory', '0001_initial'),   # InvoiceLine.product FK
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -26,9 +28,9 @@ class Migration(migrations.Migration):
                 ('email', models.EmailField(blank=True, max_length=254)),
                 ('phone', models.CharField(blank=True, max_length=50)),
                 ('address', models.TextField(blank=True)),
-                ('razon_social', models.CharField(blank=True, max_length=200)),
+                ('razon_social', models.CharField(blank=True, help_text='Razón social (para RUC)', max_length=200)),
                 ('is_active', models.BooleanField(default=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='facturacion_customers', to='core_companies.company')),
             ],
@@ -50,7 +52,7 @@ class Migration(migrations.Migration):
                 ('total', models.DecimalField(decimal_places=2, default=0, max_digits=15)),
                 ('status', models.CharField(choices=[('draft', 'Borrador'), ('pending', 'Pendiente'), ('paid', 'Pagada'), ('cancelled', 'Anulada'), ('sent', 'Enviada (SRI)')], default='draft', max_length=20)),
                 ('notes', models.TextField(blank=True, default='')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='facturacion_invoices', to='core_companies.company')),
                 ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='facturas_created_facturacion', to=settings.AUTH_USER_MODEL)),
@@ -76,7 +78,7 @@ class Migration(migrations.Migration):
                 ('tax_amount', models.DecimalField(decimal_places=2, default=0, help_text='subtotal × (tax_rate / 100)', max_digits=12)),
                 ('discount', models.DecimalField(decimal_places=2, default=0, help_text='Descuento total sobre la línea', max_digits=12)),
                 ('total', models.DecimalField(decimal_places=2, help_text='subtotal + tax_amount − discount', max_digits=12)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
                 ('invoice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='facturacion_lines', to='facturacion.invoice')),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='facturacion_invoice_lines', to='inventory.product')),
             ],

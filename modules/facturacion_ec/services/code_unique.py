@@ -19,8 +19,8 @@ def generate_access_key(ruc: str, ambiente: int, establishment_code: str, emissi
       [03] Código punto emisión    3 dígitos
       [09] Número secuencial       9 dígitos
       [01] Tipo de emisión         1=Normal, 2=Contingencia
-      [08] Código numérico aleatorio (8 dígitos)
-      [01] Dígito verificador      checksum mód 10
+      [06] Código numérico aleatorio (6 dígitos)
+      [01] Dígito verificador      checksum mód 11
       --- Total: 49 dígitos ---
 
     Args:
@@ -63,15 +63,19 @@ def generate_access_key(ruc: str, ambiente: int, establishment_code: str, emissi
     # 8. Tipo emisión (1) — 1=Normal
     tipo_em = str(tipo_emision)[:1]
 
-    # 9. Código aleatorio (8 dígitos)
-    random_part = str(random.randint(0, 99999999)).zfill(8)
+    # 9. Código aleatorio (6 dígitos) — total con DV = 49
+    random_part = str(random.randint(0, 999999)).zfill(6)
 
-    # 10. Dígito verificador (mód 10 sobre la concatenación sin el random)
+    # 10. Dígito verificador (mód 11 sobre la concatenación completa)
     base = date_str + cod_doc + ruc_clean + amb_code + estab + pto + seq + tipo_em
-    digito_verificador = str(sum(int(d) for d in base) % 10)
+    base_with_random = base + random_part
+    weighted_sum = sum(int(d) * (i + 1) for i, d in enumerate(base_with_random))
+    dv = str(weighted_sum % 11)
+    if dv == '10':
+        dv = '1'
 
-    clave = base + random_part + digito_verificador
-    assert len(clave) == 49, f"Clave debe tener 49 dígitos, tiene {len(clave)}"
+    clave = base_with_random + dv
+    assert len(clave) == 49, f"Clave debe tener 49 dígitos, tiene {len(clave)} (base={len(base)} random={len(random_part)} dv={len(dv)})"
     return clave
 
 
