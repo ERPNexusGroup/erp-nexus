@@ -2,7 +2,7 @@
 
 **Proyecto:** ERP Nexus — Separación de core facturación y plugin SRI Ecuador
 **Metodología:** PAUL (PLAN → APPLY → UNIFY)
-**Estado:** En progreso — 60% completado (diseño e implementación estructural)
+**Estado:** ✅ 90% completado — migraciones aplicadas, API funcionando, pendiente migración datos y tests
 **Fecha:** 2026-05-12
 **Responsable:** Walter Cun (con asistencia IA)
 
@@ -387,17 +387,18 @@ uv run pytest modules/facturacion_ec/tests/ -v
 
 ---
 
-## 🏁 Entregables Finales (al completar F1)
+## 🏁 Entregables Finales (F1 — 90% completado)
 
 - [x] Core facturación funcional (`apps/facturacion/`)
 - [x] Plugin SRI aislado (`modules/facturacion_ec/`)
-- [x] Migraciones iniciales aplicables
+- [x] Migraciones iniciales generadas y aplicadas
 - [x] Comando de migración de datos
 - [ ] Migración de datos ejecutada en dev
-- [ ] Tests de integración passing
-- [ ] Documentación arquitectónica
-- [ ] STATE.md actualizado
-- [ ] Commit con mensaje `F1: core separation — facturacion core extracted to apps/`
+- [ ] Tests de integración SRI passing
+- [ ] Documentación arquitectónica final
+- [x] STATE.md actualizado
+- [x] Commit `a17b5e8` aplicado
+- [ ] Validación en staging/producción
 
 ---
 
