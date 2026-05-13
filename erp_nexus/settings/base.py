@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "apps.facturacion",  # Core facturación local (sin SRI)
     "apps.notifications",
     "apps.print_manager",
+    "apps.payouts",
 ]
 
 # Módulos externos cargados dinámicamente
