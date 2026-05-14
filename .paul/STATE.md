@@ -3,12 +3,12 @@
 **Project:** ERP Nexus Core (Framework + Essential Modules)
 **Architecture:** Hybrid — Essential modules in core, Optional modules as plugins
 **Current Phases:**
-  • Phase M5-A.2 — Commission Calculator Service (APPLIED — COMPLETE)
-  • Phase M5-A.3 — Bank Integration Layer (IN PROGRESS)
-  • Phase M5 — Feature Extensions (multi-tenant, analytics, API v2, Sentry — PLANNED)
+  • Phase M5-A.3 — Bank Integration Layer (APPLIED — COMPLETE)
+  • Phase M5-A.4 — Payout API Endpoints (IN PROGRESS)
+  • Phase M5 — Feature Extensions (PLANNED)
 **Loop Position:** APPLY COMPLETE (0.6 / 0.6.2 / 1.1 / 1.2 / 1.3 / 1.4 / 2.1 / 2.2 / 2.3 / M4)
-**Last Completed:** Phase M5-A.2 — Commission Calculator + Signals (2026-05-13) ✅
-****Current Milestone:** M5 — Feature Extensions (Phase M5-A.2 COMPLETE | M5-A.3 IN PROGRESS)
+**Last Completed:** Phase M5-A.3 — Bank Integration Layer (2026-05-13) ✅
+****Current Milestone:** M5 — Feature Extensions (Phase M5-A.3 COMPLETE | M5-A.4 IN PROGRESS)
 **Branch:** `main`
 
 ## ✅ Phase 0.6 — Hybrid Restructure (COMPLETED)
@@ -88,7 +88,35 @@
 
 ---
 
-## 🔄 Phase M5-A.3 — Bank Integration Layer (IN PROGRESS)
+## ✅ Phase M5-A.3 — Bank Integration Layer (APPLIED — COMPLETE)
+
+**Fecha:** 2026-05-13
+**Estado:** ✅ APPLIED + UNIFY COMPLETE
+**Skill:** coding-agent
+**Commit:** `feat(payout): bank integration layer + providers` (d87db85)
+
+**Objetivo:** Capa de abstracción para integración con múltiples bancos ecuatorianos.
+
+**Entregables:**
+- [x] Custom exceptions: `PayoutError`, `BankError`, `InsufficientFundsError`, `AccountNotFoundError`, `BankConnectionError`
+- [x] `BaseBankProvider` abstract (transfer, validate_account, get_balance, close)
+- [x] Providers: Produbanco (REST + retry), Pichincha (mock), Guayaquil (mock), Dummy (testing)
+- [x] `BankProviderFactory(bank_code, **credentials)`
+- [x] Settings: `BANK_API_TIMEOUT=30`, `BANK_RETRY_ATTEMPTS=3`, `BANK_PROVIDERS` dict
+- [x] Tests: 29 bank provider tests ✅
+- [x] Django check: 0 issues ✅
+
+**Tests acumulados payout:** 77 passing (48 M5-A.2 + 29 M5-A.3)
+
+**Notas:**
+- Produbanco: `requests.Session()` + `Retry` (urllib3) para resilience
+- Pichincha/Guayaquil: mocks (SOAP/REST real pendiente de documentación oficial)
+- DummyProvider: testing helper
+- Credentials solo via settings/env vars (no DB)
+
+---
+
+## 🔄 Phase M5-A.4 — Payout API Endpoints (IN PROGRESS)
 
 **Fecha:** 2026-05-13
 **Estado:** ✅ APPLIED + UNIFY COMPLETE

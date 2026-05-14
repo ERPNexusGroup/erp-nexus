@@ -28,7 +28,7 @@ def health_check(request):
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/", api.urls),  # Sin namespace extra — endpoints accesibles directamente
+    path("api/v1/", api.urls),  # Core API (all modules including payouts)
     path("marketplace/", include("apps.core_marketplace.urls")),  # Public catalog
     path("health/", health_check, name="health_check"),
     # core_pagebuilder — páginas públicas

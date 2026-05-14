@@ -87,3 +87,7 @@ api.add_router("/facturacion/", facturacion_router, tags=["facturacion"])
 # ─── Payments & Payouts ─────────────────────────────────────────────────────
 from apps.core_payments.api import router as payments_router  # noqa: E402
 api.add_router("/payments/", payments_router, tags=["payments"])
+
+# ─── Payouts ────────────────────────────────────────────────────────────────────
+from apps.payouts.api.views import router as payouts_router  # noqa: E402
+api.add_router("/payouts/", payouts_router, tags=["payouts"])

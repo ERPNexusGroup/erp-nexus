@@ -71,6 +71,11 @@ class BankAccount(models.Model):
     def __str__(self):
         return f"{self.get_bank_code_display()} - {self.account_number}"
 
+    @property
+    def bank_display(self) -> str:
+        """Display name del banco (para API responses)."""
+        return self.get_bank_code_display()
+
 
 class CommissionRule(models.Model):
     """Reglas de comisión por módulo (ventas, compras, marketplace)"""
